@@ -1,0 +1,1 @@
+# Dependencias Python globales para módulos personalizados de Odoo 20
