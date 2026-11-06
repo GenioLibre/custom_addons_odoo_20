@@ -16,6 +16,6 @@ class IrUiView(models.Model):
             values["title"] = (
                 self.env["ir.config_parameter"]
                 .sudo()
-                .get_param(CONFIG_PARAM_WEB_WINDOW_TITLE, "")
+                .get_str(CONFIG_PARAM_WEB_WINDOW_TITLE, "")
             )
         return super()._render_template(template, values)
