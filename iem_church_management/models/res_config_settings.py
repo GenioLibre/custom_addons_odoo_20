@@ -62,7 +62,7 @@ class ResConfigSettings(models.TransientModel):
         res = super().get_values()
         attachment = self._get_church_logo_attachment()
         res.update(
-            church_logo=attachment.datas if attachment else False,
+            church_logo=attachment.raw if attachment else False,
         )
         return res
 
@@ -76,7 +76,7 @@ class ResConfigSettings(models.TransientModel):
             vals = {
                 "name": params.get_str(self._church_logo_filename_param_key, self._church_logo_default_filename),
                 "type": "binary",
-                "datas": self.church_logo,
+                "raw": self.church_logo,
                 "mimetype": params.get_str(
                     self._church_logo_mimetype_param_key,
                     self._church_logo_default_mimetype,

@@ -911,7 +911,7 @@ class ChurchMember(models.Model):
             {
                 "name": filename,
                 "type": "binary",
-                "datas": base64.b64encode(xlsx_data),
+                "raw": xlsx_data,
                 "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "res_model": "church.member",
                 "public": False,

@@ -1,4 +1,3 @@
-import base64
 import io
 
 import xlsxwriter
@@ -269,7 +268,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
             {
                 "name": self._build_export_filename(payload["year"], include_amounts=include_amounts),
                 "type": "binary",
-                "datas": base64.b64encode(xlsx_data),
+                "raw": xlsx_data,
                 "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "res_model": self._name,
                 "public": False,
