@@ -1,0 +1,24 @@
+<odoo noupdate="1">
+    <record id="cron_church_update_cell_absences" model="ir.cron">
+        <field name="name">IEM: Actualizar seguimiento de inasistencias</field>
+        <field name="model_id" ref="model_iem_church_cell_followup"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_update_absences()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="priority">4</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="cron_church_email_monthly_attendance" model="ir.cron">
+        <field name="name">IEM: Enviar reporte mensual de células</field>
+        <field name="model_id" ref="model_iem_church_weekly_attendance"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_email_monthly_attendance()</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,65 @@
+<odoo>
+    <record id="access_iem_cell_followup_admin" model="ir.access">
+        <field name="name">access_iem_cell_followup_admin</field>
+        <field name="model_id" ref="model_iem_church_cell_followup"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_monthly_attendance_report_admin" model="ir.access">
+        <field name="name">access_iem_monthly_attendance_report_admin</field>
+        <field name="model_id" ref="model_iem_church_monthly_attendance_report"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_cell_followup_system" model="ir.access">
+        <field name="name">access_iem_cell_followup_system</field>
+        <field name="model_id" ref="model_iem_church_cell_followup"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_monthly_attendance_report_system" model="ir.access">
+        <field name="name">access_iem_monthly_attendance_report_system</field>
+        <field name="model_id" ref="model_iem_church_monthly_attendance_report"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_cell_followup_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_cell_followup_pastor_gobierno</field>
+        <field name="model_id" ref="model_iem_church_cell_followup"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">cru</field>
+        <field name="domain">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
+    </record>
+    <record id="access_iem_monthly_attendance_report_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_monthly_attendance_report_pastor_gobierno</field>
+        <field name="model_id" ref="model_iem_church_monthly_attendance_report"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_cell_followup_pastor" model="ir.access">
+        <field name="name">access_iem_cell_followup_pastor</field>
+        <field name="model_id" ref="model_iem_church_cell_followup"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">cru</field>
+        <field name="domain">[('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
+    </record>
+    <record id="access_iem_monthly_attendance_report_pastor" model="ir.access">
+        <field name="name">access_iem_monthly_attendance_report_pastor</field>
+        <field name="model_id" ref="model_iem_church_monthly_attendance_report"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_cell_followup_discipulador" model="ir.access">
+        <field name="name">access_iem_cell_followup_discipulador</field>
+        <field name="model_id" ref="model_iem_church_cell_followup"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">cru</field>
+        <field name="domain">[('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id), ('discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
+    </record>
+    <record id="access_iem_monthly_attendance_report_discipulador" model="ir.access">
+        <field name="name">access_iem_monthly_attendance_report_discipulador</field>
+        <field name="model_id" ref="model_iem_church_monthly_attendance_report"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">crud</field>
+    </record>
+</odoo>

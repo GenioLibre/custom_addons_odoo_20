@@ -1,6 +1,6 @@
 {
     "name": "IEM Church Management",
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Industries",
     "summary": "Church membership and organizational structure management",
     "author": "IEM",
@@ -9,6 +9,7 @@
     "data": [
         "security/iem_church_management_groups.xml",
         "security/iem_church_management_rules.xml",
+        "security/church_cell_reporting_access.xml",
 
         "data/identification_type.xml",
         "data/church_member_sequence.xml",
@@ -17,6 +18,7 @@
         "data/church_member_position_data.xml",
         "data/auth_signup_mail_templates.xml",
         "data/mail_security_layout.xml",
+        "data/church_cell_reporting_cron.xml",
         "report/church_member_registration_report.xml",
         "report/church_member_registration_report_templates.xml",
         "views/church_member_view.xml",
@@ -28,6 +30,7 @@
         "views/academia_inscripcion_views.xml",
         "views/academia_asistencia_views.xml",
         "views/church_weekly_attendance_views.xml",
+        "views/church_cell_reporting_views.xml",
         "views/church_organization_views.xml",
         "views/res_config_settings_view.xml",
         "views/res_partner_view.xml",

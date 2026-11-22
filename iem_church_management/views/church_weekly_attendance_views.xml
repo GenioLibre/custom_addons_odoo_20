@@ -41,6 +41,15 @@
         <field name="model">iem.church.weekly.attendance</field>
         <field name="arch" type="xml">
             <form string="Asistencia semanal">
+                <header>
+                    <button name="action_confirm_meeting" type="object" string="Confirmar reunión" class="btn-primary"
+                            invisible="meeting_state != 'draft'"/>
+                    <button name="action_cancel_meeting" type="object" string="Marcar cancelada"
+                            invisible="meeting_state not in ['draft', 'held']"/>
+                    <button name="action_reopen_cancelled_meeting" type="object" string="Reabrir reunión"
+                            invisible="meeting_state != 'cancelled'"/>
+                    <field name="meeting_state" widget="statusbar" readonly="1"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
@@ -52,6 +61,8 @@
                             <field name="celula_id" options="{'no_create': True, 'no_create_edit': True}" />
                             <field name="week_year" />
                             <field name="week_number" />
+                            <field name="guest_count_known" invisible="meeting_state == 'cancelled'"/>
+                            <field name="guest_count" invisible="not guest_count_known or meeting_state == 'cancelled'"/>
                         </group>
                         <group>
                             <field name="week_start" />
@@ -105,7 +116,7 @@
         <field name="res_model">iem.church.weekly.attendance</field>
         <field name="view_mode">pivot,list,form</field>
         <field name="view_id" ref="view_iem_weekly_attendance_pivot" />
-        <field name="context">{'search_default_current_year': 1}</field>
+        <field name="context">{'search_default_current_year': 1, 'default_meeting_state': 'draft'}</field>
         <field name="search_view_id" ref="view_iem_weekly_attendance_search" />
         <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),

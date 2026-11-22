@@ -1,0 +1,104 @@
+<odoo>
+    <record id="view_church_cell_followup_list" model="ir.ui.view">
+        <field name="name">iem.church.cell.followup.list</field>
+        <field name="model">iem.church.cell.followup</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'pending'">
+                <field name="celula_id"/>
+                <field name="discipulado_id"/>
+                <field name="kind"/>
+                <field name="member_id"/>
+                <field name="guest_name"/>
+                <field name="last_attended"/>
+                <field name="missed_count"/>
+                <field name="responsible_id"/>
+                <field name="next_contact"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_church_cell_followup_form" model="ir.ui.view">
+        <field name="name">iem.church.cell.followup.form</field>
+        <field name="model">iem.church.cell.followup</field>
+        <field name="arch" type="xml">
+            <form string="Seguimiento de célula">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="kind" readonly="1"/>
+                            <field name="celula_id" readonly="id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="responsible_id"/>
+                            <field name="member_id" invisible="kind != 'absence'" readonly="1"/>
+                            <field name="last_attended" invisible="kind != 'absence'" readonly="1"/>
+                            <field name="missed_count" invisible="kind != 'absence'" readonly="1"/>
+                            <field name="guest_name" invisible="kind != 'guest'" required="kind == 'guest'"/>
+                            <field name="guest_since" invisible="kind != 'guest'" required="kind == 'guest'"/>
+                        </group>
+                        <group>
+                            <field name="state"/>
+                            <field name="next_contact"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_church_cell_followup_search" model="ir.ui.view">
+        <field name="name">iem.church.cell.followup.search</field>
+        <field name="model">iem.church.cell.followup</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="celula_id"/>
+                <field name="discipulado_id"/>
+                <field name="member_id"/>
+                <field name="guest_name"/>
+                <filter name="open" string="Abiertos" domain="[('state', 'in', ['pending', 'contacted'])]"/>
+                <separator/>
+                <filter name="absence" string="Inasistencias" domain="[('kind', '=', 'absence')]"/>
+                <filter name="guest" string="Invitados" domain="[('kind', '=', 'guest')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_church_cell_followup" model="ir.actions.act_window">
+        <field name="name">Seguimiento de células</field>
+        <field name="res_model">iem.church.cell.followup</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_church_cell_followup_search"/>
+        <field name="context">{'search_default_open': 1}</field>
+    </record>
+
+    <record id="view_church_monthly_attendance_form" model="ir.ui.view">
+        <field name="name">iem.church.monthly.attendance.report.form</field>
+        <field name="model">iem.church.monthly.attendance.report</field>
+        <field name="arch" type="xml">
+            <form string="Reporte mensual de células" delete="0" duplicate="0">
+                <sheet>
+                    <group>
+                        <field name="month"/>
+                        <field name="discipulado_id" options="{'no_create': True, 'no_open': True}"/>
+                    </group>
+                    <button name="action_open_followups" type="object" string="Ver personas en seguimiento" class="btn-secondary mb-3"/>
+                    <field name="report_html" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_church_monthly_attendance" model="ir.actions.act_window">
+        <field name="name">Reporte mensual de células</field>
+        <field name="res_model">iem.church.monthly.attendance.report</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_church_monthly_attendance_form"/>
+    </record>
+
+    <menuitem id="menu_church_monthly_attendance" name="Reporte mensual de células"
+              parent="menu_church_membership_root" action="action_church_monthly_attendance" sequence="16"
+              groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador"/>
+    <menuitem id="menu_church_cell_followup" name="Seguimiento de células"
+              parent="menu_church_membership_root" action="action_church_cell_followup" sequence="17"
+              groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador"/>
+</odoo>

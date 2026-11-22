@@ -871,7 +871,6 @@ class IemChurchWebsite(http.Controller):
             limit=1,
         )
         if attendance:
-            attendance.ensure_member_lines()
             existing = True
             lines = [self._serialize_weekly_attendance_line(line) for line in attendance.line_ids.sorted("member_name")]
         else:
@@ -889,6 +888,8 @@ class IemChurchWebsite(http.Controller):
             {
                 "ok": True,
                 "existing": existing,
+                "guest_count": attendance.guest_count if attendance and attendance.guest_count_known else None,
+                "meeting_cancelled": bool(attendance and attendance.meeting_state == "cancelled"),
                 "label": attendance_model.format_week_label_from_values(week_vals),
                 "leader": celula.lider_id.name or "",
                 "discipulado": celula.discipulado_id.display_name or "",
@@ -986,32 +987,42 @@ class IemChurchWebsite(http.Controller):
             ],
             limit=1,
         )
-        try:
-            if not attendance:
-                attendance = attendance_model.create({"celula_id": celula.id, **week_vals})
-            else:
-                attendance.ensure_member_lines()
-
-            valid_member_ids = set(
-                request.env["church.member"].sudo().search(
-                    [
-                        ("celula_id", "=", celula.id),
-                        ("member_status", "=", "active"),
-                    ]
-                ).ids
+        raw_guests = (kwargs.get("guest_count") or "").strip()
+        cancelled = kwargs.get("meeting_cancelled") == "on"
+        if raw_guests and (not raw_guests.isdecimal() or len(raw_guests) > 9):
+            return self._render_weekly_attendance_form(
+                form=form_values, error=_("Ingresa una cantidad de invitados válida."),
             )
-            for line in attendance.line_ids:
-                if line.member_id.id not in valid_member_ids:
-                    continue
-                member_key = str(line.member_id.id)
-                line.write(
-                    {
-                        "attended_celula": kwargs.get("attended_celula_%s" % member_key) == "on",
+        try:
+            with request.env.cr.savepoint():
+                if not attendance:
+                    attendance = attendance_model.create({
+                        "celula_id": celula.id, **week_vals, "meeting_state": "draft",
+                    })
+
+                historical = attendance.meeting_state == "legacy"
+                if historical and cancelled:
+                    raise ValidationError(_("Las semanas históricas no se pueden cancelar desde este formulario."))
+                for line in attendance.line_ids:
+                    member_key = str(line.member_id.id)
+                    if kwargs.get("listed_member_%s" % member_key) != "1":
+                        continue
+                    values = {
                         "attended_discipulado": kwargs.get("attended_discipulado_%s" % member_key) == "on",
                         "attended_culto": kwargs.get("attended_culto_%s" % member_key) == "on",
                         "tithed": kwargs.get("tithed_%s" % member_key) == "on",
                     }
-                )
+                    if not cancelled:
+                        values.update({
+                            "attended_celula": kwargs.get("attended_celula_%s" % member_key) == "on",
+                            "absence_known": not historical,
+                        })
+                    line.write(values)
+                attendance.write({
+                    "meeting_state": "legacy" if historical else ("cancelled" if cancelled else "held"),
+                    "guest_count_known": bool(raw_guests) and not cancelled,
+                    "guest_count": int(raw_guests) if raw_guests and not cancelled else 0,
+                })
         except (ValidationError, UserError) as exc:
             return self._render_weekly_attendance_form(form=form_values, error=str(exc))
 

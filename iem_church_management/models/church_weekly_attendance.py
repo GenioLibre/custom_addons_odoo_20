@@ -41,6 +41,30 @@ class IemChurchWeeklyAttendance(models.Model):
         store=True,
         readonly=True,
     )
+    meeting_state = fields.Selection(
+        [("legacy", "Histórico sin confirmar"), ("draft", "Pendiente"),
+         ("held", "Realizada"), ("cancelled", "Cancelada")],
+        default="legacy", required=True, tracking=True,
+    )
+    guest_count_known = fields.Boolean(string="Conteo de invitados registrado")
+    guest_count = fields.Integer(string="Invitados")
+    _guest_count_nonnegative = models.Constraint("CHECK(guest_count >= 0)", "La cantidad de invitados no puede ser negativa.")
+
+    def action_confirm_meeting(self):
+        for record in self.filtered(lambda week: week.meeting_state == "draft"):
+            record.check_access("write")
+            record.line_ids.write({"absence_known": True})
+            record.meeting_state = "held"
+        return True
+
+    def action_reopen_cancelled_meeting(self):
+        self.filtered(lambda week: week.meeting_state == "cancelled").write({"meeting_state": "draft"})
+        return True
+
+    def action_cancel_meeting(self):
+        self.filtered(lambda week: week.meeting_state in ("draft", "held")).write({"meeting_state": "cancelled"})
+        return True
+
     line_ids = fields.One2many("iem.church.weekly.attendance.line", "attendance_id", string="Miembros")
     total_members = fields.Integer(string="Total de miembros", compute="_compute_attendance_totals", store=True)
     total_attended_celula = fields.Integer(string="Asistencia a célula", compute="_compute_attendance_totals", store=True)
@@ -48,13 +72,10 @@ class IemChurchWeeklyAttendance(models.Model):
     total_attended_discipulado = fields.Integer(string="Asistencia al discipulado", compute="_compute_attendance_totals", store=True)
     total_tithed = fields.Integer(string="Diezmistas", compute="_compute_attendance_totals", store=True)
 
-    _sql_constraints = [
-        (
-            "iem_weekly_attendance_unique_celula_week",
-            "unique(celula_id, week_year, week_number)",
-            "Ya existe un registro de asistencia para esta célula y semana.",
-        ),
-    ]
+    _iem_weekly_attendance_unique_celula_week = models.Constraint(
+        "UNIQUE(celula_id, week_year, week_number)",
+        "Ya existe un registro de asistencia para esta célula y semana.",
+    )
 
     @api.depends("celula_id", "week_year", "week_number", "week_start", "week_end")
     def _compute_name(self):
@@ -70,11 +91,14 @@ class IemChurchWeeklyAttendance(models.Model):
         "line_ids.attended_culto",
         "line_ids.attended_discipulado",
         "line_ids.tithed",
+        "meeting_state",
     )
     def _compute_attendance_totals(self):
         for rec in self:
             rec.total_members = len(rec.line_ids)
-            rec.total_attended_celula = len(rec.line_ids.filtered("attended_celula"))
+            rec.total_attended_celula = (
+                len(rec.line_ids.filtered("attended_celula")) if rec.meeting_state != "cancelled" else 0
+            )
             rec.total_attended_culto = len(rec.line_ids.filtered("attended_culto"))
             rec.total_attended_discipulado = len(rec.line_ids.filtered("attended_discipulado"))
             rec.total_tithed = len(rec.line_ids.filtered("tithed"))
@@ -137,7 +161,7 @@ class IemChurchWeeklyAttendance(models.Model):
 
     def ensure_member_lines(self):
         member_model = self.env["church.member"].sudo()
-        for rec in self:
+        for rec in self.filtered(lambda week: week.meeting_state == "draft"):
             members = member_model.search(
                 [
                     ("celula_id", "=", rec.celula_id.id),
@@ -272,9 +296,12 @@ class IemChurchWeeklyAttendance(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        historical_import = self.env.su and self.env.context.get("iem_import_historical_attendance")
+        if historical_import:
+            return super().create(vals_list)
+        vals_list = [{"meeting_state": "draft", **vals} for vals in vals_list]
         records = super().create(vals_list)
-        if not (self.env.su and self.env.context.get('iem_import_historical_attendance')):
-            records.ensure_member_lines()
+        records.ensure_member_lines()
         return records
 
 
@@ -296,15 +323,13 @@ class IemChurchWeeklyAttendanceLine(models.Model):
     member_id = fields.Many2one("church.member", string="Miembro", required=True, ondelete="restrict")
     member_name = fields.Char(string="Nombre", related="member_id.name", store=True, readonly=True)
     celula_id = fields.Many2one("iem.church.celula", string="Célula", related="attendance_id.celula_id", store=True, readonly=True)
+    absence_known = fields.Boolean(string="Incluido en la lista confirmada", copy=False)
     attended_celula = fields.Boolean(string="Asistió a célula")
     attended_discipulado = fields.Boolean(string="Asistió a discipulado")
     attended_culto = fields.Boolean(string="Asistió al culto")
     tithed = fields.Boolean(string="Diezmó")
 
-    _sql_constraints = [
-        (
-            "iem_weekly_attendance_line_unique_member",
-            "unique(attendance_id, member_id)",
-            "El miembro ya está registrado en esta asistencia semanal.",
-        ),
-    ]
+    _iem_weekly_attendance_line_unique_member = models.Constraint(
+        "UNIQUE(attendance_id, member_id)",
+        "El miembro ya está registrado en esta asistencia semanal.",
+    )

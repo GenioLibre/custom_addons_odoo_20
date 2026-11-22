@@ -105,6 +105,17 @@
 
                                 <div id="iem_weekly_loaded" class="d-none">
                                     <div class="alert alert-info" id="iem_weekly_status"></div>
+                                    <div class="row align-items-end mb-3">
+                                        <div class="col-sm-5">
+                                            <label for="iem_weekly_guest_count" class="form-label">Invitados</label>
+                                            <input type="number" min="0" max="999999999" step="1" name="guest_count"
+                                                   id="iem_weekly_guest_count" class="form-control" placeholder="0 si no hubo invitados"/>
+                                        </div>
+                                        <div class="col-sm-7 form-check mt-3">
+                                            <input class="form-check-input" type="checkbox" name="meeting_cancelled" id="iem_weekly_cancelled"/>
+                                            <label class="form-check-label" for="iem_weekly_cancelled">Esta semana no hubo reunión</label>
+                                        </div>
+                                    </div>
                                     <div class="table-responsive">
                                         <table class="table table-sm table-striped align-middle">
                                             <thead>
@@ -158,6 +169,8 @@
                     const statusBox = document.getElementById("iem_weekly_status");
                     const discipuladoStatusBox = document.getElementById("iem_weekly_discipulado_status");
                     const linesBody = document.getElementById("iem_weekly_lines");
+                    const guestInput = document.getElementById("iem_weekly_guest_count");
+                    const cancelledInput = document.getElementById("iem_weekly_cancelled");
                     const submitBtn = document.getElementById("iem_weekly_submit");
                     const accessValidated = <t t-out="'true' if access_validated else 'false'"/>;
                     if (!accessStep || !formStep || !accessPasswordInput || !validateAccessBtn || !predioInput || !redInput || !discipuladoInput || !celulaInput || !weekInput || !loadBtn || !loadedBox || !linesBody) {
@@ -310,6 +323,8 @@
 
                     function renderLines(payload) {
                         linesBody.innerHTML = "";
+                        guestInput.value = payload.guest_count ?? "";
+                        cancelledInput.checked = Boolean(payload.meeting_cancelled);
                         reportInfo = {
                             leader: payload.leader || "",
                             discipulado: payload.discipulado || "",
@@ -333,6 +348,11 @@
                             row.dataset.memberName = line.member_name;
                             const nameCell = document.createElement("td");
                             nameCell.textContent = line.member_name;
+                            const listed = document.createElement("input");
+                            listed.type = "hidden";
+                            listed.name = "listed_member_" + line.member_id;
+                            listed.value = "1";
+                            nameCell.appendChild(listed);
                             row.appendChild(nameCell);
                             [
                                 ["attended_celula", line.attended_celula],
@@ -375,6 +395,7 @@
                             "👤 Líder: " + (reportInfo.leader || "_________"),
                             "📅 Fecha: " + (reportInfo.report_date || "____"),
                             "✝️ Discipulado:" + (reportInfo.discipulado || "_________"),
+                            "Invitados: " + (guestInput.value || "Sin dato"),
                             "",
                         ];
                         rows.forEach((row, index) => {
@@ -398,7 +419,7 @@
 
                     async function copyWhatsappText() {
                         const text = buildWhatsappText();
-                        if (!text || !linesBody.querySelector("tr[data-member-id]")) {
+                        if (!text || loadedBox.classList.contains("d-none")) {
                             showMessage("error", "Primero carga la asistencia.");
                             return false;
                         }
@@ -507,10 +528,14 @@
                             }
                             event.preventDefault();
                             event.stopPropagation();
+                            if (loadedBox.classList.contains("d-none")) {
+                                showMessage("error", "Primero carga la asistencia.");
+                                return;
+                            }
                             if (submitBtn) {
                                 submitBtn.disabled = true;
                             }
-                            const copied = await copyWhatsappText();
+                            const copied = cancelledInput.checked || await copyWhatsappText();
                             if (!copied) {
                                 if (submitBtn) {
                                     submitBtn.disabled = false;
