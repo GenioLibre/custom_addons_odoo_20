@@ -7,6 +7,7 @@ import requests
 from odoo import http, fields, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.http import request
+from odoo.tools.binary import BinaryBytes
 from odoo.tools.image import image_process
 
 
@@ -528,7 +529,7 @@ class IemChurchWebsite(http.Controller):
                     verify_resolution=True,
                     quality=75,
                 )
-                image_1920 = processed or False
+                image_1920 = BinaryBytes(processed) if processed else False
             except Exception:
                 return self._render_public_form(
                     form=form_values,
@@ -772,7 +773,7 @@ class IemChurchWebsite(http.Controller):
                     verify_resolution=True,
                     quality=75,
                 )
-                extra_vals["extra_image"] = processed or False
+                extra_vals["extra_image"] = BinaryBytes(processed) if processed else False
             except Exception:
                 return self._render_public_member_list_form(
                     form=form_values,
