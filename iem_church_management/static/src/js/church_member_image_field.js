@@ -5,17 +5,14 @@ import { ListRenderer } from "@web/views/list/list_renderer";
 import { FileUploader } from "@web/views/fields/file_handler";
 
 export class ChurchMemberFileUploader extends FileUploader {
-    static props = {
-        ...FileUploader.props,
-        capture: { type: String, optional: true },
-    };
     static template = "iem_church_management.FileUploaderCapture";
 }
 
 export class ChurchMemberImageField extends ImageField {
     static template = "iem_church_management.ChurchMemberImageField";
     static components = {
-        FileUploader: ChurchMemberFileUploader,
+        ...ImageField.components,
+        CameraUploader: ChurchMemberFileUploader,
     };
 
     async onFileUploaded(info) {
