@@ -12,7 +12,7 @@
                         <t t-if="success">
                             <div class="alert alert-success js-public-success-message" role="alert">
                                 <t t-if="success_celula">
-                                    La asistencia de la célula <t t-esc="success_celula"/> ha sido registrada exitosamente.
+                                    La asistencia de la célula <t t-out="success_celula"/> ha sido registrada exitosamente.
                                 </t>
                                 <t t-else="">
                                     La asistencia de la célula ha sido registrada exitosamente.
@@ -21,7 +21,7 @@
                         </t>
                         <t t-if="error">
                             <div class="alert alert-danger" role="alert">
-                                <t t-esc="error"/>
+                                <t t-out="error"/>
                             </div>
                         </t>
                         <t t-if="not celulas">
@@ -48,7 +48,7 @@
 
                             <div class="js-weekly-form-step d-none">
                                 <div class="alert alert-secondary mb-3" id="iem_weekly_current_week">
-                                    Estamos en la <t t-esc="current_week_label"/>.
+                                    Estamos en la <t t-out="current_week_label"/>.
                                 </div>
                                 <div class="row">
                                     <div class="col-12 col-md-6 mb-3">
