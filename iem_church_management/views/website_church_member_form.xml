@@ -54,9 +54,7 @@
                                     <select name="iem_identification_type_id" class="form-select" required="required">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="identification_types" t-as="ident_type">
-                                            <option t-att-value="ident_type.id" t-att-selected="form.get('iem_identification_type_id') == str(ident_type.id)">
-                                                <t t-esc="ident_type.name"/>
-                                            </option>
+                                            <option t-att-value="ident_type.id" t-att-selected="form.get('iem_identification_type_id') == str(ident_type.id)" t-att-label="ident_type.name" t-out="ident_type.name"></option>
                                         </t>
                                     </select>
                                 </div>
@@ -106,9 +104,7 @@
                                     <select name="marital_status" class="form-select">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="marital_status_options" t-as="marital_option">
-                                            <option t-att-value="marital_option[0]" t-att-selected="form.get('marital_status') == marital_option[0]">
-                                                <t t-esc="marital_option[1]"/>
-                                            </option>
+                                            <option t-att-value="marital_option[0]" t-att-selected="form.get('marital_status') == marital_option[0]" t-att-label="marital_option[1]" t-out="marital_option[1]"></option>
                                         </t>
                                     </select>
                                 </div>
@@ -130,9 +126,7 @@
                                     <select name="country_id" class="form-select">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="countries" t-as="country">
-                                            <option t-att-value="country.id" t-att-selected="form.get('country_id') == str(country.id) or (not form.get('country_id') and peru_country_id and country.id == peru_country_id)">
-                                                <t t-esc="country.name"/>
-                                            </option>
+                                            <option t-att-value="country.id" t-att-selected="form.get('country_id') == str(country.id) or (not form.get('country_id') and peru_country_id and country.id == peru_country_id)" t-att-label="country.name" t-out="country.name"></option>
                                         </t>
                                     </select>
                                 </div>
@@ -141,9 +135,7 @@
                                     <select name="state_id" class="form-select">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="states" t-as="state">
-                                            <option t-att-value="state.id" t-att-selected="form.get('state_id') == str(state.id)">
-                                                <t t-esc="state.name"/>
-                                            </option>
+                                            <option t-att-value="state.id" t-att-selected="form.get('state_id') == str(state.id)" t-att-label="state.name" t-out="state.name"></option>
                                         </t>
                                     </select>
                                 </div>
@@ -185,9 +177,7 @@
                                     <select name="predio_id" class="form-select" required="required">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="predios" t-as="predio">
-                                            <option t-att-value="predio.id" t-att-selected="form.get('predio_id') == str(predio.id)">
-                                                <t t-esc="predio.name"/>
-                                            </option>
+                                            <option t-att-value="predio.id" t-att-selected="form.get('predio_id') == str(predio.id)" t-att-label="predio.name" t-out="predio.name"></option>
                                         </t>
                                     </select>
                                 </div>
@@ -196,9 +186,7 @@
                                     <select name="red_id" class="form-select">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="redes" t-as="red">
-                                            <option t-att-value="red.id" t-att-data-predio-id="red.predio_id.id or ''" t-att-selected="form.get('red_id') == str(red.id)">
-                                                <t t-esc="red.name"/>
-                                            </option>
+                                            <option t-att-value="red.id" t-att-data-predio-id="red.predio_id.id or ''" t-att-selected="form.get('red_id') == str(red.id)" t-att-label="red.name" t-out="red.name"></option>
                                         </t>
                                     </select>
                                 </div>
@@ -207,9 +195,7 @@
                                     <select name="discipulado_id" class="form-select" required="required">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="discipulados" t-as="discipulado">
-                                            <option t-att-value="discipulado.id" t-att-data-red-id="discipulado.red_id.id or ''" t-att-selected="form.get('discipulado_id') == str(discipulado.id)">
-                                                <t t-esc="discipulado.name"/>
-                                            </option>
+                                            <option t-att-value="discipulado.id" t-att-data-red-id="discipulado.red_id.id or ''" t-att-selected="form.get('discipulado_id') == str(discipulado.id)" t-att-label="discipulado.name" t-out="discipulado.name"></option>
                                         </t>
                                     </select>
                                 </div>
@@ -218,9 +204,7 @@
                                     <select name="celula_id" class="form-select" required="required">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="celulas" t-as="celula">
-                                            <option t-att-value="celula.id" t-att-data-discipulado-id="celula.discipulado_id.id or ''" t-att-selected="form.get('celula_id') == str(celula.id)">
-                                                <t t-esc="celula.name"/>
-                                            </option>
+                                            <option t-att-value="celula.id" t-att-data-discipulado-id="celula.discipulado_id.id or ''" t-att-selected="form.get('celula_id') == str(celula.id)" t-att-label="celula.name" t-out="celula.name"></option>
                                         </t>
                                     </select>
                                 </div>
@@ -229,9 +213,7 @@
                                     <select name="current_position" class="form-select" required="required">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="current_position_options" t-as="position_option">
-                                            <option t-att-value="position_option[0]" t-att-selected="form.get('current_position') == position_option[0]">
-                                                <t t-esc="position_option[1]"/>
-                                            </option>
+                                            <option t-att-value="position_option[0]" t-att-selected="form.get('current_position') == position_option[0]" t-att-label="position_option[1]" t-out="position_option[1]"></option>
                                         </t>
                                     </select>
                                 </div>

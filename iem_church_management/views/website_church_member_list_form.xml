@@ -77,9 +77,7 @@
                                                 t-att-data-vacancies="list_data['vacancies']"
                                                 t-att-data-vacancies-remaining="list_data['vacancies_remaining']"
                                                 t-att-data-vacancies-exhausted="1 if list_data['vacancies_exhausted'] else 0"
-                                            >
-                                                <t t-esc="list_data['name']"/>
-                                            </option>
+                                             t-att-label="list_data['name']" t-out="list_data['name']"></option>
                                         </t>
                                     </select>
                                 </div>

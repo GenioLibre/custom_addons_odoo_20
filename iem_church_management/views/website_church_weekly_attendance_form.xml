@@ -67,9 +67,7 @@
                                         <select name="predio_id" id="iem_weekly_predio_id" class="form-select" required="required">
                                             <option value="">Selecciona</option>
                                             <t t-foreach="predios" t-as="predio">
-                                                <option t-att-value="predio.id">
-                                                    <t t-esc="predio.display_name"/>
-                                                </option>
+                                                <option t-att-value="predio.id" t-att-label="predio.display_name" t-out="predio.display_name"></option>
                                             </t>
                                         </select>
                                     </div>
@@ -78,9 +76,7 @@
                                         <select name="red_id" id="iem_weekly_red_id" class="form-select" required="required">
                                             <option value="">Selecciona</option>
                                             <t t-foreach="redes" t-as="red">
-                                                <option t-att-value="red.id" t-att-data-predio-id="red.predio_id.id">
-                                                    <t t-esc="red.display_name"/>
-                                                </option>
+                                                <option t-att-value="red.id" t-att-data-predio-id="red.predio_id.id" t-att-label="red.display_name" t-out="red.display_name"></option>
                                             </t>
                                         </select>
                                     </div>
@@ -89,9 +85,7 @@
                                         <select name="discipulado_id" id="iem_weekly_discipulado_id" class="form-select" required="required">
                                             <option value="">Selecciona</option>
                                             <t t-foreach="discipulados" t-as="discipulado">
-                                                <option t-att-value="discipulado.id" t-att-data-red-id="discipulado.red_id.id">
-                                                    <t t-esc="discipulado.display_name"/>
-                                                </option>
+                                                <option t-att-value="discipulado.id" t-att-data-red-id="discipulado.red_id.id" t-att-label="discipulado.display_name" t-out="discipulado.display_name"></option>
                                             </t>
                                         </select>
                                     </div>
@@ -100,9 +94,7 @@
                                         <select name="celula_id" id="iem_weekly_celula_id" class="form-select" required="required">
                                             <option value="">Selecciona</option>
                                             <t t-foreach="celulas" t-as="celula">
-                                                <option t-att-value="celula.id" t-att-data-discipulado-id="celula.discipulado_id.id" t-att-selected="form.get('celula_id') == str(celula.id)">
-                                                    <t t-esc="celula.display_name"/>
-                                                </option>
+                                                <option t-att-value="celula.id" t-att-data-discipulado-id="celula.discipulado_id.id" t-att-selected="form.get('celula_id') == str(celula.id)" t-att-label="celula.display_name" t-out="celula.display_name"></option>
                                             </t>
                                         </select>
                                     </div>
