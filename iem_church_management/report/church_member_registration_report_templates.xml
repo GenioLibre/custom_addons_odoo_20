@@ -242,7 +242,7 @@
                                 <div class="logo-box">
                                     <img
                                         t-if="church_logo_attachment and church_logo_attachment.raw"
-                                        t-att-src="image_data_uri(church_logo_attachment.raw.content)"
+                                        t-att-src="image_data_uri(church_logo_attachment.raw)"
                                         class="logo-img"
                                         alt="Logo"
                                     />
