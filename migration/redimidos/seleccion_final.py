@@ -161,7 +161,7 @@ for row in src["pages"]:
     translated(v,"arch_db",row["arch"],rewrite)
     translated(v,"name",row["name"])
     translated(p,"url",row["url"])
-    v.write({"active":row["active"],"visibility":row["visibility"] or False,"visibility_password":row["password"] or False,"group_ids":[(6,0,[groups[g] for g in row["groups"]])]})
+    v.write({"active":row["active"],"visibility":row["visibility"] or "public","visibility_password":row["password"] or False,"group_ids":[(6,0,[groups[g] for g in row["groups"]])]})
     p.write({"website_indexed":row["indexed"],"is_published":row["published"]})
     etree.fromstring(v.arch_db.encode())
 translated(site,"name",site_src["name"])
