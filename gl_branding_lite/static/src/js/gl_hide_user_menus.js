@@ -12,7 +12,7 @@ patch(UserMenu.prototype, {
 
         // Claves vigentes en Odoo 20.
         // Conservamos Preferencias y Cerrar sesión.
-        for (const key of ["support", "shortcuts", "separator", "install_pwa"]) {
+        for (const key of ["support", "shortcuts", "separator", "install_pwa", "mysubscription_user_menu"]) {
             if (userMenuRegistry.contains(key)) {
                 userMenuRegistry.remove(key);
             }
