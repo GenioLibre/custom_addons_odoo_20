@@ -40,7 +40,6 @@ if env.cr.dbname != "redimidos20_ensayo":
 env.cr.execute("SELECT pg_advisory_xact_lock(hashtext('redimidos18_adjuntos'))")
 stage = Path(os.environ["IEM_STAGE"])
 rows = json.loads((stage/"index.json").read_text())
-import base64
 fields = {f"image_{size}" for size in (1920,1024,512,256,128)}
 pairs = {(r["res_id"],r["res_field"]) for r in rows}
 owners = {r["res_id"] for r in rows}
@@ -77,7 +76,7 @@ env.flush_all()
 for partner,field,digest in checks:
     partner.invalidate_recordset([field])
     data = partner.with_context(bin_size=False)[field]
-    if not data or hashlib.sha1(base64.b64decode(data)).hexdigest()!=digest:
+    if not data or hashlib.sha1(data.content).hexdigest()!=digest:
         raise ValueError(f"El contacto destino {partner.id} no devuelve la imagen histórica en {field}")
 env.cr.commit()
 print("Fotos verificadas: 38 contactos, 190 imágenes en cinco tamaños.")
