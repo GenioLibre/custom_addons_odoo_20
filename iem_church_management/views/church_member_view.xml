@@ -82,7 +82,7 @@
                             <field name="member_code" />
                         </group>
                         <group string="Contacto">
-                            <field name="mobile" />
+                            <field name="iem_mobile" />
                             <field name="email" />
                             <field name="street" string="Direccion" />
                             <field name="ref" />

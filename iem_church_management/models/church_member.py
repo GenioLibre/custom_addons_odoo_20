@@ -831,7 +831,7 @@ class ChurchMember(models.Model):
                 member.vat or "",
                 member.birth_date or "",
                 age,
-                member.mobile or member.phone or "",
+                member.iem_mobile or member.phone or "",
                 current_position_labels.get(member.current_position, ""),
                 gender_labels.get(member.gender, ""),
                 member.predio_id.display_name or "",

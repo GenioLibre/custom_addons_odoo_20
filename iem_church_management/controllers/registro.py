@@ -553,7 +553,7 @@ class IemChurchWebsite(http.Controller):
             "iem_identification_type_id": identification_type_id,
             "vat": vat,
             "email": (kwargs.get("email") or "").strip().lower() or False,
-            "mobile": (kwargs.get("mobile") or "").strip() or False,
+            "iem_mobile": (kwargs.get("mobile") or "").strip() or False,
             "gender": (kwargs.get("gender") or "").strip() or False,
             "birth_date": (kwargs.get("birth_date") or "").strip() or False,
             "street": (kwargs.get("street") or "").strip() or False,

@@ -299,7 +299,7 @@
                             <tr>
                                 <td><span class="label">D.N.I:</span> <span t-esc="dni_number"/></td>
                                 <td><span class="label">Pasaporte:</span> <span t-esc="passport_number"/></td>
-                                <td><span class="label">Celular:</span> <span t-esc="o.mobile or ''"/></td>
+                                <td><span class="label">Celular:</span> <span t-esc="o.iem_mobile or ''"/></td>
                             </tr>
                             <tr>
                                 <td><span class="label">Fijo:</span> <span t-esc="o.phone or ''"/></td>

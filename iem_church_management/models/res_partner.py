@@ -15,6 +15,8 @@ class IemIdentificationType(models.Model):
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    iem_mobile = fields.Char(string="Celular")
+
     iem_identification_type_id = fields.Many2one(
         "iem.identification.type", string="Tipo de documento", ondelete="restrict",
     )
