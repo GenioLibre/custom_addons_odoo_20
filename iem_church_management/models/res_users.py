@@ -8,20 +8,20 @@ class ResUsers(models.Model):
         """Send security update emails with a custom layout without Odoo branding footer."""
         mail_create_values = []
         for user in self:
-            body_html = self.env["ir.qweb"]._render(
-                "mail.account_security_setting_update",
-                user._notify_security_setting_update_prepare_values(content, **kwargs),
-                minimal_qcontext=True,
-            )
-
-            body_html = self.env["mail.render.mixin"]._render_encapsulate(
-                "iem_church_management.mail_notification_light_no_brand",
+            renderer = self.env["mail.render.mixin"].with_context(lang=user.lang or self.env.lang or "en_US")
+            body_html = renderer._render_template(
+                "mail.account_security_alert",
+                model="res.users",
+                res_ids=user.ids,
+                engine="qweb_view",
+                options={"post_process": True},
+                add_context=user._notify_security_setting_update_prepare_values(content, **kwargs),
+            )[user.id]
+            body_html = renderer._render_encapsulate(
+                "mail.mail_notification_light",
                 body_html,
-                add_context={
-                    "message": self.env["mail.message"].sudo().new(dict(body=body_html, record_name=user.name)),
-                    "model_description": _("Account"),
-                    "company": user.company_id,
-                },
+                add_context={"model_description": _("Account")},
+                context_record=user,
             )
 
             vals = {
@@ -42,4 +42,4 @@ class ResUsers(models.Model):
 
             mail_create_values.append(vals)
 
-        self.env["mail.mail"].sudo().create(mail_create_values)
+        return self.env["mail.mail"].sudo().create(mail_create_values)
