@@ -121,7 +121,7 @@ class IemChurchWebsite(http.Controller):
         return request.env["res.partner"].sudo().search(
             [
                 ("iem_identification_type_id", "=", identification_type_id),
-                ("vat", "=", vat),
+                ("iem_document_number", "=", vat),
             ],
             limit=1,
         )
@@ -190,7 +190,7 @@ class IemChurchWebsite(http.Controller):
                 ("first_name", "ilike", cleaned_query),
                 ("last_name", "ilike", cleaned_query),
                 ("name", "ilike", cleaned_query),
-                ("vat", "ilike", cleaned_query),
+                ("iem_document_number", "ilike", cleaned_query),
             ])
         members = member_model.search(domain, limit=limit, order="last_name asc, first_name asc, id asc")
         existing_member_ids = set(member_list.member_line_ids.mapped("member_id").ids)
@@ -551,7 +551,7 @@ class IemChurchWebsite(http.Controller):
             "first_name": first_name,
             "last_name": last_name,
             "iem_identification_type_id": identification_type_id,
-            "vat": vat,
+            "iem_document_number": vat,
             "email": (kwargs.get("email") or "").strip().lower() or False,
             "iem_mobile": (kwargs.get("mobile") or "").strip() or False,
             "gender": (kwargs.get("gender") or "").strip() or False,

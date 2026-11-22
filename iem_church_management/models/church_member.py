@@ -316,12 +316,12 @@ class ChurchMember(models.Model):
             identification_type = self.env["iem.identification.type"].browse(
                 identification_type_id
             )
-            vat = (vals.get("vat") or "").strip()
+            vat = (vals.get("iem_document_number") or "").strip()
             if identification_type and vat:
                 existing_partner = self.env["res.partner"].search(
                     [
                         ("iem_identification_type_id", "=", identification_type_id),
-                        ("vat", "=", vat),
+                        ("iem_document_number", "=", vat),
                     ],
                     limit=1,
                 )
@@ -361,18 +361,18 @@ class ChurchMember(models.Model):
                     "discipulado_id": vals.get("discipulado_id", member.discipulado_id.id),
                 }
                 member._check_scope_for_user(merged)
-        if "vat" in vals or "iem_identification_type_id" in vals:
+        if "iem_document_number" in vals or "iem_identification_type_id" in vals:
             for member in self:
                 identification_type_id = vals.get(
                     "iem_identification_type_id",
                     member.iem_identification_type_id.id,
                 )
-                vat = (vals.get("vat") or member.vat or "").strip()
+                vat = (vals.get("iem_document_number") or member.iem_document_number or "").strip()
                 if identification_type_id and vat:
                     existing_partner = self.env["res.partner"].search(
                         [
                             ("iem_identification_type_id", "=", identification_type_id),
-                            ("vat", "=", vat),
+                            ("iem_document_number", "=", vat),
                             ("id", "!=", member.partner_id.id),
                         ],
                         limit=1,
@@ -462,10 +462,10 @@ class ChurchMember(models.Model):
         name = (identification_type.name or "").strip().upper()
         return code == "DNI" or l10n_pe_vat_code == "1" or "DNI" in name
 
-    @api.onchange("vat")
+    @api.onchange("iem_document_number")
     def _onchange_vat_fetch_dni(self):
         for member in self:
-            dni = (member.vat or "").strip()
+            dni = (member.iem_document_number or "").strip()
             if not member.iem_identification_type_id or not dni:
                 continue
 
@@ -476,7 +476,7 @@ class ChurchMember(models.Model):
                         "=",
                         member.iem_identification_type_id.id,
                     ),
-                    ("vat", "=", dni),
+                    ("iem_document_number", "=", dni),
                     ("id", "!=", member.partner_id.id),
                 ],
                 limit=1,
@@ -556,7 +556,7 @@ class ChurchMember(models.Model):
 
     def action_fetch_dni(self):
         self.ensure_one()
-        dni = (self.vat or "").strip()
+        dni = (self.iem_document_number or "").strip()
         if not self._is_dni_type(self.iem_identification_type_id):
             return self._notify(_("DNI"), _("Seleccione tipo de documento DNI."), "warning")
         if not dni.isdigit() or len(dni) != 8:
@@ -569,7 +569,7 @@ class ChurchMember(models.Model):
                     "=",
                     self.iem_identification_type_id.id,
                 ),
-                ("vat", "=", dni),
+                ("iem_document_number", "=", dni),
                 ("id", "!=", self.partner_id.id),
             ],
             limit=1,
@@ -828,7 +828,7 @@ class ChurchMember(models.Model):
                 member.first_name or "",
                 member.last_name or "",
                 member.iem_identification_type_id.display_name or "",
-                member.vat or "",
+                member.iem_document_number or "",
                 member.birth_date or "",
                 age,
                 member.iem_mobile or member.phone or "",

@@ -15,13 +15,14 @@ class IemIdentificationType(models.Model):
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
+    iem_document_number = fields.Char(string="Número de documento", index=True, copy=False)
     iem_mobile = fields.Char(string="Celular")
 
     iem_identification_type_id = fields.Many2one(
         "iem.identification.type", string="Tipo de documento", ondelete="restrict",
     )
     _unique_document_type_vat = models.Constraint(
-        "UNIQUE(iem_identification_type_id, vat)",
+        "UNIQUE(iem_identification_type_id, iem_document_number)",
         "El documento ya está registrado en otro contacto.",
     )
 

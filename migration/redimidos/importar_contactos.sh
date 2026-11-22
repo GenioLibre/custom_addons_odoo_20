@@ -77,8 +77,15 @@ for row in rows:
         candidates.add(companies.partner_id.id)
     if len(candidates)>1 or candidates.intersection(mapping.values()):
         raise ValueError(f"Conflicto de identidad para contacto origen {sid}")
-    vals = {k: row[k] or False for k in ("name","email","phone","street","street2","city","zip","is_company","type","function","website","comment","vat","gender","district","membership_date")}
+    vals = {k: row[k] or False for k in ("name","email","phone","street","street2","city","zip","is_company","type","function","website","comment","gender","district","membership_date")}
     vals.update(active=row["active"], iem_mobile=row["mobile"] or False, iem_identification_type_id=document(row))
+    number = row["vat"] or False
+    vals["iem_document_number"] = number
+    if number:
+        doc = env["iem.identification.type"].browse(vals["iem_identification_type_id"])
+        is_ruc = bool(doc and (doc.l10n_pe_vat_code == "6" or doc.name.strip().upper() == "RUC"))
+        if is_ruc or (not doc and row["country_code"] == "PE" and number.isascii() and number.isdigit() and len(number) == 11):
+            vals["vat"] = number
     vals["country_id"] = unique("res.country",[("code","=",row["country_code"])]) if row["country_code"] else False
     vals["state_id"] = unique("res.country.state",[("country_id.code","=",row["state_country"]),("code","=",row["state_code"])]) if row["state_code"] else False
     for level in ("predio","red","discipulado","celula"):
@@ -103,7 +110,7 @@ for row in rows:
 env.flush_all()
 for row in rows:
     rec = partners.browse(mapping[row["id"]])
-    if rec.parent_id.id != mapping.get(row["parent_id"], False) or rec.iem_mobile != (row["mobile"] or False):
+    if rec.iem_document_number != (row["vat"] or False) or rec.parent_id.id != mapping.get(row["parent_id"], False) or rec.iem_mobile != (row["mobile"] or False):
         raise ValueError(f"Validación fallida: contacto origen {row['id']}")
 if len(mapping) != 205 or len(set(mapping.values())) != 205:
     raise ValueError("No se pudieron conciliar los 205 contactos del ensayo")

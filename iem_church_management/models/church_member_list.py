@@ -637,7 +637,7 @@ class IemChurchMemberListLine(models.Model):
     currency_id = fields.Many2one(related="list_id.currency_id", store=True, readonly=True)
 
     member_name = fields.Char(related="member_id.name", store=True, readonly=True)
-    member_document = fields.Char(related="member_id.vat", store=True, readonly=True)
+    member_document = fields.Char(related="member_id.iem_document_number", store=True, readonly=True)
     member_code = fields.Char(related="member_id.member_code", store=True, readonly=True)
     predio_id = fields.Many2one(related="member_id.predio_id", store=True, readonly=True)
     red_id = fields.Many2one(related="member_id.red_id", store=True, readonly=True)
