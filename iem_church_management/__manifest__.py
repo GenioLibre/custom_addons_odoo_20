@@ -1,11 +1,11 @@
 {
     "name": "IEM Church Management",
-    "version": "20.0.1.1.0",
+    "version": "20.0.1.1.1",
     "category": "Industries",
     "summary": "Church membership and organizational structure management",
     "author": "IEM",
     "license": "LGPL-3",
-    "depends": ["base", "contacts", "privacy_lookup", "base_import", "website", "auth_signup"],
+    "depends": ["base", "web", "contacts", "privacy_lookup", "base_import", "website", "auth_signup"],
     "data": [
         "security/iem_church_management_groups.xml",
         "security/iem_church_management_rules.xml",
@@ -42,10 +42,12 @@
     "assets": {
         "web.assets_backend": [
             "iem_church_management/static/src/js/church_member_image_field.js",
-            "iem_church_management/static/src/js/church_weekly_attendance_pivot.js",
             "iem_church_management/static/src/xml/church_member_image_field.xml",
-            "iem_church_management/static/src/xml/church_weekly_attendance_pivot.xml",
             "iem_church_management/static/src/scss/church_member.scss",
+        ],
+        "web.assets_backend_lazy": [
+            "iem_church_management/static/src/js/church_weekly_attendance_pivot.js",
+            "iem_church_management/static/src/xml/church_weekly_attendance_pivot.xml",
         ],
     },
     "installable": True,

@@ -20,7 +20,7 @@
         <field name="name">iem.church.weekly.attendance.pivot</field>
         <field name="model">iem.church.weekly.attendance</field>
         <field name="arch" type="xml">
-            <pivot string="Tabla dinámica de asistencia" sample="1">
+            <pivot string="Tabla dinámica de asistencia" sample="1" js_class="iem_weekly_attendance_pivot">
                 <field name="predio_id" type="row" />
                 <field name="red_id" type="row" />
                 <field name="discipulado_id" type="row" />

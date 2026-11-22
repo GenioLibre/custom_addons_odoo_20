@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-inherit="web.PivotView.Buttons" t-inherit-mode="extension">
+    <t t-name="iem_church_management.WeeklyAttendancePivot.Buttons"
+       t-inherit="web.PivotView.Buttons"
+       t-inherit-mode="primary">
         <xpath expr="//div[contains(@class, 'o_pivot_buttons')]" position="inside">
             <button
                 class="btn btn-primary o_iem_weekly_attendance_export"
-                t-on-click="onWeeklyAttendanceExportClicked"
+                t-on-click="this.onWeeklyAttendanceExportClicked"
                 title="Exportar reporte de células"
+                t-att-disabled="!this.model.hasData()"
             >
                 <i class="fa fa-file-excel-o me-1"/> Exportar reporte
             </button>

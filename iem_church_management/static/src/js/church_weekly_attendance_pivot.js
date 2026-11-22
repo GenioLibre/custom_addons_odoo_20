@@ -1,8 +1,9 @@
 import { download } from "@web/core/network/download";
-import { patch } from "@web/core/utils/patch";
+import { registry } from "@web/core/registry";
 import { PivotRenderer } from "@web/views/pivot/pivot_renderer";
+import { pivotView } from "@web/views/pivot/pivot_view";
 
-patch(PivotRenderer.prototype, {
+class WeeklyAttendancePivotRenderer extends PivotRenderer {
     async onWeeklyAttendanceExportClicked() {
         await download({
             url: "/iem_church_management/weekly_attendance/export_xlsx",
@@ -11,5 +12,11 @@ patch(PivotRenderer.prototype, {
                 context: JSON.stringify(this.model.searchParams.context || {}),
             },
         });
-    },
+    }
+}
+
+registry.category("views").add("iem_weekly_attendance_pivot", {
+    ...pivotView,
+    Renderer: WeeklyAttendancePivotRenderer,
+    buttonTemplate: "iem_church_management.WeeklyAttendancePivot.Buttons",
 });
