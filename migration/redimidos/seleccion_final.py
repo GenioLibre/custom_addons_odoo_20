@@ -37,6 +37,14 @@ def label(value):
     values = translations(value)
     return values.get("en_US") or next(iter(values.values()))
 
+omit_user_groups = set("""
+product.group_product_manager sales_team.group_sale_salesman sales_team.group_sale_salesman_all_leads
+sales_team.group_sale_manager account.group_account_invoice account.group_account_manager
+account.group_validate_bank_account spreadsheet_dashboard.group_dashboard_manager survey.group_survey_user
+survey.group_survey_manager mass_mailing.group_mass_mailing_user project_todo.group_onboarding_todo
+""".split())
+web_group_ids = {gid for row in (src["menus"] or []) + src["pages"] for gid in row["groups"]}
+omitted_ids = set()
 groups = {}
 missing = []
 group_ids = set()
@@ -45,6 +53,10 @@ for row in src["users"] + (src["menus"] or []) + src["pages"]:
 for gid in sorted(group_ids):
     ids = src["groups"][str(gid)]
     matches = {r.id for xid in ids if (r:=env.ref(xid,raise_if_not_found=False)) and r._name=="res.groups"}
+    if set(ids).intersection(omit_user_groups):
+        omitted_ids.add(gid)
+        if gid not in web_group_ids:
+            continue
     if len(matches)!=1:
         missing.append("/".join(ids) or f"grupo de origen {gid}")
     else:
@@ -190,7 +202,7 @@ for r in src["users"]:
         raise ValueError(f"Requiere migración de segundo factor: usuario origen {r['id']}")
     if u.id==env.ref("base.user_root").id:
         continue
-    chosen={groups[g] for g in r["groups"]}
+    chosen={groups[g] for g in r["groups"] if g not in omitted_ids}
     u.with_context(**ctx).write({"group_ids":[(6,0,sorted(chosen))],"active":r["active"]})
     if set(u.group_ids.ids)!=chosen or u.active!=r["active"] or u.share!=r["share"]:
         raise ValueError(f"Discrepancia de permisos en usuario origen {r['id']}")
