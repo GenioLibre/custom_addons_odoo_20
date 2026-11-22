@@ -68,15 +68,32 @@ site_src, = src["sites"]
 files = {r["id"]:r for r in src["files"]}
 views = {}
 pages = {}
-for row in src["pages"]:
-    urls = translations(row["url"])
-    page = ref(f"page_{row['id']}") or model("website.page").search([("website_id","=",site.id),("url","=",label(urls))],limit=2)
+claimed = set()
+for row in sorted(src["pages"], key=lambda r:r["id"]):
+    page_model = model("website.page")
+    scope = site.id if row["site"] == site_src["id"] else False
+    if row["site"] and not scope:
+        raise ValueError(f"Sitio desconocido para página origen {row['id']}")
+    scope_domain = [("website_id","=",scope)]
+    page = ref(f"page_{row['id']}") or page_model.browse()
     if not page:
-        view = model("ir.ui.view").create({"name":label(row["name"]),"key":row["key"],"type":"qweb","website_id":site.id,"arch_db":"<t/>"})
-        page = model("website.page").create({"view_id":view.id,"url":label(urls),"is_published":False})
-    single(page,"página")
-    if page.id in [p.id for p in pages.values()]:
-        raise ValueError("Dos páginas apuntan al mismo destino")
+        for xid in row["xmlids"]:
+            candidate = env.ref(xid,raise_if_not_found=False)
+            if candidate and candidate._name == "website.page" and candidate.website_id.id == scope:
+                page |= candidate
+    if not page and row["key"]:
+        page = page_model.search(scope_domain + [("view_id.key","=",row["key"])])
+        page = page.filtered(lambda rec: rec.id not in claimed)
+    url = label(row["url"])
+    if not page and sum(r["site"] == row["site"] and label(r["url"]) == url for r in src["pages"]) == 1:
+        page = page_model.search(scope_domain + [("url","=",url),("id","not in",list(claimed))])
+    if not page:
+        view = model("ir.ui.view").create({"name":label(row["name"]),"key":row["key"],"type":"qweb","website_id":scope,"arch_db":"<t/>","active":row["active"]})
+        page = page_model.create({"view_id":view.id,"website_id":scope,"url":url,"is_published":False})
+    single(page,f"página origen {row['id']}")
+    if page.id in claimed or page.website_id.id != scope or page.view_id.id in [v.id for v in views.values()]:
+        raise ValueError(f"Identidad incompatible: página origen {row['id']}, destino {page.id}")
+    claimed.add(page.id)
     pages[row["id"]] = page
     views[row["view"]] = page.view_id
     mark(f"page_{row['id']}",page)
@@ -144,7 +161,7 @@ for row in src["pages"]:
     translated(v,"arch_db",row["arch"],rewrite)
     translated(v,"name",row["name"])
     translated(p,"url",row["url"])
-    v.write({"visibility":row["visibility"] or False,"visibility_password":row["password"] or False,"group_ids":[(6,0,[groups[g] for g in row["groups"]])]})
+    v.write({"active":row["active"],"visibility":row["visibility"] or False,"visibility_password":row["password"] or False,"group_ids":[(6,0,[groups[g] for g in row["groups"]])]})
     p.write({"website_indexed":row["indexed"],"is_published":row["published"]})
     etree.fromstring(v.arch_db.encode())
 translated(site,"name",site_src["name"])
