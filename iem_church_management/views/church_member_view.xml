@@ -67,15 +67,15 @@
                             />
                             <field name="iem_identification_type_id" autofocus="1" />
                             <label for="iem_document_number" string="Numero de Documento" />
-                            <div class="o_row">
-                                <field name="iem_document_number" />
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <field name="iem_document_number" class="oe_inline" />
+                                <button
+                                    name="action_fetch_dni"
+                                    type="object"
+                                    string="Buscar DNI"
+                                    class="btn-secondary"
+                                />
                             </div>
-                            <button
-                                name="action_fetch_dni"
-                                type="object"
-                                string="Buscar DNI"
-                                class="btn-secondary"
-                            />
                             <field name="first_name" required="1" />
                             <field name="last_name" required="1" />
                             <field name="gender" />
