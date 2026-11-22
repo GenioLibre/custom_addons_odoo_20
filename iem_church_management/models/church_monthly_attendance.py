@@ -1,6 +1,6 @@
 import logging
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 from dateutil.relativedelta import relativedelta
@@ -9,6 +9,7 @@ from markupsafe import Markup
 from odoo import _, api, fields, models
 
 _logger = logging.getLogger(__name__)
+_REPORT_TIMEZONE = ZoneInfo("America/Lima")
 
 
 class ChurchMonthlyAttendance(models.Model):
@@ -16,24 +17,23 @@ class ChurchMonthlyAttendance(models.Model):
 
     @api.model
     def _report_today(self):
-        return datetime.now(ZoneInfo("America/Lima")).date()
+        return datetime.now(_REPORT_TIMEZONE).date()
 
     @api.model
     def _monthly_rows(self, cells, month, today):
         month = month.replace(day=1)
         next_month = month + relativedelta(months=1)
-        first_month_week = month + timedelta(days=(-month.weekday()) % 7)
-        rolling_start = min(today, next_month) - timedelta(days=30)
-        cutoff = min(today, next_month + timedelta(days=6))
+        cutoff = min(today, next_month)
+        rolling_start = cutoff - timedelta(days=30)
         first_relevant = min(month, rolling_start)
 
         weeks_by_cell = defaultdict(dict)
         weeks = self.search([
-            ("celula_id", "in", cells.ids), ("week_start", ">=", first_relevant),
-            ("week_start", "<", next_month), ("week_end", "<", cutoff),
+            ("celula_id", "in", cells.ids), ("week_end", ">=", first_relevant),
+            ("week_end", "<", cutoff),
         ])
         for week in weeks:
-            weeks_by_cell[week.celula_id.id][week.week_start] = week
+            weeks_by_cell[week.celula_id.id][week.week_end] = week
 
         contact_counts = defaultdict(int)
         consolidation_counts = defaultdict(int)
@@ -53,9 +53,8 @@ class ChurchMonthlyAttendance(models.Model):
             cell_weeks = weeks_by_cell[cell.id]
             started = cell.create_date.date() if cell.create_date else month
             if cell_weeks:
-                started = min(started, min(cell_weeks))
-            first_expected = started - timedelta(days=started.weekday())
-            month_weeks = [week for start, week in cell_weeks.items() if start >= first_month_week]
+                started = min(started, min(week.week_start for week in cell_weeks.values()))
+            month_weeks = [week for end, week in cell_weeks.items() if end >= month]
             held = [week for week in month_weeks if week.meeting_state == "held"]
             historical = [week for week in month_weeks if week.meeting_state == "legacy"]
             counted = held + [week for week in historical if week.total_attended_celula]
@@ -64,17 +63,15 @@ class ChurchMonthlyAttendance(models.Model):
             guests = sum(week.guest_count for week in counted if week.guest_count_known)
             guest_weeks = sum(week.guest_count_known for week in counted)
             pending = sum(
-                week_start not in cell_weeks or cell_weeks[week_start].meeting_state == "draft"
-                for week_start in self._closed_weeks(max(first_expected, first_month_week), next_month, today)
+                week_end not in cell_weeks or cell_weeks[week_end].meeting_state == "draft"
+                for week_end in self._closed_week_ends(max(started, month), cutoff)
             )
             rolling = [
-                cell_weeks.get(week_start)
-                for week_start in self._closed_weeks(
-                    max(first_expected, rolling_start), next_month, today,
-                )
+                cell_weeks.get(week_end)
+                for week_end in self._closed_week_ends(max(started, rolling_start), cutoff)
             ]
             no_guests = (
-                first_expected <= rolling_start
+                started <= rolling_start
                 and any(week and week.meeting_state == "held" for week in rolling)
                 and all(week and (
                     week.meeting_state == "cancelled"
@@ -102,11 +99,11 @@ class ChurchMonthlyAttendance(models.Model):
         return rows
 
     @api.model
-    def _closed_weeks(self, start, stop, today):
-        start += timedelta(days=(-start.weekday()) % 7)
-        while start < stop and start + timedelta(days=6) < today:
-            yield start
-            start += timedelta(days=7)
+    def _closed_week_ends(self, start, cutoff):
+        week_end = start + timedelta(days=(6 - start.weekday()) % 7)
+        while week_end < cutoff:
+            yield week_end
+            week_end += timedelta(days=7)
 
     @api.model
     def _monthly_report_html(self, rows):
@@ -129,15 +126,24 @@ class ChurchMonthlyAttendance(models.Model):
         return (
             Markup('<table class="table table-sm" border="1" cellpadding="5"><thead><tr>%s</tr></thead><tbody>%s</tbody></table><p>%s</p>')
             % (headings, Markup("").join(table_rows), _(
-                "Las semanas se atribuyen al mes de su lunes. El promedio histórico incluye las semanas con asistencia marcada. "
+                "Las semanas se atribuyen al mes en el que terminan. El promedio histórico incluye las semanas con asistencia marcada. "
                 "Los seguimientos reflejan los casos abiertos al consultar el reporte."
             ))
         )
 
     @api.model
+    def _schedule_monthly_attendance_cron(self):
+        now = datetime.now(_REPORT_TIMEZONE)
+        next_call = now.replace(hour=8, minute=0, second=0, microsecond=0)
+        if next_call < now:
+            next_call = now if now.day == 1 else next_call + timedelta(days=1)
+        cron = self.env.ref("iem_church_management.cron_church_email_monthly_attendance")
+        cron.nextcall = next_call.astimezone(timezone.utc).replace(tzinfo=None)
+
+    @api.model
     def _cron_email_monthly_attendance(self):
         today = self._report_today()
-        if today.day < 8:
+        if today.day != 1:
             return
         month = today.replace(day=1) - relativedelta(months=1)
         cells = self.env["iem.church.celula"].search([

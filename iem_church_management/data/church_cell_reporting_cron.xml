@@ -21,4 +21,5 @@
         <field name="interval_type">days</field>
         <field name="active" eval="False"/>
     </record>
+    <function model="iem.church.weekly.attendance" name="_schedule_monthly_attendance_cron"/>
 </odoo>
