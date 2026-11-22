@@ -1,0 +1,361 @@
+<odoo>
+    <!-- res.partner rules -->
+    <record id="rule_iem_partner_admin" model="ir.rule">
+        <field name="name">IEM Partner Admin</field>
+        <field name="model_id" ref="base.model_res_partner" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <!-- ir.module.module rules -->
+    <record id="rule_iem_module_admin" model="ir.rule">
+        <field name="name">IEM Module Admin</field>
+        <field name="model_id" ref="base.model_ir_module_module" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_iem_module_system" model="ir.rule">
+        <field name="name">IEM Module System</field>
+        <field name="model_id" ref="base.model_ir_module_module" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_iem_module_internal_block" model="ir.rule">
+        <field name="name">IEM Module Internal Block</field>
+        <field name="model_id" ref="base.model_ir_module_module" />
+        <field name="domain_force">[(0, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]" />
+    </record>
+    <!-- Predio rules -->
+    <record id="rule_iem_predio_admin" model="ir.rule">
+        <field name="name">IEM Predio Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_predio" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_iem_predio_system" model="ir.rule">
+        <field name="name">IEM Predio System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_predio" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+
+    <!-- Red rules -->
+    <record id="rule_iem_red_admin" model="ir.rule">
+        <field name="name">IEM Red Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_red" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_iem_red_system" model="ir.rule">
+        <field name="name">IEM Red System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_red" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+
+    <!-- Discipulado rules -->
+    <record id="rule_iem_discipulado_admin" model="ir.rule">
+        <field name="name">IEM Discipulado Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_iem_discipulado_system" model="ir.rule">
+        <field name="name">IEM Discipulado System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+
+    <!-- Celula rules -->
+    <record id="rule_iem_celula_admin" model="ir.rule">
+        <field name="name">IEM Celula Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_celula" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_iem_celula_system" model="ir.rule">
+        <field name="name">IEM Celula System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_celula" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <!-- Church Member rules -->
+    <record id="rule_church_member_admin" model="ir.rule">
+        <field name="name">Church Member Admin</field>
+        <field name="model_id" ref="iem_church_management.model_church_member" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_church_member_system" model="ir.rule">
+        <field name="name">Church Member System</field>
+        <field name="model_id" ref="iem_church_management.model_church_member" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_church_member_pastor_gobierno" model="ir.rule">
+        <field name="name">Church Member Pastor Gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_church_member" />
+        <field name="domain_force">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    </record>
+
+    <record id="rule_church_member_pastor" model="ir.rule">
+        <field name="name">Church Member Pastor</field>
+        <field name="model_id" ref="iem_church_management.model_church_member" />
+        <field name="domain_force">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    </record>
+
+    <record id="rule_church_member_discipulador" model="ir.rule">
+        <field name="name">Church Member Discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_church_member" />
+        <field name="domain_force">['&amp;', '&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id), ('discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    </record>
+
+    <!-- Church Member List rules -->
+    <record id="rule_member_list_admin" model="ir.rule">
+        <field name="name">Member List Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_member_list_system" model="ir.rule">
+        <field name="name">Member List System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_member_list_pastor_gobierno" model="ir.rule">
+        <field name="name">Member List Pastor Gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
+        <field name="domain_force">['|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), '|', '&amp;', ('creator_scope_role', '=', 'pastor'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('creator_scope_role', '=', 'discipulador'), ('scope_predio_id', '=', user.partner_id.predio_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    </record>
+
+    <record id="rule_member_list_pastor" model="ir.rule">
+        <field name="name">Member List Pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
+        <field name="domain_force">['|', '|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('creator_scope_role', '=', 'discipulador'), ('scope_red_id', '=', user.partner_id.red_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    </record>
+
+    <record id="rule_member_list_discipulador" model="ir.rule">
+        <field name="name">Member List Discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
+        <field name="domain_force">['|', '|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor'), ('visibility', '=', 'public'), ('scope_red_id', '=', user.partner_id.red_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'discipulador'), ('visibility', '=', 'public'), ('scope_red_id', '=', user.partner_id.red_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    </record>
+
+    <record id="rule_member_list_line_admin" model="ir.rule">
+        <field name="name">Member List Line Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_member_list_line_system" model="ir.rule">
+        <field name="name">Member List Line System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_member_list_line_pastor_gobierno" model="ir.rule">
+        <field name="name">Member List Line Pastor Gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
+        <field name="domain_force">['|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), '|', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    </record>
+
+    <record id="rule_member_list_line_pastor" model="ir.rule">
+        <field name="name">Member List Line Pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
+        <field name="domain_force">['|', '|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    </record>
+
+    <record id="rule_member_list_line_discipulador" model="ir.rule">
+        <field name="name">Member List Line Discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
+        <field name="domain_force">['|', '|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.visibility', '=', 'public'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.visibility', '=', 'public'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    </record>
+
+    <!-- Weekly Attendance rules -->
+    <record id="rule_weekly_attendance_admin" model="ir.rule">
+        <field name="name">Weekly Attendance Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_system" model="ir.rule">
+        <field name="name">Weekly Attendance System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_pastor_gobierno" model="ir.rule">
+        <field name="name">Weekly Attendance Pastor Gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
+        <field name="domain_force">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_pastor" model="ir.rule">
+        <field name="name">Weekly Attendance Pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
+        <field name="domain_force">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_discipulador" model="ir.rule">
+        <field name="name">Weekly Attendance Discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
+        <field name="domain_force">['&amp;', '&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id), ('discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_line_admin" model="ir.rule">
+        <field name="name">Weekly Attendance Line Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_line_system" model="ir.rule">
+        <field name="name">Weekly Attendance Line System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_line_pastor_gobierno" model="ir.rule">
+        <field name="name">Weekly Attendance Line Pastor Gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
+        <field name="domain_force">[('attendance_id.predio_id', '=', user.partner_id.predio_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_line_pastor" model="ir.rule">
+        <field name="name">Weekly Attendance Line Pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
+        <field name="domain_force">['&amp;', ('attendance_id.predio_id', '=', user.partner_id.predio_id.id), ('attendance_id.red_id', '=', user.partner_id.red_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    </record>
+
+    <record id="rule_weekly_attendance_line_discipulador" model="ir.rule">
+        <field name="name">Weekly Attendance Line Discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
+        <field name="domain_force">['&amp;', '&amp;', ('attendance_id.predio_id', '=', user.partner_id.predio_id.id), ('attendance_id.red_id', '=', user.partner_id.red_id.id), ('attendance_id.discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    </record>
+
+
+    <!-- Financial Contribution Type rules -->
+    <record id="rule_iem_financial_contribution_type_admin" model="ir.rule">
+        <field name="name">Financial Contribution Type Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_iem_financial_contribution_type_system" model="ir.rule">
+        <field name="name">Financial Contribution Type System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_iem_financial_contribution_type_pastor_gobierno" model="ir.rule">
+        <field name="name">Financial Contribution Type Pastor Gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    </record>
+
+    <record id="rule_iem_financial_contribution_type_pastor" model="ir.rule">
+        <field name="name">Financial Contribution Type Pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    </record>
+
+    <!-- Financial Contribution rules -->
+    <record id="rule_iem_financial_contribution_admin" model="ir.rule">
+        <field name="name">Financial Contribution Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_iem_financial_contribution_system" model="ir.rule">
+        <field name="name">Financial Contribution System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_iem_financial_contribution_pastor_gobierno" model="ir.rule">
+        <field name="name">Financial Contribution Pastor Gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution" />
+        <field name="domain_force">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    </record>
+
+    <record id="rule_iem_financial_contribution_pastor" model="ir.rule">
+        <field name="name">Financial Contribution Pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution" />
+        <field name="domain_force">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    </record>
+
+
+    <!-- Financial Payment Method rules -->
+    <record id="rule_iem_financial_payment_method_admin" model="ir.rule">
+        <field name="name">Financial Payment Method Admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    </record>
+
+    <record id="rule_iem_financial_payment_method_system" model="ir.rule">
+        <field name="name">Financial Payment Method System</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    </record>
+
+    <record id="rule_iem_financial_payment_method_pastor_gobierno" model="ir.rule">
+        <field name="name">Financial Payment Method Pastor Gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    </record>
+
+    <record id="rule_iem_financial_payment_method_pastor" model="ir.rule">
+        <field name="name">Financial Payment Method Pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method" />
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    </record>
+
+</odoo>

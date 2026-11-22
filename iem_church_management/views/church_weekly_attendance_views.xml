@@ -1,0 +1,127 @@
+<odoo>
+    <record id="view_iem_weekly_attendance_list" model="ir.ui.view">
+        <field name="name">iem.church.weekly.attendance.list</field>
+        <field name="model">iem.church.weekly.attendance</field>
+        <field name="arch" type="xml">
+            <list string="Asistencia semanal">
+                <field name="week_year" />
+                <field name="week_number" />
+                <field name="week_start" />
+                <field name="week_end" />
+                <field name="celula_id" />
+                <field name="discipulado_id" />
+                <field name="red_id" />
+                <field name="predio_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_iem_weekly_attendance_pivot" model="ir.ui.view">
+        <field name="name">iem.church.weekly.attendance.pivot</field>
+        <field name="model">iem.church.weekly.attendance</field>
+        <field name="arch" type="xml">
+            <pivot string="Tabla dinámica de asistencia" sample="1">
+                <field name="predio_id" type="row" />
+                <field name="red_id" type="row" />
+                <field name="discipulado_id" type="row" />
+                <field name="celula_id" type="row" />
+                <field name="week_start" type="col" interval="year" />
+                <field name="week_start" type="col" interval="month" />
+                <field name="week_start" type="col" interval="week" />
+                <field name="total_attended_celula" type="measure" />
+                <field name="total_attended_culto" type="measure" />
+                <field name="total_attended_discipulado" type="measure" />
+                <field name="total_tithed" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_iem_weekly_attendance_form" model="ir.ui.view">
+        <field name="name">iem.church.weekly.attendance.form</field>
+        <field name="model">iem.church.weekly.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Asistencia semanal">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="celula_id" options="{'no_create': True, 'no_create_edit': True}" />
+                            <field name="week_year" />
+                            <field name="week_number" />
+                        </group>
+                        <group>
+                            <field name="week_start" />
+                            <field name="week_end" />
+                            <field name="predio_id" readonly="1" />
+                            <field name="red_id" readonly="1" />
+                            <field name="discipulado_id" readonly="1" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Miembros">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="member_id" options="{'no_create': True, 'no_create_edit': True}" />
+                                    <field name="attended_celula" />
+                                    <field name="attended_discipulado" />
+                                    <field name="attended_culto" />
+                                    <field name="tithed" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_iem_weekly_attendance_search" model="ir.ui.view">
+        <field name="name">iem.church.weekly.attendance.search</field>
+        <field name="model">iem.church.weekly.attendance</field>
+        <field name="arch" type="xml">
+            <search string="Buscar asistencia semanal">
+                <field name="celula_id" />
+                <field name="week_year" />
+                <field name="week_number" />
+                <filter string="Año actual" name="current_year" domain="[('week_year', '=', context_today().year)]" />
+                <group expand="0" string="Agrupar por">
+                    <filter string="Predio" name="group_predio" context="{'group_by': 'predio_id'}" />
+                    <filter string="Red" name="group_red" context="{'group_by': 'red_id'}" />
+                    <filter string="Discipulado" name="group_discipulado" context="{'group_by': 'discipulado_id'}" />
+                    <filter string="Célula" name="group_celula" context="{'group_by': 'celula_id'}" />
+                    <filter string="Semana" name="group_week" context="{'group_by': 'week_number'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_iem_weekly_attendance" model="ir.actions.act_window">
+        <field name="name">Asistencia semanal</field>
+        <field name="res_model">iem.church.weekly.attendance</field>
+        <field name="view_mode">pivot,list,form</field>
+        <field name="view_id" ref="view_iem_weekly_attendance_pivot" />
+        <field name="context">{'search_default_current_year': 1}</field>
+        <field name="search_view_id" ref="view_iem_weekly_attendance_search" />
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_system'),
+            ref('iem_church_management.group_iem_admin'),
+            ref('iem_church_management.group_iem_pastor_gobierno'),
+            ref('iem_church_management.group_iem_pastor'),
+            ref('iem_church_management.group_iem_discipulador')
+        ])]" />
+    </record>
+
+    <menuitem
+        id="menu_iem_weekly_attendance"
+        name="Asistencia semanal"
+        parent="menu_church_membership_root"
+        action="action_iem_weekly_attendance"
+        sequence="15"
+        groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador"
+    />
+</odoo>

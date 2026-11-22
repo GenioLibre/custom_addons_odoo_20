@@ -1,0 +1,289 @@
+<odoo>
+    <record id="view_iem_church_member_list_list" model="ir.ui.view">
+        <field name="name">iem.church.member.list.list</field>
+        <field name="model">iem.church.member.list</field>
+        <field name="arch" type="xml">
+            <list string="Listas de Membresía">
+                <field name="name" />
+                <field name="visibility" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" />
+                <field name="scope_predio_id" optional="show" />
+                <field name="scope_red_id" optional="show" />
+                <field name="scope_discipulado_id" optional="show" />
+                <field name="creation_date" />
+                <field name="vacancies" />
+                <field name="member_count" />
+                <field name="filter_member_count" />
+                <field name="manual_member_count" />
+                <field name="create_uid" string="Creado por" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_iem_church_member_list_form" model="ir.ui.view">
+        <field name="name">iem.church.member.list.form</field>
+        <field name="model">iem.church.member.list</field>
+        <field name="arch" type="xml">
+            <form string="Lista de Membresía">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                            name="action_print_member_registration_forms"
+                            string="Imprimir fichas"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-print"
+                        />
+                        <button
+                            name="action_export_member_list_xlsx"
+                            string="Exportar lista (Excel)"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-download"
+                        />
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Ej: Hombres mayores de 30" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="visibility" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" />
+                            <field name="website_registration_enabled" />
+                            <field name="vacancies" />
+                            <field name="predio_id" groups="base.group_system,iem_church_management.group_iem_admin" options="{'no_create': True, 'no_create_edit': True}" />
+                            <field name="predio_id" groups="iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" readonly="1" options="{'no_create': True, 'no_create_edit': True}" />
+                            <field name="red_id" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno" domain="[('predio_id', '=', predio_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                            <field name="red_id" groups="iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" readonly="1" domain="[('predio_id', '=', predio_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                            <field name="discipulado_id" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor" domain="[('red_id', '=', red_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                            <field name="discipulado_id" groups="iem_church_management.group_iem_discipulador" readonly="1" domain="[('red_id', '=', red_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                            <field name="creation_date" readonly="1" />
+                            <field name="create_uid" readonly="1" string="Creado por" />
+                        </group>
+                        <group>
+                            <field name="member_count" readonly="1" />
+                            <field name="filter_member_count" readonly="1" />
+                            <field name="manual_member_count" readonly="1" />
+                            <field name="details" widget="text" />
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Miembros">
+                            <group>
+                                <field name="member_line_search" placeholder="Buscar por nombre, código o documento" />
+                            </group>
+                            <field
+                                name="member_line_ids"
+                                domain="['|', '|', ('member_name', 'ilike', member_line_search), ('member_document', 'ilike', member_line_search), ('member_code', 'ilike', member_line_search)]"
+                                context="{
+                                    'default_list_id': id,
+                                    'form_view_ref': 'iem_church_management.view_iem_church_member_list_line_form',
+                                    'list_boolean_label': boolean_extra_label,
+                                    'list_amount_label': amount_extra_label,
+                                    'list_text_label': text_extra_label,
+                                    'list_image_label': image_extra_label
+                                }"
+                            >
+                                <list editable="bottom" string="Miembros de la lista" open_form_view="0">
+                                    <field
+                                        name="member_id"
+                                        context="{'member_list_scope_id': parent.id}"
+                                        options="{'no_create': True, 'no_create_edit': True}"
+                                    />
+                                    <field name="source" optional="hide" />
+                                    <field name="predio_id" optional="hide" />
+                                    <field name="red_id" optional="hide" />
+                                    <field name="discipulado_id" optional="hide" />
+                                    <field name="celula_id" optional="hide" />
+                                    <field name="extra_boolean" column_invisible="parent.show_boolean_extra == False" />
+                                    <field name="currency_id" column_invisible="True"  />
+                                    <field name="extra_amount" column_invisible="parent.show_amount_extra == False" sum="Total" />
+                                    <field name="extra_text" column_invisible="parent.show_text_extra == False" />
+                                    <field
+                                        name="extra_image"
+                                        widget="image"
+                                        class="iem_member_list_extra_image"
+                                        options="{'zoom': true}"
+                                        column_invisible="parent.show_image_extra == False"
+                                    />
+                                </list>
+                                <form string="Miembro de la lista">
+                                    <group>
+                                        <group>
+                                            <field name="member_id" options="{'no_create': True, 'no_create_edit': True}" />
+                                            <field name="source" readonly="1" />
+                                            <field name="predio_id" readonly="1" />
+                                            <field name="red_id" readonly="1" />
+                                            <field name="discipulado_id" readonly="1" />
+                                            <field name="celula_id" readonly="1" />
+                                        </group>
+                                        <group>
+                                            <field name="extra_boolean" invisible="parent.show_boolean_extra == False" />
+                                            <field name="currency_id" invisible="1" />
+                                            <field name="extra_amount" invisible="parent.show_amount_extra == False" />
+                                            <field name="extra_text" invisible="parent.show_text_extra == False" />
+                                            <field
+                                                name="extra_image"
+                                                widget="image"
+                                                class="iem_member_list_extra_image"
+                                                options="{'zoom': true}"
+                                                invisible="parent.show_image_extra == False"
+                                            />
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                            <group>
+                                <button
+                                    name="action_clear_member_lines"
+                                    string="Limpiar"
+                                    type="object"
+                                    confirm="Se eliminarán todos los miembros de la lista. ¿Deseas continuar?"
+                                    class="btn-secondary"
+                                />
+                            </group>
+                        </page>
+                        <page string="Filtro">
+                            <group>
+                                <group>
+                                    <field name="gender" />
+                                    <field name="member_status" />
+                                    <field name="position_filter_ids" widget="many2many_tags" options="{'no_create': True, 'no_create_edit': True}" />
+                                    <field name="age_from" />
+                                    <field name="age_to" />
+                                </group>
+                                <group>
+                                    <field name="predio_id" groups="base.group_system,iem_church_management.group_iem_admin" options="{'no_create': True, 'no_create_edit': True}" />
+                                    <field name="predio_id" groups="iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" readonly="1" options="{'no_create': True, 'no_create_edit': True}" />
+                                    <field name="red_id" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno" domain="[('predio_id', '=', predio_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                                    <field name="red_id" groups="iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" readonly="1" domain="[('predio_id', '=', predio_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                                    <field name="discipulado_id" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor" domain="[('red_id', '=', red_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                                    <field name="discipulado_id" groups="iem_church_management.group_iem_discipulador" readonly="1" domain="[('red_id', '=', red_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                                    <field name="celula_id" domain="[('discipulado_id', '=', discipulado_id)]" options="{'no_create': True, 'no_create_edit': True}" />
+                                </group>
+                            </group>
+                            <group>
+                                <button
+                                    name="action_add_members_from_filter"
+                                    string="Agregar miembros por filtro"
+                                    type="object"
+                                    class="oe_highlight"
+                                />
+                            </group>
+                            <group>
+                                <field name="filter_summary" readonly="1" nolabel="1" widget="text" />
+                            </group>
+                        </page>
+                        <page string="Campos extra">
+                            <group>
+                                <group>
+                                    <field name="show_boolean_extra" />
+                                    <field name="boolean_extra_label" invisible="show_boolean_extra == False" />
+                                </group>
+                                <group>
+                                    <field name="show_amount_extra" />
+                                    <field name="amount_extra_label" invisible="show_amount_extra == False" />
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="show_text_extra" />
+                                    <field name="text_extra_label" invisible="show_text_extra == False" />
+                                </group>
+                                <group>
+                                    <field name="show_image_extra" />
+                                    <field name="image_extra_label" invisible="show_image_extra == False" />
+                                </group>
+                            </group>
+                        </page>
+                        
+                    </notebook>
+                </sheet>
+                <chatter />
+            </form>
+        </field>
+    </record>
+
+    <record id="view_iem_church_member_list_line_form" model="ir.ui.view">
+        <field name="name">iem.church.member.list.line.form</field>
+        <field name="model">iem.church.member.list.line</field>
+        <field name="arch" type="xml">
+            <form string="Miembro de la lista">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="list_id" readonly="1" />
+                            <field
+                                name="member_id"
+                                context="{'member_list_scope_id': list_id}"
+                                options="{'no_create': True, 'no_create_edit': True}"
+                            />
+                            <field name="source" readonly="1" />
+                            <field name="predio_id" readonly="1" />
+                            <field name="red_id" readonly="1" />
+                            <field name="discipulado_id" readonly="1" />
+                            <field name="celula_id" readonly="1" />
+                        </group>
+                        <group>
+                            <field name="extra_boolean" invisible="list_id.show_boolean_extra == False" />
+                            <field name="currency_id" invisible="1" />
+                            <field name="extra_amount" invisible="list_id.show_amount_extra == False" />
+                            <field name="extra_text" invisible="list_id.show_text_extra == False" />
+                            <field
+                                name="extra_image"
+                                widget="image"
+                                class="iem_member_list_extra_image"
+                                options="{'zoom': true}"
+                                invisible="list_id.show_image_extra == False"
+                            />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_iem_church_member_list_search" model="ir.ui.view">
+        <field name="name">iem.church.member.list.search</field>
+        <field name="model">iem.church.member.list</field>
+        <field name="arch" type="xml">
+            <search string="Buscar listas">
+                <field name="name" />
+                <field name="create_uid" />
+                <filter name="filter_public_list" string="Públicas" domain="[('visibility', '=', 'public')]" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" />
+                <filter name="filter_private_list" string="Privadas" domain="[('visibility', '=', 'private')]" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" />
+                <filter name="filter_male" string="Hombres" domain="[('gender', '=', 'male')]" />
+                <filter name="filter_female" string="Mujeres" domain="[('gender', '=', 'female')]" />
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_creator" string="Creado por" context="{'group_by': 'create_uid'}" />
+                    <filter name="group_predio" string="Predio" context="{'group_by': 'predio_id'}" />
+                    <filter name="group_red" string="Red" context="{'group_by': 'red_id'}" />
+                    <filter name="group_discipulado" string="Discipulado" context="{'group_by': 'discipulado_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_iem_church_member_list" model="ir.actions.act_window">
+        <field name="name">Listas</field>
+        <field name="res_model">iem.church.member.list</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_iem_church_member_list_list" />
+        <field name="groups_id" eval="[(6, 0, [
+            ref('base.group_system'),
+            ref('iem_church_management.group_iem_admin'),
+            ref('iem_church_management.group_iem_pastor_gobierno'),
+            ref('iem_church_management.group_iem_pastor'),
+            ref('iem_church_management.group_iem_discipulador')
+        ])]" />
+    </record>
+
+    <menuitem
+        id="menu_church_membership_member_lists"
+        name="Listas"
+        parent="menu_church_membership_root"
+        action="action_iem_church_member_list"
+        sequence="15"
+        groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador"
+    />
+</odoo>

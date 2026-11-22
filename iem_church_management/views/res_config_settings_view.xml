@@ -1,0 +1,38 @@
+<odoo>
+    <record id="res_config_settings_view_inherit_iem_church" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.iem.church</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Church Management"
+                    string="Church Management"
+                    name="church_management"
+                    logo="/iem_church_management/static/description/icon.png">
+                    <block title="Identidad de la iglesia">
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="Logo de la iglesia" for="church_logo"/>
+                            <field name="church_logo" widget="image" class="oe_avatar"/>
+                        </div>
+                    </block>
+                    <block title="API DNI">
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="Token API DNI" for="dni_api_token"/>
+                            <field name="dni_api_token" password="True"/>
+                        </div>
+                    </block>
+                    <block title="Formulario publico de miembros">
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="Clave formulario publico" for="public_member_form_password"/>
+                            <field name="public_member_form_password" password="True"/>
+                        </div>
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="Limite de envios (segundos)" for="public_member_form_rate_limit"/>
+                            <field name="public_member_form_rate_limit"/>
+                        </div>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
