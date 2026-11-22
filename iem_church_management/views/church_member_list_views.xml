@@ -254,7 +254,7 @@
                 <filter name="filter_private_list" string="Privadas" domain="[('visibility', '=', 'private')]" groups="base.group_system,iem_church_management.group_iem_admin,iem_church_management.group_iem_pastor_gobierno,iem_church_management.group_iem_pastor,iem_church_management.group_iem_discipulador" />
                 <filter name="filter_male" string="Hombres" domain="[('gender', '=', 'male')]" />
                 <filter name="filter_female" string="Mujeres" domain="[('gender', '=', 'female')]" />
-                <group expand="0" string="Agrupar por">
+                <group>
                     <filter name="group_creator" string="Creado por" context="{'group_by': 'create_uid'}" />
                     <filter name="group_predio" string="Predio" context="{'group_by': 'predio_id'}" />
                     <filter name="group_red" string="Red" context="{'group_by': 'red_id'}" />

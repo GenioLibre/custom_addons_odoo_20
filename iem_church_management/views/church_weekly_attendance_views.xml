@@ -89,7 +89,7 @@
                 <field name="week_year" />
                 <field name="week_number" />
                 <filter string="Año actual" name="current_year" domain="[('week_year', '=', context_today().year)]" />
-                <group expand="0" string="Agrupar por">
+                <group>
                     <filter string="Predio" name="group_predio" context="{'group_by': 'predio_id'}" />
                     <filter string="Red" name="group_red" context="{'group_by': 'red_id'}" />
                     <filter string="Discipulado" name="group_discipulado" context="{'group_by': 'discipulado_id'}" />
