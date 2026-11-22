@@ -8,7 +8,7 @@ import xlsxwriter
 
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
-from odoo.osv import expression
+from odoo.fields import Domain
 
 
 class ChurchMember(models.Model):
@@ -209,15 +209,17 @@ class ChurchMember(models.Model):
         return member_list._member_domain_by_scope()
 
     @api.model
-    def _search(self, domain, offset=0, limit=None, order=None):
+    def _search(self, domain, offset=0, limit=None, order=None, *, active_test=True, bypass_access=False):
         scope_domain = self._member_list_scope_domain()
         if scope_domain:
-            domain = expression.AND([domain, scope_domain])
+            domain = Domain(domain) & Domain(scope_domain)
         return super()._search(
             domain,
             offset=offset,
             limit=limit,
             order=order,
+            active_test=active_test,
+            bypass_access=bypass_access,
         )
 
     def _check_scope_for_user(self, vals=None):
