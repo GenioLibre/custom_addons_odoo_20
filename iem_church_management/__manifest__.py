@@ -5,11 +5,12 @@
     "summary": "Church membership and organizational structure management",
     "author": "IEM",
     "license": "LGPL-3",
-    "depends": ["base", "contacts", "privacy_lookup", "base_import", "l10n_latam_base", "website", "auth_signup"],
+    "depends": ["base", "contacts", "privacy_lookup", "base_import", "website", "auth_signup"],
     "data": [
         "security/iem_church_management_groups.xml",
         "security/iem_church_management_rules.xml",
         "security/ir.model.access.csv",
+        "data/identification_type.xml",
         "data/church_member_sequence.xml",
         "data/church_member_export_action.xml",
         "data/financial_contribution_sequence.xml",

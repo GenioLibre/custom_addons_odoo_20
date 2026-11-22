@@ -2,16 +2,26 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
+class IemIdentificationType(models.Model):
+    _name = "iem.identification.type"
+    _description = "Tipo de documento de identidad"
+    _order = "name"
+
+    name = fields.Char(required=True)
+    l10n_pe_vat_code = fields.Char(string="Código SUNAT")
+    active = fields.Boolean(default=True)
+
+
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    _sql_constraints = [
-        (
-            "unique_document_type_vat",
-            "unique(l10n_latam_identification_type_id, vat)",
-            "El documento ya esta registrado en otro contacto.",
-        ),
-    ]
+    iem_identification_type_id = fields.Many2one(
+        "iem.identification.type", string="Tipo de documento", ondelete="restrict",
+    )
+    _unique_document_type_vat = models.Constraint(
+        "UNIQUE(iem_identification_type_id, vat)",
+        "El documento ya está registrado en otro contacto.",
+    )
 
     country_id = fields.Many2one(
         "res.country",

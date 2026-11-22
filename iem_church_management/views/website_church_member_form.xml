@@ -51,10 +51,10 @@
                             <div class="row js-step d-none" data-step="1">
                                 <div class="col-12 col-md-6 mb-3">
                                     <label class="form-label">Tipo de identificacion</label>
-                                    <select name="l10n_latam_identification_type_id" class="form-select" required="required">
+                                    <select name="iem_identification_type_id" class="form-select" required="required">
                                         <option value="">Selecciona</option>
                                         <t t-foreach="identification_types" t-as="ident_type">
-                                            <option t-att-value="ident_type.id" t-att-selected="form.get('l10n_latam_identification_type_id') == str(ident_type.id)">
+                                            <option t-att-value="ident_type.id" t-att-selected="form.get('iem_identification_type_id') == str(ident_type.id)">
                                                 <t t-esc="ident_type.name"/>
                                             </option>
                                         </t>
@@ -275,7 +275,7 @@
                     const csrfTokenInput = document.querySelector('input[name="csrf_token"]');
                     const accessPasswordInput = document.querySelector('input[name="access_password"]');
                     const toggleAccessPasswordBtn = document.getElementById("iem_toggle_access_password");
-                    const identificationTypeInput = document.querySelector('select[name="l10n_latam_identification_type_id"]');
+                    const identificationTypeInput = document.querySelector('select[name="iem_identification_type_id"]');
                     const dniInput = document.querySelector('input[name="vat"]');
                     const firstNameInput = document.querySelector('input[name="first_name"]');
                     const lastNameInput = document.querySelector('input[name="last_name"]');
@@ -513,7 +513,7 @@
                         searchDniBtn.addEventListener("click", async function () {
                             try {
                                 const payload = await postAndReadJson("/church/registro/fetch_dni", {
-                                    l10n_latam_identification_type_id: identificationTypeInput ? identificationTypeInput.value : "",
+                                    iem_identification_type_id: identificationTypeInput ? identificationTypeInput.value : "",
                                     vat: dniInput ? dniInput.value : "",
                                 });
                                 if (!payload.ok) {
@@ -537,7 +537,7 @@
                         if (currentStep === 1) {
                             try {
                                 const payload = await postAndReadJson("/church/registro/check_dni", {
-                                    l10n_latam_identification_type_id: identificationTypeInput ? identificationTypeInput.value : "",
+                                    iem_identification_type_id: identificationTypeInput ? identificationTypeInput.value : "",
                                     vat: dniInput ? dniInput.value : "",
                                 });
                                 if (!payload.ok) {

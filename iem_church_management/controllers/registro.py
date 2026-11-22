@@ -58,7 +58,7 @@ class IemChurchWebsite(http.Controller):
         peru = env["res.country"].sudo().search([("code", "=", "PE")], limit=1)
         province_suggestions, district_suggestions = self._get_partner_location_suggestions(peru.id)
         return {
-            "identification_types": env["l10n_latam.identification.type"].sudo().search([], order="name asc"),
+            "identification_types": env["iem.identification.type"].sudo().search([], order="name asc"),
             "states": env["res.country.state"].sudo().search([("country_id.code", "=", "PE")], order="name asc"),
             "countries": env["res.country"].sudo().search([], order="name asc"),
             "peru_country_id": peru.id or False,
@@ -120,7 +120,7 @@ class IemChurchWebsite(http.Controller):
     def _find_existing_document(self, identification_type_id, vat):
         return request.env["res.partner"].sudo().search(
             [
-                ("l10n_latam_identification_type_id", "=", identification_type_id),
+                ("iem_identification_type_id", "=", identification_type_id),
                 ("vat", "=", vat),
             ],
             limit=1,
@@ -352,7 +352,7 @@ class IemChurchWebsite(http.Controller):
         csrf=True,
     )
     def church_member_form_check_dni(self, **kwargs):
-        identification_type_id = self._to_int_or_false(kwargs.get("l10n_latam_identification_type_id"))
+        identification_type_id = self._to_int_or_false(kwargs.get("iem_identification_type_id"))
         vat = (kwargs.get("vat") or "").strip()
         if not identification_type_id or not vat:
             return request.make_json_response(
@@ -377,14 +377,14 @@ class IemChurchWebsite(http.Controller):
         csrf=True,
     )
     def church_member_form_fetch_dni(self, **kwargs):
-        identification_type_id = self._to_int_or_false(kwargs.get("l10n_latam_identification_type_id"))
+        identification_type_id = self._to_int_or_false(kwargs.get("iem_identification_type_id"))
         vat = (kwargs.get("vat") or "").strip()
         if not identification_type_id or not vat:
             return request.make_json_response(
                 {"ok": False, "message": "Ingresa tipo y numero de identificacion."}
             )
 
-        identification_type = request.env["l10n_latam.identification.type"].sudo().browse(identification_type_id)
+        identification_type = request.env["iem.identification.type"].sudo().browse(identification_type_id)
         if not self._is_dni_type(identification_type):
             return request.make_json_response(
                 {"ok": False, "message": "Selecciona un tipo de documento DNI."}
@@ -483,7 +483,7 @@ class IemChurchWebsite(http.Controller):
                 error=_("Nombre y Apellido son obligatorios."),
             )
 
-        identification_type_id = self._to_int_or_false(kwargs.get("l10n_latam_identification_type_id"))
+        identification_type_id = self._to_int_or_false(kwargs.get("iem_identification_type_id"))
         vat = (kwargs.get("vat") or "").strip()
         if not identification_type_id or not vat:
             return self._render_public_form(
@@ -550,7 +550,7 @@ class IemChurchWebsite(http.Controller):
         member_vals = {
             "first_name": first_name,
             "last_name": last_name,
-            "l10n_latam_identification_type_id": identification_type_id,
+            "iem_identification_type_id": identification_type_id,
             "vat": vat,
             "email": (kwargs.get("email") or "").strip().lower() or False,
             "mobile": (kwargs.get("mobile") or "").strip() or False,

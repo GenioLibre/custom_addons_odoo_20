@@ -65,7 +65,7 @@
                                 widget="church_member_image"
                                 class="oe_avatar iem_church_member_avatar"
                             />
-                            <field name="l10n_latam_identification_type_id" autofocus="1" />
+                            <field name="iem_identification_type_id" autofocus="1" />
                             <label for="vat" string="Numero de Documento" />
                             <div class="o_row">
                                 <field name="vat" />

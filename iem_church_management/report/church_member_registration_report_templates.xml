@@ -228,7 +228,7 @@
                 <t t-set="apellido_paterno" t-value="last_parts[0] if last_parts else ''"/>
                 <t t-set="apellido_materno" t-value="' '.join(last_parts[1:]) if len(last_parts) &gt; 1 else ''"/>
                 <t t-set="nombres_completos" t-value="o.first_name or ''"/>
-                <t t-set="id_type_name" t-value="(o.l10n_latam_identification_type_id.name or '').upper() if o.l10n_latam_identification_type_id else ''"/>
+                <t t-set="id_type_name" t-value="(o.iem_identification_type_id.name or '').upper() if o.iem_identification_type_id else ''"/>
                 <t t-set="dni_number" t-value="o.vat if 'DNI' in id_type_name else ''"/>
                 <t t-set="passport_number" t-value="o.vat if 'PASAPORTE' in id_type_name else ''"/>
                 <t t-set="gender_label" t-value="dict(o.partner_id._fields['gender'].selection).get(o.gender, '') if o.gender else ''"/>

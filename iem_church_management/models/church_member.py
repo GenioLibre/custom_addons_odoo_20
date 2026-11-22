@@ -310,15 +310,15 @@ class ChurchMember(models.Model):
         partner_fields = Partner._fields
         for vals in vals_list:
             self._check_scope_for_user(vals)
-            identification_type_id = vals.get("l10n_latam_identification_type_id")
-            identification_type = self.env["l10n_latam.identification.type"].browse(
+            identification_type_id = vals.get("iem_identification_type_id")
+            identification_type = self.env["iem.identification.type"].browse(
                 identification_type_id
             )
             vat = (vals.get("vat") or "").strip()
             if identification_type and vat:
                 existing_partner = self.env["res.partner"].search(
                     [
-                        ("l10n_latam_identification_type_id", "=", identification_type_id),
+                        ("iem_identification_type_id", "=", identification_type_id),
                         ("vat", "=", vat),
                     ],
                     limit=1,
@@ -359,17 +359,17 @@ class ChurchMember(models.Model):
                     "discipulado_id": vals.get("discipulado_id", member.discipulado_id.id),
                 }
                 member._check_scope_for_user(merged)
-        if "vat" in vals or "l10n_latam_identification_type_id" in vals:
+        if "vat" in vals or "iem_identification_type_id" in vals:
             for member in self:
                 identification_type_id = vals.get(
-                    "l10n_latam_identification_type_id",
-                    member.l10n_latam_identification_type_id.id,
+                    "iem_identification_type_id",
+                    member.iem_identification_type_id.id,
                 )
                 vat = (vals.get("vat") or member.vat or "").strip()
                 if identification_type_id and vat:
                     existing_partner = self.env["res.partner"].search(
                         [
-                            ("l10n_latam_identification_type_id", "=", identification_type_id),
+                            ("iem_identification_type_id", "=", identification_type_id),
                             ("vat", "=", vat),
                             ("id", "!=", member.partner_id.id),
                         ],
@@ -464,15 +464,15 @@ class ChurchMember(models.Model):
     def _onchange_vat_fetch_dni(self):
         for member in self:
             dni = (member.vat or "").strip()
-            if not member.l10n_latam_identification_type_id or not dni:
+            if not member.iem_identification_type_id or not dni:
                 continue
 
             existing_partner = self.env["res.partner"].search(
                 [
                     (
-                        "l10n_latam_identification_type_id",
+                        "iem_identification_type_id",
                         "=",
-                        member.l10n_latam_identification_type_id.id,
+                        member.iem_identification_type_id.id,
                     ),
                     ("vat", "=", dni),
                     ("id", "!=", member.partner_id.id),
@@ -490,7 +490,7 @@ class ChurchMember(models.Model):
                     }
                 }
 
-            if not self._is_dni_type(member.l10n_latam_identification_type_id):
+            if not self._is_dni_type(member.iem_identification_type_id):
                 return {
                     "warning": {
                         "title": _("DNI"),
@@ -555,7 +555,7 @@ class ChurchMember(models.Model):
     def action_fetch_dni(self):
         self.ensure_one()
         dni = (self.vat or "").strip()
-        if not self._is_dni_type(self.l10n_latam_identification_type_id):
+        if not self._is_dni_type(self.iem_identification_type_id):
             return self._notify(_("DNI"), _("Seleccione tipo de documento DNI."), "warning")
         if not dni.isdigit() or len(dni) != 8:
             return self._notify(_("DNI"), _("Ingrese un DNI valido de 8 digitos."), "warning")
@@ -563,9 +563,9 @@ class ChurchMember(models.Model):
         existing_partner = self.env["res.partner"].search(
             [
                 (
-                    "l10n_latam_identification_type_id",
+                    "iem_identification_type_id",
                     "=",
-                    self.l10n_latam_identification_type_id.id,
+                    self.iem_identification_type_id.id,
                 ),
                 ("vat", "=", dni),
                 ("id", "!=", self.partner_id.id),
@@ -825,7 +825,7 @@ class ChurchMember(models.Model):
             row_vals = [
                 member.first_name or "",
                 member.last_name or "",
-                member.l10n_latam_identification_type_id.display_name or "",
+                member.iem_identification_type_id.display_name or "",
                 member.vat or "",
                 member.birth_date or "",
                 age,
