@@ -508,7 +508,7 @@ class ChurchMember(models.Model):
                     }
                 }
 
-            token = self.env["ir.config_parameter"].sudo().get_param("iem.dni_api_token")
+            token = self.env["ir.config_parameter"].sudo().get_str("iem.dni_api_token")
             if not token:
                 return {
                     "warning": {
@@ -581,7 +581,7 @@ class ChurchMember(models.Model):
                 "warning",
             )
 
-        token = self.env["ir.config_parameter"].sudo().get_param("iem.dni_api_token")
+        token = self.env["ir.config_parameter"].sudo().get_str("iem.dni_api_token")
         if not token:
             return self._notify(_("DNI"), _("Falta configurar el token de la API de DNI."), "warning")
 

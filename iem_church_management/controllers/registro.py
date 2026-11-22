@@ -46,8 +46,8 @@ class IemChurchWebsite(http.Controller):
     def _get_public_form_settings(self):
         params = request.env["ir.config_parameter"].sudo()
         return {
-            "access_password": (params.get_param("iem.public_member_form_password") or "").strip(),
-            "rate_limit_seconds": int(params.get_param("iem.public_member_form_rate_limit") or 60),
+            "access_password": (params.get_str("iem.public_member_form_password") or "").strip(),
+            "rate_limit_seconds": (params.get_int("iem.public_member_form_rate_limit", 60) or 60),
         }
 
     def _get_public_form_reference_data(self):
@@ -394,7 +394,7 @@ class IemChurchWebsite(http.Controller):
                 {"ok": False, "message": "Ingresa un DNI valido de 8 digitos."}
             )
 
-        token = request.env["ir.config_parameter"].sudo().get_param("iem.dni_api_token")
+        token = request.env["ir.config_parameter"].sudo().get_str("iem.dni_api_token")
         if not token:
             return request.make_json_response(
                 {"ok": False, "message": "Falta configurar el token de la API DNI."}

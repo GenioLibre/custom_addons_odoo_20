@@ -46,7 +46,7 @@
                                 Aceptar invitación
                             </a>
                         </div>
-                        Este enlace estará disponible durante <t t-out="int(int(object.env['ir.config_parameter'].sudo().get_param('auth_signup.signup.validity.hours', 144))/24)"></t> días.<br/><br/>
+                        Este enlace estará disponible durante <t t-out="object.env['ir.config_parameter'].sudo().get_int('auth_signup.signup.validity.hours', 144) // 24"></t> días.<br/><br/>
                         Datos de acceso:<br/>
                         Correo de inicio de sesión: <b><a t-attf-href="/web/login?login={{ object.email }}" target="_blank" t-out="object.email or ''">usuario@dominio.com</a></b><br/><br/>
                         Le recomendamos activar su cuenta dentro del plazo indicado para evitar inconvenientes.<br/><br/>
@@ -182,7 +182,7 @@
                             <div>
                                 Estimado(a) <t t-out="object.name or ''">Usuario</t>,<br/><br/>
                                 Hemos recibido una solicitud para restablecer la contraseña de la cuenta asociada a este correo electrónico.<br/><br/>
-                                Para crear una nueva contraseña, haga clic en el siguiente enlace (válido por <t t-out="user.env['ir.config_parameter'].sudo().get_param('auth_signup.reset_password.validity.hours', 4)"></t> horas):<br/><br/>
+                                Para crear una nueva contraseña, haga clic en el siguiente enlace (válido por <t t-out="user.env['ir.config_parameter'].sudo().get_int('auth_signup.reset_password.validity.hours', 4)"></t> horas):<br/><br/>
                                 <div style="margin: 16px 0px 16px 0px;">
                                     <a t-att-href="object.partner_id._get_signup_url()"
                                        t-attf-style="background-color: {{ object.company_id.email_secondary_color or '#875A7B' }}; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">

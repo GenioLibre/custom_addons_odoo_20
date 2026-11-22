@@ -222,7 +222,7 @@
                 }
             </style>
             <t t-foreach="docs" t-as="o">
-                <t t-set="church_logo_attachment_id" t-value="int(o.env['ir.config_parameter'].sudo().get_param('iem.church_logo_attachment_id', 0) or 0)"/>
+                <t t-set="church_logo_attachment_id" t-value="o.env['ir.config_parameter'].sudo().get_int('iem.church_logo_attachment_id', 0)"/>
                 <t t-set="church_logo_attachment" t-value="o.env['ir.attachment'].sudo().browse(church_logo_attachment_id).exists() if church_logo_attachment_id else False"/>
                 <t t-set="last_parts" t-value="(o.last_name or '').split()"/>
                 <t t-set="apellido_paterno" t-value="last_parts[0] if last_parts else ''"/>

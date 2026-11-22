@@ -51,7 +51,7 @@ class ResConfigSettings(models.TransientModel):
 
     def _get_church_logo_attachment(self):
         attachment_id = int(
-            self.env["ir.config_parameter"].sudo().get_param(self._church_logo_param_key, 0) or 0
+            self.env["ir.config_parameter"].sudo().get_int(self._church_logo_param_key, 0) or 0
         )
         if not attachment_id:
             return self.env["ir.attachment"]
@@ -74,10 +74,10 @@ class ResConfigSettings(models.TransientModel):
 
         if self.church_logo:
             vals = {
-                "name": params.get_param(self._church_logo_filename_param_key, self._church_logo_default_filename),
+                "name": params.get_str(self._church_logo_filename_param_key, self._church_logo_default_filename),
                 "type": "binary",
                 "datas": self.church_logo,
-                "mimetype": params.get_param(
+                "mimetype": params.get_str(
                     self._church_logo_mimetype_param_key,
                     self._church_logo_default_mimetype,
                 ),
@@ -88,9 +88,9 @@ class ResConfigSettings(models.TransientModel):
                 attachment.write(vals)
             else:
                 attachment = attachment_model.create(vals)
-                params.set_param(self._church_logo_param_key, attachment.id)
-                params.set_param(self._church_logo_filename_param_key, vals["name"])
-                params.set_param(self._church_logo_mimetype_param_key, vals["mimetype"])
+                params.set_int(self._church_logo_param_key, attachment.id)
+                params.set_str(self._church_logo_filename_param_key, vals["name"])
+                params.set_str(self._church_logo_mimetype_param_key, vals["mimetype"])
         elif attachment:
             attachment.unlink()
-            params.set_param(self._church_logo_param_key, "")
+            params.set_int(self._church_logo_param_key, 0)
