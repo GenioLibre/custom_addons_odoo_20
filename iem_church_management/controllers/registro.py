@@ -8,7 +8,7 @@ import requests
 from odoo import http, fields, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.http import request
-from odoo.tools import image_process
+from odoo.tools.image import image_process
 
 
 class IemChurchWebsite(http.Controller):

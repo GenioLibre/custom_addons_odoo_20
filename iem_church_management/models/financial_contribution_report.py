@@ -11,20 +11,22 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
     _name = "iem.financial.contribution.report.mixin"
     _description = "IEM Financial Contribution Report Mixin"
 
-    MONTH_HEADERS = [
-        (1, _("Enero")),
-        (2, _("Febrero")),
-        (3, _("Marzo")),
-        (4, _("Abril")),
-        (5, _("Mayo")),
-        (6, _("Junio")),
-        (7, _("Julio")),
-        (8, _("Agosto")),
-        (9, _("Septiembre")),
-        (10, _("Octubre")),
-        (11, _("Noviembre")),
-        (12, _("Diciembre")),
-    ]
+    @api.model
+    def _month_headers(self):
+        return [
+            (1, self.env._("Enero")),
+            (2, self.env._("Febrero")),
+            (3, self.env._("Marzo")),
+            (4, self.env._("Abril")),
+            (5, self.env._("Mayo")),
+            (6, self.env._("Junio")),
+            (7, self.env._("Julio")),
+            (8, self.env._("Agosto")),
+            (9, self.env._("Septiembre")),
+            (10, self.env._("Octubre")),
+            (11, self.env._("Noviembre")),
+            (12, self.env._("Diciembre")),
+        ]
 
     @api.model
     def _default_report_year(self):
@@ -43,6 +45,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
 
     @api.model
     def _get_report_payload(self, year, contribution_type_ids=None):
+        month_headers = self._month_headers()
         records = self.env["iem.financial.contribution"].search_read(
             self._report_domain(year, contribution_type_ids=contribution_type_ids),
             ["predio_id", "red_id", "member_id", "contribution_month", "amount", "contribution_type_id"],
@@ -50,7 +53,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
         )
 
         predio_map = {}
-        total_by_month = {month: 0.0 for month, _label in self.MONTH_HEADERS}
+        total_by_month = {month: 0.0 for month, _label in month_headers}
         member_count = 0
 
         for rec in records:
@@ -76,7 +79,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
                 member_value[0],
                 {
                     "name": member_value[1],
-                    "months": {month_number: 0.0 for month_number, _label in self.MONTH_HEADERS},
+                    "months": {month_number: 0.0 for month_number, _label in month_headers},
                 },
             )
             if not member_bucket.get("_counted"):
@@ -95,7 +98,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
                 for member_data in sorted(red_data["members"].values(), key=lambda item: (item["name"] or "").lower()):
                     months = {
                         month: round(member_data["months"].get(month, 0.0), 2)
-                        for month, _label in self.MONTH_HEADERS
+                        for month, _label in month_headers
                     }
                     member_rows.append(
                         {
@@ -114,10 +117,10 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
         return {
             "year": year,
             "rows": rows,
-            "months": self.MONTH_HEADERS,
+            "months": month_headers,
             "member_count": member_count,
             "total_amount": total_amount,
-            "totals": {month: round(total_by_month[month], 2) for month, _label in self.MONTH_HEADERS},
+            "totals": {month: round(total_by_month[month], 2) for month, _label in month_headers},
             "type_names": type_names,
         }
 
@@ -127,7 +130,8 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
 
     @api.model
     def _build_report_html(self, payload):
-        column_count = len(self.MONTH_HEADERS) + 2
+        month_headers = self._month_headers()
+        column_count = len(month_headers) + 2
         if not payload["rows"]:
             filter_text = escape(", ".join(payload.get("type_names") or [])) or escape(_("Todos los tipos"))
             return f"""
@@ -154,7 +158,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
                             <th>Miembro</th>
             """
         )
-        for _month, label in self.MONTH_HEADERS:
+        for _month, label in month_headers:
             html_parts.append(f"<th class='text-center'>{escape(label)}</th>")
         html_parts.append("<th class='text-end'>Total</th></tr></thead><tbody>")
 
@@ -168,14 +172,14 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
                 )
                 for member_row in red_row["members"]:
                     html_parts.append(f"<tr><td>{escape(member_row['name'])}</td>")
-                    for month, _label in self.MONTH_HEADERS:
+                    for month, _label in month_headers:
                         html_parts.append(
                             f"<td class='text-end'>{escape(self._format_amount(member_row['months'].get(month, 0.0)))}</td>"
                         )
                     html_parts.append(f"<td class='text-end'><strong>{escape(self._format_amount(member_row['total']))}</strong></td></tr>")
 
         html_parts.append("<tr class='table-secondary'><td><strong>Total general</strong></td>")
-        for month, _label in self.MONTH_HEADERS:
+        for month, _label in month_headers:
             html_parts.append(
                 f"<td class='text-end'><strong>{escape(self._format_amount(payload['totals'].get(month, 0.0)))}</strong></td>"
             )
@@ -192,6 +196,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
 
     @api.model
     def _export_payload_to_xlsx(self, payload, include_amounts=True):
+        month_headers = self._month_headers()
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {"in_memory": True})
         worksheet = workbook.add_worksheet(_("Contribuciones")[:31])
@@ -203,7 +208,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
         total_fmt = workbook.add_format({"bold": True, "bg_color": "#FFF2CC", "border": 1, "num_format": "#,##0.00"})
         check_total_fmt = workbook.add_format({"bold": True, "bg_color": "#FFF2CC", "border": 1})
 
-        headers = [_("Miembro")] + [label for _month, label in self.MONTH_HEADERS] + [_("Total")]
+        headers = [_("Miembro")] + [label for _month, label in month_headers] + [_("Total")]
         for col, title in enumerate(headers):
             worksheet.write(0, col, title, header_fmt)
 
@@ -217,7 +222,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
                 for member_row in red_row["members"]:
                     worksheet.write(row_idx, 0, member_row["name"], text_fmt)
                     month_checks = 0
-                    for col_offset, (month, _label) in enumerate(self.MONTH_HEADERS, start=1):
+                    for col_offset, (month, _label) in enumerate(month_headers, start=1):
                         amount = member_row["months"].get(month, 0.0)
                         if include_amounts:
                             if amount:
@@ -235,7 +240,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
                     row_idx += 1
 
         worksheet.write(row_idx, 0, _("Total general"), check_total_fmt if not include_amounts else total_fmt)
-        for col_offset, (month, _label) in enumerate(self.MONTH_HEADERS, start=1):
+        for col_offset, (month, _label) in enumerate(month_headers, start=1):
             if include_amounts:
                 worksheet.write_number(row_idx, col_offset, payload["totals"].get(month, 0.0), total_fmt)
             else:
@@ -252,7 +257,7 @@ class IemFinancialContributionReportMixin(models.AbstractModel):
             for predio_row in payload["rows"]:
                 for red_row in predio_row["reds"]:
                     for member_row in red_row["members"]:
-                        total_checks += sum(1 for month, _label in self.MONTH_HEADERS if member_row["months"].get(month, 0.0))
+                        total_checks += sum(1 for month, _label in month_headers if member_row["months"].get(month, 0.0))
             worksheet.write_number(row_idx, len(headers) - 1, total_checks, check_total_fmt)
 
         worksheet.set_column(0, 0, 36)
