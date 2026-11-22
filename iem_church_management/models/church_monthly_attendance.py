@@ -106,13 +106,26 @@ class ChurchMonthlyAttendance(models.Model):
             week_end += timedelta(days=7)
 
     @api.model
-    def _monthly_report_html(self, rows):
-        headers = (
-            _("Discipulado"), _("Célula"), _("Realizadas"), _("Históricas"), _("Canceladas"),
-            _("Pendientes"), _("Asistencias de miembros"), _("Promedio de miembros"), _("Miembros distintos"), _("Invitados"),
-            _("Reuniones con conteo"), _("Alertas"),
+    def _monthly_report_html(self, rows, *, show_column_help=False):
+        columns = (
+            (_("Discipulado"), None),
+            (_("Célula"), None),
+            (_("Realizadas"), _("Reuniones del mes confirmadas como realizadas.")),
+            (_("Históricas"), _("Registros anteriores sin confirmación de si la reunión se realizó.")),
+            (_("Canceladas"), _("Reuniones del mes marcadas como canceladas.")),
+            (_("Pendientes"), _("Semanas cerradas que aún requieren registrar o confirmar la reunión.")),
+            (_("Asistencias de miembros"), _("Suma de asistencias registradas. Una persona puede contar más de una vez si asistió a varias reuniones.")),
+            (_("Promedio de miembros"), _("Asistencias de miembros divididas entre las reuniones contabilizadas.")),
+            (_("Miembros distintos"), _("Miembros que asistieron al menos una vez. Cada persona cuenta una sola vez.")),
+            (_("Invitados"), _("Total de invitados en las reuniones que tienen conteo registrado.")),
+            (_("Reuniones con conteo"), _("Cantidad de reuniones con conteo de invitados sobre el total de reuniones contabilizadas.")),
+            (_("Alertas"), _("Avisos de la célula sobre reportes pendientes, falta de invitados, inasistencias o consolidación pendiente.")),
         )
-        headings = Markup("").join(Markup("<th>%s</th>") % header for header in headers)
+        headings = Markup("").join(
+            Markup('<th scope="col" title="%s">%s <sup>ⓘ</sup></th>') % (help_text, label)
+            if show_column_help and help_text else Markup('<th scope="col">%s</th>') % label
+            for label, help_text in columns
+        )
         table_rows = []
         for row in rows:
             values = (
@@ -208,6 +221,10 @@ class ChurchMonthlyAttendanceReport(models.TransientModel):
     discipulado_id = fields.Many2one("iem.church.discipulado", string="Discipulado")
     report_html = fields.Html(compute="_compute_report_html")
 
+    def _compute_display_name(self):
+        for wizard in self:
+            wizard.display_name = _("Reporte mensual de células")
+
     def _cell_domain(self):
         self.ensure_one()
         domain = [("discipulado_id.active", "=", True), ("discipulado_id.red_id.active", "=", True)]
@@ -244,4 +261,4 @@ class ChurchMonthlyAttendanceReport(models.TransientModel):
         for wizard in self:
             cells = self.env["iem.church.celula"].search(wizard._cell_domain(), order="discipulado_id, name")
             rows = report._monthly_rows(cells, wizard.month, report._report_today()) if wizard.month else []
-            wizard.report_html = report._monthly_report_html(rows)
+            wizard.report_html = report._monthly_report_html(rows, show_column_help=True)

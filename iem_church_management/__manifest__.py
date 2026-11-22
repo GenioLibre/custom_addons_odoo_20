@@ -1,6 +1,6 @@
 {
     "name": "IEM Church Management",
-    "version": "20.0.1.1.5",
+    "version": "20.0.1.1.6",
     "category": "Industries",
     "summary": "Church membership and organizational structure management",
     "author": "IEM",
