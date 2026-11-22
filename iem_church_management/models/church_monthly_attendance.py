@@ -141,11 +141,12 @@ class ChurchMonthlyAttendance(models.Model):
         cron.nextcall = next_call.astimezone(timezone.utc).replace(tzinfo=None)
 
     @api.model
-    def _cron_email_monthly_attendance(self, *, manual=False):
+    def _cron_email_monthly_attendance(self, *, manual=False, author=None):
         today = self._report_today()
         if not manual and today.day != 1:
             return
         month = today.replace(day=1) - relativedelta(months=1)
+        author = author or self.env.ref("base.user_admin").partner_id
         cells = self.env["iem.church.celula"].search([
             ("discipulado_id.active", "=", True), ("discipulado_id.red_id.active", "=", True),
         ], order="discipulado_id, name")
@@ -180,6 +181,7 @@ class ChurchMonthlyAttendance(models.Model):
                         ),
                         "recipient_ids": [fields.Command.link(recipient.id)],
                         "email_from": self.env.company.email_formatted or False,
+                        "author_id": author.id,
                         "auto_delete": False,
                     })
             except Exception:

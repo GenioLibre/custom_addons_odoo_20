@@ -15,5 +15,5 @@ class IrCron(models.Model):
 
         self.check_access("write")
         attendance = self.env["iem.church.weekly.attendance"].with_user(self.user_id)
-        attendance._cron_email_monthly_attendance(manual=True)
+        attendance._cron_email_monthly_attendance(manual=True, author=self.env.user.partner_id)
         return True
