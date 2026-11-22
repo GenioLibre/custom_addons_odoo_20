@@ -273,7 +273,8 @@ class IemChurchWeeklyAttendance(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
-        records.ensure_member_lines()
+        if not (self.env.su and self.env.context.get('iem_import_historical_attendance')):
+            records.ensure_member_lines()
         return records
 
 

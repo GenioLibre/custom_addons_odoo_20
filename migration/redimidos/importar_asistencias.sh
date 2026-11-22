@@ -26,7 +26,7 @@ headers, lines = rows
 if (len(headers), len(lines)) != (160, 1132):
     raise ValueError("El origen difiere del inventario de este ensayo")
 model = "iem.church.weekly.attendance"
-ctx = dict(tracking_disable=True, active_test=False, mail_create_nosubscribe=True)
+ctx = dict(iem_import_historical_attendance=True, tracking_disable=True, active_test=False, mail_create_nosubscribe=True)
 def import_row(target, key, values, seen):
     rec = env.ref("redimidos18." + key, raise_if_not_found=False)
     if not rec:
