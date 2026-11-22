@@ -141,9 +141,9 @@ class ChurchMonthlyAttendance(models.Model):
         cron.nextcall = next_call.astimezone(timezone.utc).replace(tzinfo=None)
 
     @api.model
-    def _cron_email_monthly_attendance(self):
+    def _cron_email_monthly_attendance(self, *, manual=False):
         today = self._report_today()
-        if today.day != 1:
+        if not manual and today.day != 1:
             return
         month = today.replace(day=1) - relativedelta(months=1)
         cells = self.env["iem.church.celula"].search([

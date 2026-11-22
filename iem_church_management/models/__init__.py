@@ -15,3 +15,5 @@ from . import res_config_settings
 from . import res_users
 from . import church_cell_followup
 from . import church_monthly_attendance
+
+from . import ir_cron
