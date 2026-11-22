@@ -1,4 +1,3 @@
-import base64
 import time
 from datetime import date, datetime
 from urllib.parse import quote
@@ -26,22 +25,11 @@ class IemChurchWebsite(http.Controller):
         partner_model = request.env["res.partner"].sudo()
         domain = [("country_id", "=", country_id)] if country_id else []
 
-        provinces_data = partner_model.read_group(
-            domain + [("city", "!=", False)],
-            ["city"],
-            ["city"],
-            lazy=False,
-        )
-        districts_data = partner_model.read_group(
-            domain + [("district", "!=", False)],
-            ["district"],
-            ["district"],
-            lazy=False,
-        )
+        def suggestions(field):
+            rows = partner_model._read_group(domain + [(field, "!=", False)], groupby=[field])
+            return sorted({value.strip() for (value,) in rows if value and value.strip()})
 
-        provinces = sorted({(row.get("city") or "").strip() for row in provinces_data if row.get("city")})
-        districts = sorted({(row.get("district") or "").strip() for row in districts_data if row.get("district")})
-        return provinces, districts
+        return suggestions("city"), suggestions("district")
 
     def _get_public_form_settings(self):
         params = request.env["ir.config_parameter"].sudo()
@@ -540,7 +528,7 @@ class IemChurchWebsite(http.Controller):
                     verify_resolution=True,
                     quality=75,
                 )
-                image_1920 = base64.b64encode(processed) if processed else False
+                image_1920 = processed or False
             except Exception:
                 return self._render_public_form(
                     form=form_values,
@@ -784,7 +772,7 @@ class IemChurchWebsite(http.Controller):
                     verify_resolution=True,
                     quality=75,
                 )
-                extra_vals["extra_image"] = base64.b64encode(processed) if processed else False
+                extra_vals["extra_image"] = processed or False
             except Exception:
                 return self._render_public_member_list_form(
                     form=form_values,
