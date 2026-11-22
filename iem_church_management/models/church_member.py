@@ -118,7 +118,7 @@ class ChurchMember(models.Model):
 
     def init(self):
         # Migration safeguard after removing `participante` from selection.
-        self._cr.execute(
+        self.env.cr.execute(
             """
             UPDATE church_member
                SET current_position = 'miembro'

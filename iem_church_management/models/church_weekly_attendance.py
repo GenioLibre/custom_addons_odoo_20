@@ -42,7 +42,7 @@ class IemChurchWeeklyAttendance(models.Model):
         readonly=True,
     )
     line_ids = fields.One2many("iem.church.weekly.attendance.line", "attendance_id", string="Miembros")
-    total_members = fields.Integer(string="Miembros", compute="_compute_attendance_totals", store=True)
+    total_members = fields.Integer(string="Total de miembros", compute="_compute_attendance_totals", store=True)
     total_attended_celula = fields.Integer(string="Asistencia a célula", compute="_compute_attendance_totals", store=True)
     total_attended_culto = fields.Integer(string="Asistencia al culto", compute="_compute_attendance_totals", store=True)
     total_attended_discipulado = fields.Integer(string="Asistencia al discipulado", compute="_compute_attendance_totals", store=True)

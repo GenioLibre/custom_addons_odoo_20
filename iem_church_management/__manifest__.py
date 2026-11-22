@@ -9,7 +9,7 @@
     "data": [
         "security/iem_church_management_groups.xml",
         "security/iem_church_management_rules.xml",
-        "security/ir.model.access.csv",
+
         "data/identification_type.xml",
         "data/church_member_sequence.xml",
         "data/church_member_export_action.xml",

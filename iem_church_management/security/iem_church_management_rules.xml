@@ -1,361 +1,745 @@
 <odoo>
-    <!-- res.partner rules -->
-    <record id="rule_iem_partner_admin" model="ir.rule">
-        <field name="name">IEM Partner Admin</field>
-        <field name="model_id" ref="base.model_res_partner" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_role_admin" model="ir.access">
+        <field name="name">access_iem_role_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_role"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-    <!-- ir.module.module rules -->
-    <record id="rule_iem_module_admin" model="ir.rule">
-        <field name="name">IEM Module Admin</field>
-        <field name="model_id" ref="base.model_ir_module_module" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_role_read" model="ir.access">
+        <field name="name">access_iem_role_read</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_role"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">r</field>
     </record>
-
-    <record id="rule_iem_module_system" model="ir.rule">
-        <field name="name">IEM Module System</field>
-        <field name="model_id" ref="base.model_ir_module_module" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_role_read_pastor" model="ir.access">
+        <field name="name">access_iem_role_read_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_role"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">r</field>
     </record>
-
-    <record id="rule_iem_module_internal_block" model="ir.rule">
-        <field name="name">IEM Module Internal Block</field>
-        <field name="model_id" ref="base.model_ir_module_module" />
-        <field name="domain_force">[(0, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_user'))]" />
+    <record id="access_iem_role_read_discipulador" model="ir.access">
+        <field name="name">access_iem_role_read_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_role"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">r</field>
     </record>
-    <!-- Predio rules -->
-    <record id="rule_iem_predio_admin" model="ir.rule">
-        <field name="name">IEM Predio Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_predio" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_role_admin_system" model="ir.access">
+        <field name="name">access_iem_role_admin_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_role"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_iem_predio_system" model="ir.rule">
-        <field name="name">IEM Predio System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_predio" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_predio_admin" model="ir.access">
+        <field name="name">access_iem_predio_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_predio"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-
-    <!-- Red rules -->
-    <record id="rule_iem_red_admin" model="ir.rule">
-        <field name="name">IEM Red Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_red" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_predio_read_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_predio_read_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_predio"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_iem_red_system" model="ir.rule">
-        <field name="name">IEM Red System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_red" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_predio_read_pastor" model="ir.access">
+        <field name="name">access_iem_predio_read_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_predio"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
     </record>
-
-
-    <!-- Discipulado rules -->
-    <record id="rule_iem_discipulado_admin" model="ir.rule">
-        <field name="name">IEM Discipulado Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_predio_read_discipulador" model="ir.access">
+        <field name="name">access_iem_predio_read_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_predio"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">r</field>
     </record>
-
-    <record id="rule_iem_discipulado_system" model="ir.rule">
-        <field name="name">IEM Discipulado System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_predio_admin_system" model="ir.access">
+        <field name="name">access_iem_predio_admin_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_predio"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-
-    <!-- Celula rules -->
-    <record id="rule_iem_celula_admin" model="ir.rule">
-        <field name="name">IEM Celula Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_celula" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_red_admin" model="ir.access">
+        <field name="name">access_iem_red_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_red"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_iem_celula_system" model="ir.rule">
-        <field name="name">IEM Celula System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_celula" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_red_read_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_red_read_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_red"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
     </record>
-
-    <!-- Church Member rules -->
-    <record id="rule_church_member_admin" model="ir.rule">
-        <field name="name">Church Member Admin</field>
-        <field name="model_id" ref="iem_church_management.model_church_member" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_red_read_pastor" model="ir.access">
+        <field name="name">access_iem_red_read_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_red"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_church_member_system" model="ir.rule">
-        <field name="name">Church Member System</field>
-        <field name="model_id" ref="iem_church_management.model_church_member" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_red_read_discipulador" model="ir.access">
+        <field name="name">access_iem_red_read_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_red"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">r</field>
     </record>
-
-    <record id="rule_church_member_pastor_gobierno" model="ir.rule">
-        <field name="name">Church Member Pastor Gobierno</field>
-        <field name="model_id" ref="iem_church_management.model_church_member" />
-        <field name="domain_force">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    <record id="access_iem_red_admin_system" model="ir.access">
+        <field name="name">access_iem_red_admin_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_red"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_church_member_pastor" model="ir.rule">
-        <field name="name">Church Member Pastor</field>
-        <field name="model_id" ref="iem_church_management.model_church_member" />
-        <field name="domain_force">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    <record id="access_iem_discipulado_admin" model="ir.access">
+        <field name="name">access_iem_discipulado_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_church_member_discipulador" model="ir.rule">
-        <field name="name">Church Member Discipulador</field>
-        <field name="model_id" ref="iem_church_management.model_church_member" />
-        <field name="domain_force">['&amp;', '&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id), ('discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    <record id="access_iem_discipulado_read_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_discipulado_read_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
     </record>
-
-    <!-- Church Member List rules -->
-    <record id="rule_member_list_admin" model="ir.rule">
-        <field name="name">Member List Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_discipulado_read_pastor" model="ir.access">
+        <field name="name">access_iem_discipulado_read_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_member_list_system" model="ir.rule">
-        <field name="name">Member List System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_discipulado_read_discipulador" model="ir.access">
+        <field name="name">access_iem_discipulado_read_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">r</field>
     </record>
-
-    <record id="rule_member_list_pastor_gobierno" model="ir.rule">
-        <field name="name">Member List Pastor Gobierno</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
-        <field name="domain_force">['|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), '|', '&amp;', ('creator_scope_role', '=', 'pastor'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('creator_scope_role', '=', 'discipulador'), ('scope_predio_id', '=', user.partner_id.predio_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    <record id="access_iem_discipulado_admin_system" model="ir.access">
+        <field name="name">access_iem_discipulado_admin_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_discipulado"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_member_list_pastor" model="ir.rule">
-        <field name="name">Member List Pastor</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
-        <field name="domain_force">['|', '|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('creator_scope_role', '=', 'discipulador'), ('scope_red_id', '=', user.partner_id.red_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    <record id="access_iem_celula_admin" model="ir.access">
+        <field name="name">access_iem_celula_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_celula"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_member_list_discipulador" model="ir.rule">
-        <field name="name">Member List Discipulador</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list" />
-        <field name="domain_force">['|', '|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor'), ('visibility', '=', 'public'), ('scope_red_id', '=', user.partner_id.red_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'discipulador'), ('visibility', '=', 'public'), ('scope_red_id', '=', user.partner_id.red_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    <record id="access_iem_celula_read_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_celula_read_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_celula"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_member_list_line_admin" model="ir.rule">
-        <field name="name">Member List Line Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_celula_read_pastor" model="ir.access">
+        <field name="name">access_iem_celula_read_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_celula"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_member_list_line_system" model="ir.rule">
-        <field name="name">Member List Line System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_celula_read_discipulador" model="ir.access">
+        <field name="name">access_iem_celula_read_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_celula"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">r</field>
     </record>
-
-    <record id="rule_member_list_line_pastor_gobierno" model="ir.rule">
-        <field name="name">Member List Line Pastor Gobierno</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
-        <field name="domain_force">['|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), '|', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    <record id="access_iem_celula_admin_system" model="ir.access">
+        <field name="name">access_iem_celula_admin_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_celula"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_member_list_line_pastor" model="ir.rule">
-        <field name="name">Member List Line Pastor</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
-        <field name="domain_force">['|', '|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    <record id="access_church_member_admin" model="ir.access">
+        <field name="name">access_church_member_admin</field>
+        <field name="model_id" ref="iem_church_management.model_church_member"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_member_list_line_discipulador" model="ir.rule">
-        <field name="name">Member List Line Discipulador</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line" />
-        <field name="domain_force">['|', '|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.visibility', '=', 'public'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.visibility', '=', 'public'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    <record id="access_church_member_read" model="ir.access">
+        <field name="name">access_church_member_read</field>
+        <field name="model_id" ref="iem_church_management.model_church_member"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
     </record>
-
-    <!-- Weekly Attendance rules -->
-    <record id="rule_weekly_attendance_admin" model="ir.rule">
-        <field name="name">Weekly Attendance Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_church_member_read_pastor" model="ir.access">
+        <field name="name">access_church_member_read_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_church_member"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+        <field name="domain">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
     </record>
-
-    <record id="rule_weekly_attendance_system" model="ir.rule">
-        <field name="name">Weekly Attendance System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_church_member_read_discipulador" model="ir.access">
+        <field name="name">access_church_member_read_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_church_member"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">crud</field>
+        <field name="domain">['&amp;', '&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id), ('discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
     </record>
-
-    <record id="rule_weekly_attendance_pastor_gobierno" model="ir.rule">
-        <field name="name">Weekly Attendance Pastor Gobierno</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
-        <field name="domain_force">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    <record id="access_church_member_admin_system" model="ir.access">
+        <field name="name">access_church_member_admin_system</field>
+        <field name="model_id" ref="iem_church_management.model_church_member"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_weekly_attendance_pastor" model="ir.rule">
-        <field name="name">Weekly Attendance Pastor</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
-        <field name="domain_force">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    <record id="access_res_partner_pastor_gobierno" model="ir.access">
+        <field name="name">access_res_partner_pastor_gobierno</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">cru</field>
     </record>
-
-    <record id="rule_weekly_attendance_discipulador" model="ir.rule">
-        <field name="name">Weekly Attendance Discipulador</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance" />
-        <field name="domain_force">['&amp;', '&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id), ('discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    <record id="access_res_partner_pastor" model="ir.access">
+        <field name="name">access_res_partner_pastor</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">cru</field>
     </record>
-
-    <record id="rule_weekly_attendance_line_admin" model="ir.rule">
-        <field name="name">Weekly Attendance Line Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_res_partner_discipulador" model="ir.access">
+        <field name="name">access_res_partner_discipulador</field>
+        <field name="model_id" ref="base.model_res_partner"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">cru</field>
     </record>
-
-    <record id="rule_weekly_attendance_line_system" model="ir.rule">
-        <field name="name">Weekly Attendance Line System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_member_list_admin" model="ir.access">
+        <field name="name">access_iem_member_list_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_weekly_attendance_line_pastor_gobierno" model="ir.rule">
-        <field name="name">Weekly Attendance Line Pastor Gobierno</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
-        <field name="domain_force">[('attendance_id.predio_id', '=', user.partner_id.predio_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    <record id="access_iem_member_list_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_member_list_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), '|', '&amp;', ('creator_scope_role', '=', 'pastor'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('creator_scope_role', '=', 'discipulador'), ('scope_predio_id', '=', user.partner_id.predio_id.id)]</field>
     </record>
-
-    <record id="rule_weekly_attendance_line_pastor" model="ir.rule">
-        <field name="name">Weekly Attendance Line Pastor</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
-        <field name="domain_force">['&amp;', ('attendance_id.predio_id', '=', user.partner_id.predio_id.id), ('attendance_id.red_id', '=', user.partner_id.red_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    <record id="access_iem_member_list_pastor" model="ir.access">
+        <field name="name">access_iem_member_list_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', '|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('creator_scope_role', '=', 'discipulador'), ('scope_red_id', '=', user.partner_id.red_id.id)]</field>
     </record>
-
-    <record id="rule_weekly_attendance_line_discipulador" model="ir.rule">
-        <field name="name">Weekly Attendance Line Discipulador</field>
-        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line" />
-        <field name="domain_force">['&amp;', '&amp;', ('attendance_id.predio_id', '=', user.partner_id.predio_id.id), ('attendance_id.red_id', '=', user.partner_id.red_id.id), ('attendance_id.discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_discipulador'))]" />
+    <record id="access_iem_member_list_discipulador" model="ir.access">
+        <field name="name">access_iem_member_list_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', '|', '|', '|', ('create_uid', '=', user.id), '&amp;', ('creator_scope_role', '=', 'admin'), ('visibility', '=', 'public'), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor_gobierno'), ('visibility', '=', 'public'), ('scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'pastor'), ('visibility', '=', 'public'), ('scope_red_id', '=', user.partner_id.red_id.id), '&amp;', '&amp;', ('creator_scope_role', '=', 'discipulador'), ('visibility', '=', 'public'), ('scope_red_id', '=', user.partner_id.red_id.id)]</field>
     </record>
-
-
-    <!-- Financial Contribution Type rules -->
-    <record id="rule_iem_financial_contribution_type_admin" model="ir.rule">
-        <field name="name">Financial Contribution Type Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_member_list_system" model="ir.access">
+        <field name="name">access_iem_member_list_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_iem_financial_contribution_type_system" model="ir.rule">
-        <field name="name">Financial Contribution Type System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_member_list_line_admin" model="ir.access">
+        <field name="name">access_iem_member_list_line_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_iem_financial_contribution_type_pastor_gobierno" model="ir.rule">
-        <field name="name">Financial Contribution Type Pastor Gobierno</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    <record id="access_iem_member_list_line_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_member_list_line_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), '|', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id)]</field>
     </record>
-
-    <record id="rule_iem_financial_contribution_type_pastor" model="ir.rule">
-        <field name="name">Financial Contribution Type Pastor</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    <record id="access_iem_member_list_line_pastor" model="ir.access">
+        <field name="name">access_iem_member_list_line_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', '|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id)]</field>
     </record>
-
-    <!-- Financial Contribution rules -->
-    <record id="rule_iem_financial_contribution_admin" model="ir.rule">
-        <field name="name">Financial Contribution Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_member_list_line_discipulador" model="ir.access">
+        <field name="name">access_iem_member_list_line_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">crud</field>
+        <field name="domain">['|', '|', '|', '|', ('list_id.create_uid', '=', user.id), '&amp;', ('list_id.creator_scope_role', '=', 'admin'), ('list_id.visibility', '=', 'public'), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor_gobierno'), ('list_id.visibility', '=', 'public'), ('list_id.scope_predio_id', '=', user.partner_id.predio_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'pastor'), ('list_id.visibility', '=', 'public'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id), '&amp;', '&amp;', ('list_id.creator_scope_role', '=', 'discipulador'), ('list_id.visibility', '=', 'public'), ('list_id.scope_red_id', '=', user.partner_id.red_id.id)]</field>
     </record>
-
-    <record id="rule_iem_financial_contribution_system" model="ir.rule">
-        <field name="name">Financial Contribution System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_member_list_line_system" model="ir.access">
+        <field name="name">access_iem_member_list_line_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_list_line"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_iem_financial_contribution_pastor_gobierno" model="ir.rule">
-        <field name="name">Financial Contribution Pastor Gobierno</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution" />
-        <field name="domain_force">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    <record id="access_iem_member_position_option_admin" model="ir.access">
+        <field name="name">access_iem_member_position_option_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_position_option"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_iem_financial_contribution_pastor" model="ir.rule">
-        <field name="name">Financial Contribution Pastor</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution" />
-        <field name="domain_force">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    <record id="access_iem_member_position_option_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_member_position_option_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_position_option"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">r</field>
     </record>
-
-
-    <!-- Financial Payment Method rules -->
-    <record id="rule_iem_financial_payment_method_admin" model="ir.rule">
-        <field name="name">Financial Payment Method Admin</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_admin'))]" />
+    <record id="access_iem_member_position_option_pastor" model="ir.access">
+        <field name="name">access_iem_member_position_option_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_position_option"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">r</field>
     </record>
-
-    <record id="rule_iem_financial_payment_method_system" model="ir.rule">
-        <field name="name">Financial Payment Method System</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('base.group_system'))]" />
+    <record id="access_iem_member_position_option_discipulador" model="ir.access">
+        <field name="name">access_iem_member_position_option_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_position_option"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">r</field>
     </record>
-
-    <record id="rule_iem_financial_payment_method_pastor_gobierno" model="ir.rule">
-        <field name="name">Financial Payment Method Pastor Gobierno</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor_gobierno'))]" />
+    <record id="access_iem_member_position_option_system" model="ir.access">
+        <field name="name">access_iem_member_position_option_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_member_position_option"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
     </record>
-
-    <record id="rule_iem_financial_payment_method_pastor" model="ir.rule">
-        <field name="name">Financial Payment Method Pastor</field>
-        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method" />
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('iem_church_management.group_iem_pastor'))]" />
+    <record id="access_iem_weekly_attendance_admin" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
     </record>
-
+    <record id="access_iem_weekly_attendance_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
+    </record>
+    <record id="access_iem_weekly_attendance_pastor" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+        <field name="domain">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
+    </record>
+    <record id="access_iem_weekly_attendance_discipulador" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">crud</field>
+        <field name="domain">['&amp;', '&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id), ('discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
+    </record>
+    <record id="access_iem_weekly_attendance_system" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_weekly_attendance_line_admin" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_line_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_weekly_attendance_line_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_line_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('attendance_id.predio_id', '=', user.partner_id.predio_id.id)]</field>
+    </record>
+    <record id="access_iem_weekly_attendance_line_pastor" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_line_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+        <field name="domain">['&amp;', ('attendance_id.predio_id', '=', user.partner_id.predio_id.id), ('attendance_id.red_id', '=', user.partner_id.red_id.id)]</field>
+    </record>
+    <record id="access_iem_weekly_attendance_line_discipulador" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_line_discipulador</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_discipulador"/>
+        <field name="operation">crud</field>
+        <field name="domain">['&amp;', '&amp;', ('attendance_id.predio_id', '=', user.partner_id.predio_id.id), ('attendance_id.red_id', '=', user.partner_id.red_id.id), ('attendance_id.discipulado_id', '=', user.partner_id.discipulado_id.id)]</field>
+    </record>
+    <record id="access_iem_weekly_attendance_line_system" model="ir.access">
+        <field name="name">access_iem_weekly_attendance_line_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_church_weekly_attendance_line"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_admin" model="ir.access">
+        <field name="name">access_iem_financial_contribution_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_financial_contribution_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('predio_id', '=', user.partner_id.predio_id.id)]</field>
+    </record>
+    <record id="access_iem_financial_contribution_pastor" model="ir.access">
+        <field name="name">access_iem_financial_contribution_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+        <field name="domain">['&amp;', ('predio_id', '=', user.partner_id.predio_id.id), ('red_id', '=', user.partner_id.red_id.id)]</field>
+    </record>
+    <record id="access_iem_financial_contribution_system" model="ir.access">
+        <field name="name">access_iem_financial_contribution_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_type_admin" model="ir.access">
+        <field name="name">access_iem_financial_contribution_type_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_type_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_financial_contribution_type_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_type_pastor" model="ir.access">
+        <field name="name">access_iem_financial_contribution_type_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_type_system" model="ir.access">
+        <field name="name">access_iem_financial_contribution_type_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_type"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_payment_method_admin" model="ir.access">
+        <field name="name">access_iem_financial_payment_method_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_payment_method_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_financial_payment_method_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_payment_method_pastor" model="ir.access">
+        <field name="name">access_iem_financial_payment_method_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_payment_method_system" model="ir.access">
+        <field name="name">access_iem_financial_payment_method_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_payment_method"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_year_wizard_admin" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_year_wizard_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_year_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_year_wizard_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_year_wizard_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_year_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_year_wizard_pastor" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_year_wizard_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_year_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_year_wizard_system" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_year_wizard_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_year_wizard"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_wizard_admin" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_wizard_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_wizard_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_wizard_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_wizard_pastor" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_wizard_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_wizard_system" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_wizard_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_wizard"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_export_wizard_admin" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_export_wizard_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_export_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_export_wizard_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_export_wizard_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_export_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_export_wizard_pastor" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_export_wizard_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_export_wizard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_financial_contribution_report_export_wizard_system" model="ir.access">
+        <field name="name">access_iem_financial_contribution_report_export_wizard_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_financial_contribution_report_export_wizard"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_academy_dashboard_admin" model="ir.access">
+        <field name="name">access_iem_academy_dashboard_admin</field>
+        <field name="model_id" ref="iem_church_management.model_iem_academy_dashboard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_academy_dashboard_pastor_gobierno" model="ir.access">
+        <field name="name">access_iem_academy_dashboard_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_iem_academy_dashboard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">r</field>
+    </record>
+    <record id="access_iem_academy_dashboard_pastor" model="ir.access">
+        <field name="name">access_iem_academy_dashboard_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_iem_academy_dashboard"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">r</field>
+    </record>
+    <record id="access_iem_academy_dashboard_system" model="ir.access">
+        <field name="name">access_iem_academy_dashboard_system</field>
+        <field name="model_id" ref="iem_church_management.model_iem_academy_dashboard"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_cursos_admin" model="ir.access">
+        <field name="name">access_academia_cursos_admin</field>
+        <field name="model_id" ref="iem_church_management.model_academia_cursos"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_cursos_pastor_gobierno" model="ir.access">
+        <field name="name">access_academia_cursos_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_academia_cursos"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_cursos_pastor" model="ir.access">
+        <field name="name">access_academia_cursos_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_academia_cursos"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_cursos_system" model="ir.access">
+        <field name="name">access_academia_cursos_system</field>
+        <field name="model_id" ref="iem_church_management.model_academia_cursos"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_materia_admin" model="ir.access">
+        <field name="name">access_academia_materia_admin</field>
+        <field name="model_id" ref="iem_church_management.model_academia_materia"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_materia_pastor_gobierno" model="ir.access">
+        <field name="name">access_academia_materia_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_academia_materia"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_materia_pastor" model="ir.access">
+        <field name="name">access_academia_materia_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_academia_materia"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_materia_system" model="ir.access">
+        <field name="name">access_academia_materia_system</field>
+        <field name="model_id" ref="iem_church_management.model_academia_materia"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_materia_clase_admin" model="ir.access">
+        <field name="name">access_academia_materia_clase_admin</field>
+        <field name="model_id" ref="iem_church_management.model_academia_materia_clase"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_materia_clase_pastor_gobierno" model="ir.access">
+        <field name="name">access_academia_materia_clase_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_academia_materia_clase"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_materia_clase_pastor" model="ir.access">
+        <field name="name">access_academia_materia_clase_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_academia_materia_clase"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_materia_clase_system" model="ir.access">
+        <field name="name">access_academia_materia_clase_system</field>
+        <field name="model_id" ref="iem_church_management.model_academia_materia_clase"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_periodo_lectivo_admin" model="ir.access">
+        <field name="name">access_academia_periodo_lectivo_admin</field>
+        <field name="model_id" ref="iem_church_management.model_academia_periodo_lectivo"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_periodo_lectivo_pastor_gobierno" model="ir.access">
+        <field name="name">access_academia_periodo_lectivo_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_academia_periodo_lectivo"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_periodo_lectivo_pastor" model="ir.access">
+        <field name="name">access_academia_periodo_lectivo_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_academia_periodo_lectivo"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_periodo_lectivo_system" model="ir.access">
+        <field name="name">access_academia_periodo_lectivo_system</field>
+        <field name="model_id" ref="iem_church_management.model_academia_periodo_lectivo"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_inscripcion_admin" model="ir.access">
+        <field name="name">access_academia_inscripcion_admin</field>
+        <field name="model_id" ref="iem_church_management.model_academia_inscripcion"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_inscripcion_pastor_gobierno" model="ir.access">
+        <field name="name">access_academia_inscripcion_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_academia_inscripcion"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_inscripcion_pastor" model="ir.access">
+        <field name="name">access_academia_inscripcion_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_academia_inscripcion"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_inscripcion_system" model="ir.access">
+        <field name="name">access_academia_inscripcion_system</field>
+        <field name="model_id" ref="iem_church_management.model_academia_inscripcion"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_inscripcion_member_admin" model="ir.access">
+        <field name="name">access_academia_inscripcion_member_admin</field>
+        <field name="model_id" ref="iem_church_management.model_academia_inscripcion_member"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_inscripcion_member_pastor_gobierno" model="ir.access">
+        <field name="name">access_academia_inscripcion_member_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_academia_inscripcion_member"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_inscripcion_member_pastor" model="ir.access">
+        <field name="name">access_academia_inscripcion_member_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_academia_inscripcion_member"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_inscripcion_member_system" model="ir.access">
+        <field name="name">access_academia_inscripcion_member_system</field>
+        <field name="model_id" ref="iem_church_management.model_academia_inscripcion_member"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_asistencia_admin" model="ir.access">
+        <field name="name">access_academia_asistencia_admin</field>
+        <field name="model_id" ref="iem_church_management.model_academia_asistencia"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_asistencia_pastor_gobierno" model="ir.access">
+        <field name="name">access_academia_asistencia_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_academia_asistencia"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_asistencia_pastor" model="ir.access">
+        <field name="name">access_academia_asistencia_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_academia_asistencia"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_asistencia_system" model="ir.access">
+        <field name="name">access_academia_asistencia_system</field>
+        <field name="model_id" ref="iem_church_management.model_academia_asistencia"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_asistencia_line_admin" model="ir.access">
+        <field name="name">access_academia_asistencia_line_admin</field>
+        <field name="model_id" ref="iem_church_management.model_academia_asistencia_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_admin"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_asistencia_line_pastor_gobierno" model="ir.access">
+        <field name="name">access_academia_asistencia_line_pastor_gobierno</field>
+        <field name="model_id" ref="iem_church_management.model_academia_asistencia_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor_gobierno"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_asistencia_line_pastor" model="ir.access">
+        <field name="name">access_academia_asistencia_line_pastor</field>
+        <field name="model_id" ref="iem_church_management.model_academia_asistencia_line"/>
+        <field name="group_id" ref="iem_church_management.group_iem_pastor"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_academia_asistencia_line_system" model="ir.access">
+        <field name="name">access_academia_asistencia_line_system</field>
+        <field name="model_id" ref="iem_church_management.model_academia_asistencia_line"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="access_iem_identification_type_read" model="ir.access">
+        <field name="name">IEM identification type read</field>
+        <field name="model_id" ref="model_iem_identification_type"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="operation">r</field>
+    </record>
+    <record id="access_iem_identification_type_admin" model="ir.access">
+        <field name="name">IEM identification type admin</field>
+        <field name="model_id" ref="model_iem_identification_type"/>
+        <field name="group_id" ref="base.group_system"/>
+        <field name="operation">crud</field>
+    </record>
+    <record id="rule_iem_module_internal_block" model="ir.access">
+        <field name="name">IEM: restringir catálogo de módulos para usuarios internos</field>
+        <field name="model_id" ref="base.model_ir_module_module"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('id', '=', 0)] if user.has_group('base.group_user') and not (user.has_group('base.group_system') or user.has_group('iem_church_management.group_iem_admin')) else []</field>
+    </record>
 </odoo>
