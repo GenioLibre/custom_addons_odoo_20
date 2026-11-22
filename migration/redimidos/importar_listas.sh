@@ -33,7 +33,7 @@ def mapped(kind, sid):
 def save(row, model, cls, prefix, vals, positions=None):
     key = f"{prefix}_{row['id']}"
     uid = mapped("user",row["create_uid"])
-    target = env[model].with_user(uid).sudo().with_context(active_test=False,tracking_disable=True)
+    target = env[model].sudo().with_context(active_test=False,tracking_disable=True)
     rec = env.ref("redimidos18."+key,raise_if_not_found=False)
     if not rec:
         payload = vals.copy()
@@ -41,8 +41,8 @@ def save(row, model, cls, prefix, vals, positions=None):
             payload["position_filter_ids"] = [(6,0,positions)]
         rec = super(cls,target).create(payload)
         env["ir.model.data"].create({"module":"redimidos18","name":key,"model":model,"res_id":rec.id,"noupdate":True})
-    if rec._name != model or rec.create_uid.id != uid:
-        raise ValueError(f"Autor o modelo incorrecto en {key}")
+    if rec._name != model or not rec.exists():
+        raise ValueError(f"Modelo o registro incorrecto en {key}")
     if positions is not None and set(rec.position_filter_ids.ids) != set(positions):
         raise ValueError(f"Cargos incorrectos en {key}")
     for field, expected in vals.items():
@@ -53,8 +53,13 @@ def save(row, model, cls, prefix, vals, positions=None):
             raise ValueError(f"Diferencia en {key}: {field}")
     rec.flush_recordset()
     from odoo.tools import SQL
-    env.cr.execute(SQL("UPDATE %s SET create_date=%s, write_date=%s, write_uid=%s WHERE id=%s", SQL.identifier(rec._table),row["create_date"],row["write_date"],mapped("user",row["write_uid"]) or None,rec.id))
-    rec.invalidate_recordset(["create_date","write_date","write_uid"])
+    writer = mapped("user",row["write_uid"])
+    audit = ["create_uid","create_date","write_date","write_uid"]
+    env.cr.execute(SQL("UPDATE %s SET create_uid=%s, create_date=%s, write_date=%s, write_uid=%s WHERE id=%s", SQL.identifier(rec._table),uid or None,row["create_date"],row["write_date"],writer or None,rec.id))
+    rec.invalidate_recordset(audit)
+    rec.modified(["create_uid"])
+    if rec.create_uid.id != uid or rec.write_uid.id != writer:
+        raise ValueError(f"Auditoría incorrecta después de restaurar {key}")
     return rec.id
 
 header_model = "iem.church.member.list"
