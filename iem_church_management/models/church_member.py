@@ -165,9 +165,9 @@ class ChurchMember(models.Model):
             iem_group_ids = set(member._get_iem_security_group_ids())
             target_group_ids = set(member._get_access_group_ids())
             for user in users:
-                current_group_ids = set(user.groups_id.ids)
+                current_group_ids = set(user.group_ids.ids)
                 new_group_ids = (current_group_ids - iem_group_ids) | target_group_ids
-                user.write({"groups_id": [(6, 0, list(new_group_ids))]})
+                user.write({"group_ids": [(6, 0, list(new_group_ids))]})
 
     @api.depends("name")
     def _compute_name_parts(self):
@@ -644,7 +644,7 @@ class ChurchMember(models.Model):
 
         existing_user = Users.search([("partner_id", "=", self.partner_id.id)], limit=1)
         if existing_user:
-            existing_user.write({"groups_id": [(6, 0, group_ids)], "active": True, "share": False})
+            existing_user.write({"group_ids": [(6, 0, group_ids)], "active": True, "share": False})
             existing_user.with_context(create_user=True).action_reset_password()
             return existing_user._action_show()
 
@@ -654,7 +654,7 @@ class ChurchMember(models.Model):
                 {
                     "name": self.name,
                     "partner_id": self.partner_id.id,
-                    "groups_id": [(6, 0, group_ids)],
+                    "group_ids": [(6, 0, group_ids)],
                     "company_id": self.env.company.id,
                     "company_ids": [(6, 0, [self.env.company.id])],
                     "active": True,
@@ -669,7 +669,7 @@ class ChurchMember(models.Model):
                 "name": self.name,
                 "login": email,
                 "partner_id": self.partner_id.id,
-                "groups_id": [(6, 0, group_ids)],
+                "group_ids": [(6, 0, group_ids)],
                 "company_id": self.env.company.id,
                 "company_ids": [(6, 0, [self.env.company.id])],
                 "share": False,
@@ -685,7 +685,7 @@ class ChurchMember(models.Model):
         if not users:
             return self.action_grant_access()
         group_ids = self._get_access_group_ids()
-        users.write({"groups_id": [(6, 0, group_ids)], "active": True, "share": False})
+        users.write({"group_ids": [(6, 0, group_ids)], "active": True, "share": False})
         return users[0]._action_show()
 
     def action_revoke_access(self):

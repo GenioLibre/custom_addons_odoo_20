@@ -74,7 +74,7 @@
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_iem_academy_dashboard_form" />
         <field name="res_id" ref="iem_academy_dashboard_main" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),

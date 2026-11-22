@@ -56,7 +56,7 @@
         <field name="res_model">iem.church.predio</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_iem_church_predio_list" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),
@@ -101,7 +101,7 @@
         <field name="res_model">iem.church.red</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_iem_church_red_list" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),
@@ -146,7 +146,7 @@
         <field name="res_model">iem.church.discipulado</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_iem_church_discipulado_list" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),
@@ -222,7 +222,7 @@
         <field name="res_model">iem.church.celula</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_iem_church_celula_list" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),

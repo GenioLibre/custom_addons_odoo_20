@@ -269,7 +269,7 @@
         <field name="res_model">iem.church.member.list</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_iem_church_member_list_list" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),

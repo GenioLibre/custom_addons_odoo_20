@@ -98,7 +98,7 @@
         <field name="res_model">iem.financial.contribution</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_iem_financial_contribution_list" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),
@@ -139,7 +139,7 @@
         <field name="res_model">iem.financial.contribution.type</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_iem_financial_contribution_type_list" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),
@@ -180,7 +180,7 @@
         <field name="res_model">iem.financial.payment.method</field>
         <field name="view_mode">list,form</field>
         <field name="view_id" ref="view_iem_financial_payment_method_list" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),

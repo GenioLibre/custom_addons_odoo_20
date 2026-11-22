@@ -177,12 +177,12 @@ class IemChurchMemberList(models.Model):
             rec.filter_member_count = len(rec.member_line_ids.filtered(lambda line: line.source == "filter"))
             rec.manual_member_count = len(rec.member_line_ids.filtered(lambda line: line.source == "manual"))
 
-    @api.depends("create_uid", "create_uid.groups_id")
+    @api.depends("create_uid", "create_uid.all_group_ids")
     def _compute_creator_access_level(self):
         for rec in self:
             rec.creator_access_level = rec._access_level_for_user(rec.create_uid)
 
-    @api.depends("create_uid", "create_uid.groups_id")
+    @api.depends("create_uid", "create_uid.all_group_ids")
     def _compute_creator_scope_role(self):
         for rec in self:
             rec.creator_scope_role = rec._scope_role_for_user(rec.create_uid)

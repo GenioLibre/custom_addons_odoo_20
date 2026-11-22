@@ -107,7 +107,7 @@
         <field name="view_id" ref="view_iem_weekly_attendance_pivot" />
         <field name="context">{'search_default_current_year': 1}</field>
         <field name="search_view_id" ref="view_iem_weekly_attendance_search" />
-        <field name="groups_id" eval="[(6, 0, [
+        <field name="group_ids" eval="[(6, 0, [
             ref('base.group_system'),
             ref('iem_church_management.group_iem_admin'),
             ref('iem_church_management.group_iem_pastor_gobierno'),
