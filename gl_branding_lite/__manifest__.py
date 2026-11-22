@@ -20,6 +20,7 @@
     ],
     "assets": {
         "web.assets_backend": [
+            "gl_branding_lite/static/src/scss/searchview.scss",
             "gl_branding_lite/static/src/js/gl_hide_user_menus.js",
             "gl_branding_lite/static/src/js/gl_web_window_title.js",
         ],

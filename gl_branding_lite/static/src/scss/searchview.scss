@@ -1,0 +1,26 @@
+.o_control_panel .o_cp_searchview.input-group {
+    flex-wrap: nowrap;
+    align-items: stretch;
+
+    > .o_searchview {
+        flex: 1 1 0%;
+        min-width: 0;
+        border-start-end-radius: 0;
+        border-end-end-radius: 0;
+    }
+
+    > .o_searchview_dropdown_toggler {
+        position: relative;
+        inset: auto;
+        transform: none;
+        flex: 0 0 auto;
+        align-self: stretch;
+        height: auto;
+        min-width: 2.25rem;
+        margin-block: 0;
+        border-start-start-radius: 0;
+        border-end-start-radius: 0;
+        border-start-end-radius: inherit;
+        border-end-end-radius: inherit;
+    }
+}
