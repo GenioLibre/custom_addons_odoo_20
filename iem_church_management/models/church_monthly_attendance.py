@@ -167,7 +167,7 @@ class ChurchMonthlyAttendance(models.Model):
                 _logger.warning("Reporte mensual IEM: falta correo para %s (%s).", scope._name, scope.id)
                 continue
             link = "%s/odoo/action-%s" % (
-                self.env["ir.config_parameter"].get_param("web.base.url", "").rstrip("/"),
+                self.env["ir.config_parameter"].get_str("web.base.url", "").rstrip("/"),
                 self.env.ref("iem_church_management.action_church_monthly_attendance").id,
             )
             try:
