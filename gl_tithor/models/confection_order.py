@@ -1,6 +1,7 @@
 from datetime import timedelta
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError
 
 
 class GlConfectionOrder(models.Model):
@@ -81,12 +82,20 @@ class GlConfectionOrder(models.Model):
 
     def _bind_confection_attachments(self):
         for order in self:
-            attachments = (order.design_file_ids | order.printing_file_ids).sudo()
-            if attachments:
-                attachments.write({
-                    'res_model': 'gl.confection.order',
-                    'res_id': order.id,
-                })
+            owner = {'res_model': order._name, 'res_id': order.id}
+            copies = {}
+            for attachment in order.design_file_ids | order.printing_file_ids:
+                if not attachment.res_id:
+                    attachment.write(owner)
+                elif attachment.res_model != order._name or attachment.res_id != order.id:
+                    copies[attachment.id] = attachment.copy({**owner, 'res_field': False}).id
+            if copies:
+                values = {
+                    field: [fields.Command.set([copies.get(file.id, file.id) for file in order[field]])]
+                    for field in ('design_file_ids', 'printing_file_ids')
+                    if copies.keys() & set(order[field].ids)
+                }
+                super(GlConfectionOrder, order).write(values)
 
     def _sync_replacement_state(self):
         if self.env.context.get('skip_replacement_state_sync'):
@@ -111,7 +120,9 @@ class GlConfectionOrder(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('gl.confection.order') or 'Nuevo'
         records = super().create(vals_list)
         for record in records.filtered(lambda r: r.sale_order_id and not r.design_file_ids):
-            record.design_file_ids = [(6, 0, record.sale_order_id.camiseta_foto_ids.ids)]
+            super(GlConfectionOrder, record).write({
+                'design_file_ids': [fields.Command.set(record.sale_order_id.camiseta_foto_ids.ids)],
+            })
         records._bind_confection_attachments()
         return records
 
@@ -162,15 +173,16 @@ class GlConfectionOrder(models.Model):
         return True
 
     def action_complete_order(self):
-        for record in self:
-            record.state = 'done'
-            record.done = True
-        return True
+        if self.replacement_line_ids.filtered(lambda line: line.stage != 'delivered'):
+            raise UserError(_("Entrega todas las reposiciones antes de cerrar el pedido."))
+        if any(order.state != 'delivery' for order in self):
+            raise UserError(_("Solo puedes cerrar pedidos en la etapa de Delivery."))
+        return self.write({'state': 'done', 'done': True})
 
     def action_reopen_order(self):
-        for record in self:
-            record.state = 'delivery'
-            record.done = False
+        for order in self.filtered('done'):
+            pending = order.replacement_line_ids.filtered(lambda line: line.stage != 'delivered')
+            order.write({'state': 'replacement' if pending else 'delivery', 'done': False})
         return True
 
     @api.depends('sent_date', 'delivery_date', 'done')
@@ -209,14 +221,14 @@ class GlConfectionOrder(models.Model):
             else:
                 record.delivery_days_left = f"Faltan {remaining_days} días"
 
-    @api.depends('design_file_ids', 'design_file_ids.datas', 'design_file_ids.mimetype')
+    @api.depends('design_file_ids', 'design_file_ids.raw', 'design_file_ids.mimetype')
     def _compute_mockup_image(self):
         for record in self:
-            images = record.sudo().design_file_ids.filtered(
+            images = record.design_file_ids.filtered(
                 lambda attachment: attachment.mimetype in ('image/jpeg', 'image/png')
             )
             image = images.sorted('id')[:1]
-            record.mockup_image = image.sudo().datas if image else False
+            record.mockup_image = image.raw if image else False
 
 
 class GlConfectionReplacementLine(models.Model):

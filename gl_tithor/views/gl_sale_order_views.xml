@@ -124,7 +124,7 @@
                             </group>
                             <div class="text-end mt-2">
                                 <button name="action_previous_stage" string="Volver a Confección" type="object" class="btn-secondary me-2" invisible="done"/>
-                                <button name="action_complete_order" string="Pedido Completo" type="object" class="btn-success btn-lg" invisible="done"/>
+                                <button name="action_complete_order" string="Pedido Completo" type="object" class="btn-success btn-lg" invisible="done or state != 'delivery'"/>
                             </div>
                         </page>
                         <page string="Reposiciones" name="confection_replacements">
@@ -149,10 +149,8 @@
                 <field name="partner_id" string="Cliente"/>
                 <field name="sale_order_id" string="Orden de venta"/>
                 <separator/>
-                <group string="Agrupar por">
-                    <filter name="group_by_state" string="Etapa" context="{'group_by': 'state'}"/>
-                    <filter name="group_by_delivery_date" string="Entrega" context="{'group_by': 'delivery_date'}"/>
-                </group>
+                <filter name="group_by_state" string="Etapa" context="{'group_by': 'state'}"/>
+                <filter name="group_by_delivery_date" string="Entrega" context="{'group_by': 'delivery_date'}"/>
             </search>
         </field>
     </record>
@@ -205,7 +203,7 @@
                         invisible="state != 'sale' or not confection_order_id"/>
             </xpath>
             <!-- Fecha editable y visible en todos los estados (Cotización / Pedido) -->
-            <xpath expr="//group[@name='order_details']/div[@class='o_td_label'][1]" position="attributes">
+            <xpath expr="//group[@name='order_details']/div[label[@for='date_order']][1]" position="attributes">
                 <attribute name="groups"/>
                 <attribute name="invisible">state == 'sale'</attribute>
             </xpath>
@@ -214,7 +212,7 @@
                 <attribute name="invisible">state == 'sale'</attribute>
                 <attribute name="readonly">0</attribute>
             </xpath>
-            <xpath expr="//group[@name='order_details']/div[@class='o_td_label'][2]" position="attributes">
+            <xpath expr="//group[@name='order_details']/div[label[@for='date_order']][2]" position="attributes">
                 <attribute name="invisible">state != 'sale'</attribute>
             </xpath>
             <xpath expr="//group[@name='order_details']/field[@name='date_order'][2]" position="attributes">

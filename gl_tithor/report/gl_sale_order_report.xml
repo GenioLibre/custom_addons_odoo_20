@@ -3,26 +3,31 @@
     <!-- Agrega la imagen del producto al reporte de cotización/pedido -->
     <template id="report_saleorder_inherit" inherit_id="sale.report_saleorder_document">
         <xpath expr="//th[@name='th_description']" position="after">
-            <th t-if="env['ir.config_parameter'].sudo().get_param('sale_product_image.is_show_product_image_in_sale_report')"
+            <th t-if="doc.is_image_true"
                 name="th_product_image" class="text-start">
                 <t t-set="colspan_count" t-value="colspan_count + 1"/>
                 <span>Imagen</span>
             </th>
         </xpath>
         <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_product_name']" position="after">
-            <td t-if="env['ir.config_parameter'].sudo().get_param('sale_product_image.is_show_product_image_in_sale_report')"
+            <td t-if="doc.is_image_true"
                 name="td_product_image" style="height:80px !important;width:80px !important;">
-                <img t-if="line.product_id.image_1920"
-                     t-att-src="image_data_uri(line.product_id.image_1920)" class="img-fluid"/>
+                <t t-set="product_image_src" t-value="line._get_tithor_report_image_src()"/>
+                <img t-if="product_image_src" t-att-src="product_image_src"
+                     t-att-alt="line.product_id.display_name"
+                     style="max-height:80px; max-width:80px;"/>
             </td>
         </xpath>
         <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_combo_name']" position="after">
-            <td t-if="env['ir.config_parameter'].sudo().get_param('sale_product_image.is_show_product_image_in_sale_report')"
+            <td t-if="doc.is_image_true"
                 name="td_combo_image"/>
         </xpath>
         <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_section_group_name']" position="after">
-            <td t-if="env['ir.config_parameter'].sudo().get_param('sale_product_image.is_show_product_image_in_sale_report')"
+            <td t-if="doc.is_image_true"
                 name="td_section_group_image"/>
+        </xpath>
+        <xpath expr="//td[@name='td_combo_price']" position="attributes">
+            <attribute name="t-att-colspan">colspan_count - 1 - int(doc.is_image_true)</attribute>
         </xpath>
     </template>
 </odoo>

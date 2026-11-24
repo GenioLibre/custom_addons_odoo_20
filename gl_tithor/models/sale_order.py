@@ -1,12 +1,19 @@
-import base64, os, openpyxl, tempfile, unicodedata
+import logging
+import os
+import tempfile
+import unicodedata
+from contextlib import closing
 from io import BytesIO
+import openpyxl
 from markupsafe import Markup, escape
 
-from odoo import fields, models, api
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
-import logging
 
 _logger = logging.getLogger(__name__)
+_EXCEL_MAX_ROWS = 10_000
+_EXCEL_MAX_COLUMNS = 100
+_EXCEL_PREVIEW_ROWS = 100
 
 class Camiseta_Registro(models.Model):
     _name = 'camiseta.registro'
@@ -140,6 +147,13 @@ class SaleOrder(models.Model):
             'target': 'current',
         }
 
+    def _get_production_mockups(self):
+        self.ensure_one()
+        mockups = (self.camiseta_foto_ids | self.confection_order_id.design_file_ids).filtered(
+            lambda attachment: attachment.mimetype in ('image/jpeg', 'image/jpg', 'image/png')
+        ).sorted('id')
+        return [group[0] for group in mockups.grouped(lambda file: file.checksum or file.id).values()]
+
     @api.constrains('camiseta_foto_ids')
     def _check_camiseta_foto_is_image(self):
         for rec in self:
@@ -149,11 +163,11 @@ class SaleOrder(models.Model):
                     raise ValidationError("Los mockups deben ser imágenes (JPG, PNG, etc.).")
 
     def _compute_is_image_true(self):
-        """Method _compute_is_image_true returns True if the Show Image option
-        in the sale configuration is true"""
-        for rec in self:
-            rec.is_image_true = True if rec.env[
-                'ir.config_parameter'].sudo().get_param('sale_product_image.is_show_product_image_in_sale_report') else False
+        show_image = self.env['ir.config_parameter'].sudo().get_bool(
+            'sale_product_image.is_show_product_image_in_sale_report'
+        )
+        for order in self:
+            order.is_image_true = show_image
 
     @api.depends('excel_headers', 'excel_rows')
     def _compute_excel_preview_html(self):
@@ -165,12 +179,18 @@ class SaleOrder(models.Model):
                 continue
             head = ''.join('<th>%s</th>' % escape(header) for header in headers)
             body = ''.join(
-                '<tr>%s</tr>' % ''.join('<td>%s</td>' % escape(value or '') for value in row)
-                for row in rows
+                '<tr>%s</tr>' % ''.join('<td>%s</td>' % escape('' if value is None else value) for value in row)
+                for row in rows[:_EXCEL_PREVIEW_ROWS]
             )
+            caption = ''
+            if len(rows) > _EXCEL_PREVIEW_ROWS:
+                caption = '<caption>%s</caption>' % escape(
+                    _("Mostrando %(shown)s de %(total)s filas.",
+                      shown=_EXCEL_PREVIEW_ROWS, total=len(rows))
+                )
             order.excel_preview_html = Markup(
                 '<div class="table-responsive"><table class="table table-sm table-bordered">'
-                '<thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>' % (head, body)
+                '%s<thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>' % (caption, head, body)
             )
 
     def importar_excel(self):
@@ -180,26 +200,20 @@ class SaleOrder(models.Model):
             raise ValidationError("Por favor, cargue un archivo Excel (.xlsx).")
 
         try:
-            workbook = openpyxl.load_workbook(
-                BytesIO(base64.b64decode(self.archivo_excel)),
+            with closing(openpyxl.load_workbook(
+                BytesIO(self.archivo_excel.content),
                 data_only=True,
                 read_only=True,
-            )
-            sheet = next(
-                (candidate for candidate in workbook.worksheets if candidate.max_row and candidate.max_column),
-                workbook.active,
-            )
-            raw_rows = list(sheet.iter_rows(values_only=True))
-            nonempty_rows = [row for row in raw_rows if any(value not in (None, '') for value in row)]
-            if not nonempty_rows:
-                raise ValidationError("El archivo Excel no contiene información.")
+            )) as workbook:
+                for sheet in workbook.worksheets:
+                    raw_rows = self._read_excel_table(sheet)
+                    if raw_rows:
+                        sheet_title = sheet.title
+                        break
+                else:
+                    raise ValidationError(_("El archivo Excel no contiene información."))
 
-            last_column = max(
-                index
-                for row in nonempty_rows
-                for index, value in enumerate(row)
-                if value not in (None, '')
-            ) + 1
+            last_column = max(map(len, raw_rows))
 
             def display_value(value):
                 if value in (None, ''):
@@ -210,20 +224,20 @@ class SaleOrder(models.Model):
                     return value.strftime('%d/%m/%Y %H:%M:%S' if hasattr(value, 'hour') else '%d/%m/%Y')
                 return str(value)
 
-            first_row = nonempty_rows[0][:last_column]
+            first_row = raw_rows[0] + (None,) * (last_column - len(raw_rows[0]))
             headers = [
                 display_value(value).strip() or 'Columna %s' % (index + 1)
                 for index, value in enumerate(first_row)
             ]
             rows = [
-                [display_value(value) for value in row[:last_column]]
-                for row in nonempty_rows[1:]
+                [display_value(value) for value in row] + [''] * (last_column - len(row))
+                for row in raw_rows[1:]
             ]
             self.write({
                 'excel_headers': headers,
                 'excel_rows': rows,
-                'excel_sheet_name': sheet.title,
-                'excel_imported_filename': self.archivo_nombre or sheet.title,
+                'excel_sheet_name': sheet_title,
+                'excel_imported_filename': self.archivo_nombre or sheet_title,
                 'archivo_excel': False,
             })
             return {
@@ -232,7 +246,7 @@ class SaleOrder(models.Model):
                 'params': {
                     'title': 'Importación completada',
                     'message': '%s filas y %s columnas importadas desde %s.' % (
-                        len(rows), len(headers), sheet.title),
+                        len(rows), len(headers), sheet_title),
                     'type': 'success',
                     'delay': 3000,
                 },
@@ -242,6 +256,24 @@ class SaleOrder(models.Model):
         except Exception as error:
             _logger.exception("Error al importar el Excel")
             raise ValidationError("Error al procesar el archivo: %s" % error)
+
+    def _read_excel_table(self, sheet):
+        # Ignore Excel's stored dimensions, which may reflect formatting rather than data.
+        sheet.reset_dimensions()
+        rows = []
+        for row in sheet.iter_rows(values_only=True):
+            last_column = next(
+                (column for column in range(len(row), 0, -1) if row[column - 1] not in (None, '')), 0
+            )
+            if not last_column:
+                continue
+            if last_column > _EXCEL_MAX_COLUMNS or len(rows) > _EXCEL_MAX_ROWS:
+                raise ValidationError(_(
+                    "El Excel admite hasta %(rows)s filas de datos y %(columns)s columnas.",
+                    rows=_EXCEL_MAX_ROWS, columns=_EXCEL_MAX_COLUMNS,
+                ))
+            rows.append(row[:last_column])
+        return rows
 
     def action_clear_imported_excel(self):
         self.ensure_one()
@@ -288,7 +320,7 @@ class SaleOrder(models.Model):
 
         try:
             workbook = openpyxl.load_workbook(
-                BytesIO(base64.b64decode(self.archivo_excel)),
+                BytesIO(self.archivo_excel.content),
                 data_only=True,
                 read_only=True,
             )
@@ -401,7 +433,7 @@ class SaleOrder(models.Model):
 
             # --- 1) Guardar temporalmente el archivo Excel decodificado ---
             with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
-                tmp.write(base64.b64decode(self.archivo_excel))
+                tmp.write(self.archivo_excel.content)
                 tmp_path = tmp.name
 
             _logger.info(f"Archivo Excel guardado temporalmente en: {tmp_path}")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': "TITHOR - Custom Development",
-    'version': '20.0.1.0.0',
+    'version': '20.0.1.1.0',
     'author': 'GenioLibre',
 
     'summary': """
@@ -20,7 +20,7 @@
     'external_dependencies': {'python': ['openpyxl']},
 
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/gl_confection_sequence.xml',
 
         'views/gl_res_config_settings_views.xml',

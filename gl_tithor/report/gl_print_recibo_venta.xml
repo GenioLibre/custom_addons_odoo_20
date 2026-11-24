@@ -7,72 +7,36 @@
                     <t t-set="lang" t-value="o.partner_id.lang"/>
                     <t t-name="gl.recibo_venta_document">
                         <t t-set="print_with_payments" t-value="True"/>
-                        <t t-call="web.external_layout">
-                            <t t-set="o" t-value="o.with_context(lang=lang)"/>
-                            <t t-set="forced_vat"
-                               t-value="o.fiscal_position_id.foreign_vat"/> <!-- So that it appears in the footer of the report instead of the company VAT if it's set -->
-                            <div class="row">
-                                <t t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
-                                    <div class="col-6">
-                                        <t t-set="information_block">
-                                            <div groups="account.group_delivery_invoice_address"
-                                                 name="shipping_address_block">
-                                                <strong>Shipping Address</strong>
-                                                <div t-field="o.partner_shipping_id"
-                                                     t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
-                                            </div>
-                                        </t>
-                                    </div>
-                                    <div class="col-6" name="address_not_same_as_shipping">
-                                        <t t-set="address">
-                                            <address class="mb-0" t-field="o.partner_id"
-                                                     t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
-                                            <div t-if="o.partner_id.vat" id="partner_vat_address_not_same_as_shipping">
-                                                <t t-if="o.company_id.account_fiscal_country_id.vat_label"
-                                                   t-out="o.company_id.account_fiscal_country_id.vat_label"
-                                                   id="inv_tax_id_label"/>
-                                                <t t-else="">Tax ID</t>:
-                                                <span t-field="o.partner_id.vat"/>
-                                            </div>
-                                        </t>
-                                    </div>
-                                </t>
-                                <t t-elif="o.partner_shipping_id and (o.partner_shipping_id == o.partner_id)">
-                                    <div class="offset-col-6 col-6" name="address_same_as_shipping">
-                                        <t t-set="address">
-                                            <address class="mb-0" t-field="o.partner_id"
-                                                     t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
-                                            <div t-if="o.partner_id.vat" id="partner_vat_address_same_as_shipping">
-                                                <t t-if="o.company_id.account_fiscal_country_id.vat_label"
-                                                   t-out="o.company_id.account_fiscal_country_id.vat_label"
-                                                   id="inv_tax_id_label"/>
-                                                <t t-else="">Tax ID</t>:
-                                                <span t-field="o.partner_id.vat"/>
-                                            </div>
-                                        </t>
-                                    </div>
-                                </t>
-                                <t t-else="">
-                                    <div class="offset-col-6 col-6" name="no_shipping">
-                                        <t t-set="address">
-                                            <address class="mb-0" t-field="o.partner_id"
-                                                     t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
-                                            <div t-if="o.partner_id.vat" id="partner_vat_no_shipping">
-                                                <t t-if="o.company_id.account_fiscal_country_id.vat_label"
-                                                   t-out="o.company_id.account_fiscal_country_id.vat_label"
-                                                   id="inv_tax_id_label"/>
-                                                <t t-else="">Tax ID</t>:
-                                                <span t-field="o.partner_id.vat"/>
-                                            </div>
-                                        </t>
-                                    </div>
-                                </t>
+                        <t t-set="o" t-value="o.with_context(lang=lang)"/>
+                        <t t-set="address">
+                            <address class="mb-0" t-field="o.partner_id"
+                                     t-options="{'widget': 'contact', 'fields': ['address', 'name'], 'no_marker': True}"/>
+                            <div t-if="o.partner_id.vat" id="partner_vat_address">
+                                <t t-if="o.company_id.account_fiscal_country_id.vat_label"
+                                   t-out="o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>
+                                <t t-else="">Tax ID</t>:
+                                <span t-field="o.partner_id.vat"/>
                             </div>
+                        </t>
+                        <t t-set="information_block" t-value="False"/>
+                        <t t-if="o.partner_shipping_id and o.partner_shipping_id != o.partner_id">
+                            <t t-set="information_block">
+                                <div groups="account.group_delivery_invoice_address" name="shipping_address_block">
+                                    <strong>Shipping Address</strong>
+                                    <div t-field="o.partner_shipping_id"
+                                         t-options="{'widget': 'contact', 'fields': ['address', 'name'], 'no_marker': True}"/>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-set="layout_document_title"><span>Recibo de Pago</span></t>
+                        <t t-call="web.external_layout"
+                           company="o.company_id.sudo()"
+                           address="address"
+                           information_block="information_block"
+                           layout_document_title="layout_document_title"
+                           forced_vat="o.fiscal_position_id.foreign_vat">
                             <div class="clearfix invoice_main">
                                 <div class="page mb-4">
-                                    <t t-set="layout_document_title">
-                                        <span>Recibo de Pago</span>
-                                    </t>
                                     <div class="oe_structure"/>
                                     <div id="informations" class="row mb-4">
                                         <div class="col" t-if="o.invoice_date" name="invoice_date">
@@ -239,10 +203,8 @@
                                                     <table class="o_total_table table table-borderless avoid-page-break-inside">
 
                                                         <!-- Tax totals summary (invoice currency) -->
-                                                        <t t-if="o.tax_totals" t-call="account.document_tax_totals">
-                                                            <t t-set="tax_totals" t-value="o.tax_totals"/>
-                                                            <t t-set="currency" t-value="o.currency_id"/>
-                                                        </t>
+                                                        <t t-if="o.tax_totals" t-call="account.document_tax_totals"
+                                                           tax_totals="o.tax_totals" currency="o.currency_id"/>
 
                                                         <!--Payments-->
                                                         <t t-if="print_with_payments">
@@ -296,10 +258,9 @@
                                             </div>
 
                                             <!-- Tax totals summary (company currency) -->
-                                            <t t-if="o.tax_totals.get('display_in_company_currency')">
-                                                <t t-set="tax_totals" t-value="o.tax_totals"/>
-                                                <t t-call="account.document_tax_totals_company_currency_template"/>
-                                            </t>
+                                            <t t-if="o.tax_totals and o.tax_totals.get('display_in_company_currency')"
+                                               t-call="account.document_tax_totals_company_currency_template"
+                                               tax_totals="o.tax_totals"/>
                                             <t t-else="">
                                                 <div class="oe_structure"/>
                                             </t>
@@ -414,7 +375,6 @@
         <field name="model">account.move</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">gl_tithor.gl_recibo_venta</field>
-        <field name="report_file">account.report_invoice_document</field>
         <field name="print_report_name">(object.name + '.pdf')</field>
         <field name="binding_model_id" ref="account.model_account_move"/>
         <field name="binding_type">report</field>

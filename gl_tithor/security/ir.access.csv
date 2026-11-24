@@ -1,0 +1,9 @@
+id,name,model_id,group_id/id,operation,domain
+access_camiseta_registro,Registros de camisetas,camiseta.registro,base.group_user,r,"[('sale_order_id', 'access', 'read')]"
+access_camiseta_registro_write,Edición de registros de camisetas,camiseta.registro,base.group_user,cu,"[('sale_order_id', 'access', 'write')]"
+access_camiseta_registro_delete,Borrado de registros de camisetas,camiseta.registro,sales_team.group_sale_manager,d,"[('sale_order_id', 'access', 'write')]"
+access_gl_confection_order,Órdenes de confección,gl.confection.order,base.group_user,r,"[('sale_order_id', 'access', 'read')]"
+access_gl_confection_order_write,Edición de órdenes de confección,gl.confection.order,base.group_user,cu,"[('sale_order_id', 'access', 'write')]"
+access_gl_confection_order_delete,Borrado de órdenes de confección,gl.confection.order,sales_team.group_sale_manager,d,"[('sale_order_id', 'access', 'write')]"
+access_gl_confection_replacement_line,Reposiciones de confección,gl.confection.replacement.line,base.group_user,r,"[('confection_order_id', 'access', 'read')]"
+access_gl_confection_replacement_line_write,Edición y borrado de reposiciones,gl.confection.replacement.line,base.group_user,cud,"[('confection_order_id', 'access', 'write')]"

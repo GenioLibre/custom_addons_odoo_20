@@ -19,60 +19,61 @@
         <field name="model">sale.order</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">gl_tithor.gl_sale_pre_quote_report</field>
-        <field name="report_file">gl_tithor.gl_sale_pre_quote_report</field>
         <field name="paperformat_id" ref="paperformat_production_order"/>
         <field name="print_report_name">'Orden de Producción'</field>
-        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
         <field name="binding_type">report</field>
     </record>
     <template id="gl_sale_pre_quote_report">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="doc">
-                <t t-call="web.external_layout">
-                    <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
-                    <t t-set="forced_vat"
-                       t-value="doc.fiscal_position_id.foreign_vat"/> <!-- So that it appears in the footer of the report instead of the company VAT if it's set -->
-                    <t t-set="address">
-                        <strong>Cliente</strong>
-                        <div t-field="doc.partner_id"
-                             t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
-                        <p t-if="doc.partner_id.vat">
-                            <t t-if="doc.company_id.account_fiscal_country_id.vat_label"
-                               t-out="doc.company_id.account_fiscal_country_id.vat_label"/>
-                            <t t-else="">Tax ID</t>:
-                            <span t-field="doc.partner_id.vat"/>
-                        </p>
-                    </t>
-                    <t t-if="doc.partner_shipping_id == doc.partner_invoice_id                              and doc.partner_invoice_id != doc.partner_id                              or doc.partner_shipping_id != doc.partner_invoice_id">
-                        <t t-set="information_block">
-                            <strong>
-                                <t t-if="doc.partner_shipping_id == doc.partner_invoice_id">
-                                    Invoicing and Shipping Address
-                                </t>
-                                <t t-else="">
-                                    Invoicing Address
-                                </t>
-                            </strong>
-                            <div t-field="doc.partner_invoice_id"
-                                 t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-                            <t t-if="doc.partner_shipping_id != doc.partner_invoice_id">
-                                <strong>Shipping Address</strong>
-                                <div t-field="doc.partner_shipping_id"
-                                     t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+                <t t-set="doc" t-value="doc.with_context(lang=doc.partner_id.lang)"/>
+                <t t-set="information_block" t-value="False"/>
+                <t t-set="address">
+                    <strong>Cliente</strong>
+                    <div t-field="doc.partner_id"
+                         t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                    <p t-if="doc.partner_id.vat">
+                        <t t-if="doc.company_id.account_fiscal_country_id.vat_label"
+                           t-out="doc.company_id.account_fiscal_country_id.vat_label"/>
+                        <t t-else="">Tax ID</t>:
+                        <span t-field="doc.partner_id.vat"/>
+                    </p>
+                </t>
+                <t t-if="doc.partner_shipping_id == doc.partner_invoice_id                              and doc.partner_invoice_id != doc.partner_id                              or doc.partner_shipping_id != doc.partner_invoice_id">
+                    <t t-set="information_block">
+                        <strong>
+                            <t t-if="doc.partner_shipping_id == doc.partner_invoice_id">
+                                Invoicing and Shipping Address
                             </t>
+                            <t t-else="">
+                                Invoicing Address
+                            </t>
+                        </strong>
+                        <div t-field="doc.partner_invoice_id"
+                             t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+                        <t t-if="doc.partner_shipping_id != doc.partner_invoice_id">
+                            <strong>Shipping Address</strong>
+                            <div t-field="doc.partner_shipping_id"
+                                 t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
                         </t>
                     </t>
+                </t>
+                <t t-set="is_proforma" t-value="env.context.get('proforma', False) or is_pro_forma"/>
+                <t t-set="layout_document_title">
+                    <span t-if="is_proforma">Pro-Forma Invoice #</span>
+                    <span t-elif="doc.state in ['draft','sent']">Orden de Producción #</span>
+                    <span t-else="">Order #</span>
+                    <span t-field="doc.name">SO0000</span>
+                </t>
+                <t t-call="web.external_layout"
+                   company="doc.company_id.sudo()"
+                   address="address"
+                   information_block="information_block"
+                   layout_document_title="layout_document_title"
+                   forced_vat="doc.fiscal_position_id.foreign_vat">
                     <div class="page">
-                        
                         <div class="oe_structure"/>
-
-                        <t t-set="is_proforma" t-value="env.context.get('proforma', False) or is_pro_forma"/>
-                        <t t-set="layout_document_title">
-                            <span t-if="is_proforma">Pro-Forma Invoice #</span>
-                            <span t-elif="doc.state in ['draft','sent']">Orden de Producción #</span>
-                            <span t-else="">Order #</span>
-                            <span t-field="doc.name">SO0000</span>
-                        </t>
 
                         <div class="row mb-4" id="informations">
                             <div t-if="doc.client_order_ref" class="col" name="informations_reference">
@@ -108,7 +109,7 @@
                             <thead style="display: table-row-group">
                                 <tr>
                                     <th name="th_description" class="text-start">Descripción</th>
-                                    <t t-if="env['ir.config_parameter'].sudo().get_param('sale_product_image.is_show_product_image_in_sale_report') == 'True'">
+                                    <t t-if="doc.is_image_true">
                                         <th>Imagen</th>
                                     </t>
                                     <th name="th_quantity" class="text-end text-nowrap">Cantidad</th>
@@ -122,36 +123,35 @@
 
                                     <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
 
-                                    <tr t-att-class="'fw-bold o_line_section' if (line.display_type == 'line_section' or line.product_type == 'combo')                             else 'fst-italic o_line_note' if line.display_type == 'line_note'                             else ''">
+                                    <tr t-att-class="'fw-bold o_line_section' if (line.display_type in ('line_section', 'line_subsection') or line.product_type == 'combo')                             else 'fst-italic o_line_note' if line.display_type == 'line_note'                             else ''">
                                         <t t-if="not line.display_type and line.product_type != 'combo'">
                                             <td name="td_name">
                                                 <span t-field="line.name">Bacon Burger</span>
                                             </td>
 
-                                            <t t-if="line.product_id and env['ir.config_parameter'].sudo().get_param('sale_product_image.is_show_product_image_in_sale_report')">
-                                                <t t-if="line.product_id">
-                                                    <td >
-                                                        <t t-if="line.product_id.image_1920">
-                                                            <img t-att-src="image_data_uri(line.product_id.image_1920)"
-                                                                 class="img-fluid"
-                                                                 style="max-height:80px; max-width:80px;"/>
-                                                        </t>
-                                                        <t t-else="">
-                                                            <!-- Espacio reservado visible cuando no hay imagen -->
-                                                            <div>
-                                                                <span style="color:#999; font-size:12px;">Sin imagen
-                                                                </span>
-                                                            </div>
-                                                        </t>
-                                                    </td>
-                                                </t>
+                                            <t t-if="doc.is_image_true">
+                                                <td>
+                                                    <t t-set="product_image_src" t-value="line._get_tithor_report_image_src()"/>
+                                                    <t t-if="product_image_src">
+                                                        <img t-att-src="product_image_src"
+                                                             class="img-fluid"
+                                                             style="max-height:80px; max-width:80px;"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <!-- Espacio reservado visible cuando no hay imagen -->
+                                                        <div>
+                                                            <span style="color:#999; font-size:12px;">Sin imagen
+                                                            </span>
+                                                        </div>
+                                                    </t>
+                                                </td>
                                             </t>
                                             <td name="td_quantity" class="text-end text-nowrap">
                                                 <span t-field="line.product_uom_qty">3</span>
                                                 <span t-field="line.product_uom_id">units</span>
                                             </td>
                                         </t>
-                                        <t t-elif="line.display_type == 'line_section' or line.product_type == 'combo'">
+                                        <t t-elif="line.display_type in ('line_section', 'line_subsection') or line.product_type == 'combo'">
                                             <td name="td_section_line" colspan="99">
                                                 <span t-field="line.name">A section title</span>
                                             </td>
@@ -170,18 +170,16 @@
                                 </t>
                             </tbody>
                         </table>
-                        <t t-set="confection" t-value="doc.confection_order_id"/>
-                        <t t-set="all_mockups"
-                           t-value="(doc.camiseta_foto_ids | confection.design_file_ids).filtered(lambda attachment: attachment.mimetype in ('image/jpeg', 'image/jpg', 'image/png')).sorted('id')"/>
+                        <t t-set="all_mockups" t-value="doc._get_production_mockups()"/>
                         <t t-if="all_mockups">
                             <div style="font-size:13px;">
                                 <h3>Mockups</h3>
                                 <div class="row justify-content-center text-center">
                                     <div class="col-6 mb-3" t-foreach="all_mockups" t-as="mock">
-                                        <img t-att-src="image_data_uri(mock.datas)"
+                                        <img t-att-src="image_data_uri(mock.raw)"
                                              style="max-width: 100%; max-height: 10cm; display: inline-block;"/>
                                         <div style="font-size:9px; margin-top:4px;">
-                                            <t t-esc="mock.name or 'Mockup'"/>
+                                            <t t-out="mock.name or 'Mockup'"/>
                                         </div>
                                     </div>
                                 </div>
@@ -190,20 +188,20 @@
                         <t t-if="doc.excel_headers">
                             <div t-att-style="('page-break-before: always; ' if all_mockups else '') + 'padding-top: 0.5cm; font-size:9px;'">
                                 <h3>
-                                    <t t-esc="doc.excel_imported_filename or 'Detalles del Pedido'"/>
+                                    <t t-out="doc.excel_imported_filename or 'Detalles del Pedido'"/>
                                 </h3>
                                 <table class="table table-sm table-bordered">
                                     <thead>
                                         <tr>
                                             <th t-foreach="doc.excel_headers" t-as="header">
-                                                <t t-esc="header"/>
+                                                <t t-out="header"/>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr t-foreach="doc.excel_rows or []" t-as="excel_row">
                                             <td t-foreach="excel_row" t-as="cell">
-                                                <t t-esc="cell"/>
+                                                <t t-out="cell"/>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -235,43 +233,43 @@
                                         <t t-set="counter" t-value="1"/>
                                         <tr t-foreach="doc.camiseta_registro_ids" t-as="cam">
                                             <td>
-                                                <t t-esc="counter"/>
+                                                <t t-out="counter"/>
                                             </td>
                                             <td>
-                                                <t t-esc="cam.diseno or ''"/>
+                                                <t t-out="cam.diseno or ''"/>
                                             </td>
                                             <td>
-                                                <t t-esc="dict(cam._fields['tipo'].selection).get(cam.tipo, '')"/>
+                                                <t t-out="dict(cam._fields['tipo'].selection).get(cam.tipo, '')"/>
                                             </td>
                                             <td>
-                                                <t t-esc="cam.nombre_en_camiseta or ''"/>
+                                                <t t-out="cam.nombre_en_camiseta or ''"/>
                                             </td>
                                             <td>
-                                                <t t-esc="cam.numero or ''"/>
+                                                <t t-out="cam.numero or ''"/>
                                             </td>
                                             <td>
-                                                <t t-esc="(cam.talla_camiseta or '').upper()"/>
+                                                <t t-out="(cam.talla_camiseta or '').upper()"/>
                                             </td>
                                             <td>
-                                                <t t-esc="dict(cam._fields['modelo'].selection).get(cam.modelo, '')"/>
+                                                <t t-out="dict(cam._fields['modelo'].selection).get(cam.modelo, '')"/>
                                             </td>
                                             <td>
-                                                <t t-esc="dict(cam._fields['corte'].selection).get(cam.corte, '')"/>
+                                                <t t-out="dict(cam._fields['corte'].selection).get(cam.corte, '')"/>
                                             </td>
                                             <td>
-                                                <t t-esc="dict(cam._fields['manga'].selection).get(cam.manga, '')"/>
+                                                <t t-out="dict(cam._fields['manga'].selection).get(cam.manga, '')"/>
                                             </td>
                                             <td>
-                                                <t t-esc="dict(cam._fields['cuello'].selection).get(cam.cuello, '')"/>
+                                                <t t-out="dict(cam._fields['cuello'].selection).get(cam.cuello, '')"/>
                                             </td>
                                             <td>
-                                                <t t-esc="dict(cam._fields['tipo_short'].selection).get(cam.tipo_short, '')"/>
+                                                <t t-out="dict(cam._fields['tipo_short'].selection).get(cam.tipo_short, '')"/>
                                             </td>
                                             <td>
-                                                <t t-esc="(cam.talla_short or '').upper()"/>
+                                                <t t-out="(cam.talla_short or '').upper()"/>
                                             </td>
                                             <td>
-                                                <t t-esc="cam.notas or ''"/>
+                                                <t t-out="cam.notas or ''"/>
                                             </td>
                                             <t t-set="counter" t-value="counter + 1"/>
                                         </tr>
