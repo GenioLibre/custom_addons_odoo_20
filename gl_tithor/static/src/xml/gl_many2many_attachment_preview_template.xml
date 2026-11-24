@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="gl_tithor.Many2XBinaryAttachmentPreview"
+       t-inherit="web.Many2XBinary.attachment_preview"
+       t-inherit-mode="extension">
+        <xpath expr="//div[contains(@class, 'o_image_box')]" position="replace">
+            <div class="o_image_box float-start"
+                 t-att-data-tooltip="'Preview ' + file.name"
+                 style="cursor: zoom-in;"
+                 t-on-click="() => this.onClickPreview(file)">
+                <img t-if="this.isImage(file)"
+                     class="o_preview_image o_hover object-fit-cover rounded align-baseline"
+                     t-attf-src="/web/image/{{ file.id }}"
+                     onerror="this.src = '/web/static/img/mimetypes/image.svg'"/>
+                <span t-else=""
+                      class="o_image o_preview_image o_hover"
+                      t-att-data-mimetype="file.mimetype"
+                      t-att-data-ext="ext"
+                      role="img"/>
+            </div>
+        </xpath>
+    </t>
+</templates>
