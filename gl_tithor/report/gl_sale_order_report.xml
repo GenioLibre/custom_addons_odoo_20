@@ -2,6 +2,16 @@
 <odoo>
     <!-- Agrega la imagen del producto al reporte de cotización/pedido -->
     <template id="report_saleorder_inherit" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//t[@t-set='display_taxes']" position="attributes">
+            <attribute name="t-value">not hide_taxes_details and any(any(tax.tax_label for tax in line.tax_ids) or (line.display_type in ('line_section', 'line_subsection') and any(tax.tax_label for tax in line._get_section_lines().tax_ids)) for line in lines_to_report)</attribute>
+        </xpath>
+        <xpath expr="//td[@name='td_product_name']//img[hasclass('o_sale_report_product_image')]" position="replace"/>
+        <xpath expr="//th[@name='th_description']" position="inside">
+            <span>Descripción</span>
+        </xpath>
+        <xpath expr="//th[@name='th_quantity']" position="inside">
+            <span>Cantidad</span>
+        </xpath>
         <xpath expr="//th[@name='th_description']" position="after">
             <th t-if="doc.is_image_true"
                 name="th_product_image" class="text-start">

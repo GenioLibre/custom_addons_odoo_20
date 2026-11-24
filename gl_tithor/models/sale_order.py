@@ -162,12 +162,10 @@ class SaleOrder(models.Model):
                 if not mimetype.startswith('image/'):
                     raise ValidationError("Los mockups deben ser imágenes (JPG, PNG, etc.).")
 
+    @api.depends('company_id.display_product_images_on_so')
     def _compute_is_image_true(self):
-        show_image = self.env['ir.config_parameter'].sudo().get_bool(
-            'sale_product_image.is_show_product_image_in_sale_report'
-        )
         for order in self:
-            order.is_image_true = show_image
+            order.is_image_true = order.company_id.display_product_images_on_so
 
     @api.depends('excel_headers', 'excel_rows')
     def _compute_excel_preview_html(self):
