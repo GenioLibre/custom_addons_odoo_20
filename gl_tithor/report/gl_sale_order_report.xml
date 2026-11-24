@@ -2,6 +2,38 @@
 <odoo>
     <!-- Agrega la imagen del producto al reporte de cotización/pedido -->
     <template id="report_saleorder_inherit" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//table[hasclass('o_main_table')]" position="attributes">
+            <attribute name="class" add="gl_tithor_quote_lines" separator=" "/>
+        </xpath>
+        <xpath expr="//table[hasclass('o_main_table')]" position="before">
+            <style>
+                .gl_tithor_quote_lines th[name="th_product_image"],
+                .gl_tithor_quote_lines td[name="td_product_image"],
+                .gl_tithor_quote_lines td[name="td_combo_image"],
+                .gl_tithor_quote_lines td[name="td_section_group_image"] {
+                    width: 72px;
+                    padding: 6px 8px;
+                    text-align: center;
+                    vertical-align: middle;
+                }
+
+                .gl_tithor_quote_lines td[name="td_product_image"] img {
+                    display: block;
+                    margin: 0 auto;
+                    max-width: 100%;
+                    max-height: 68px;
+                }
+
+                .o_table_boxed-rounded table.gl_tithor_quote_lines > thead > tr > th:not(:last-child),
+                .o_table_boxed-rounded table.gl_tithor_quote_lines > tbody > tr > td:not(:last-child) {
+                    border-right: 1px solid #ced4da;
+                }
+
+                .o_table_boxed-rounded table.gl_tithor_quote_lines > tbody > tr > td:not(:last-child) {
+                    background-size: 0px 100%, 100% 1px;
+                }
+            </style>
+        </xpath>
         <xpath expr="//t[@t-set='display_taxes']" position="attributes">
             <attribute name="t-value">not hide_taxes_details and any(any(tax.tax_label for tax in line.tax_ids) or (line.display_type in ('line_section', 'line_subsection') and any(tax.tax_label for tax in line._get_section_lines().tax_ids)) for line in lines_to_report)</attribute>
         </xpath>
@@ -14,18 +46,17 @@
         </xpath>
         <xpath expr="//th[@name='th_description']" position="after">
             <th t-if="doc.is_image_true"
-                name="th_product_image" class="text-start">
+                name="th_product_image">
                 <t t-set="colspan_count" t-value="colspan_count + 1"/>
                 <span>Imagen</span>
             </th>
         </xpath>
         <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_product_name']" position="after">
             <td t-if="doc.is_image_true"
-                name="td_product_image" style="height:80px !important;width:80px !important;">
+                name="td_product_image">
                 <t t-set="product_image_src" t-value="line._get_tithor_report_image_src()"/>
                 <img t-if="product_image_src" t-att-src="product_image_src"
-                     t-att-alt="line.product_id.display_name"
-                     style="max-height:80px; max-width:80px;"/>
+                     t-att-alt="line.product_id.display_name"/>
             </td>
         </xpath>
         <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_combo_name']" position="after">
