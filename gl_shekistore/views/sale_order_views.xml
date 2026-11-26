@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_form_quotation_date" model="ir.ui.view">
+        <field name="name">sale.order.form.shekistore.quotation.date</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='order_details']/div[label[@for='date_order']][1]" position="attributes">
+                <attribute name="groups"/>
+            </xpath>
+            <xpath expr="//group[@name='order_details']/field[@name='date_order'][1]" position="attributes">
+                <attribute name="groups"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

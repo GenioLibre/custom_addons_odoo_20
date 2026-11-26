@@ -1,0 +1,90 @@
+# -*- coding: utf-8 -*-
+{
+    'name': "GenioLibre - Custom Development",
+    'version': '20.0.1.0.0',
+    'author': 'GenioLibre, Cybrosys Techno Solutions',
+
+    'summary': """
+        GenioLibre Custom""",
+
+    'description': """
+        Desarrollo personalizado para gestion de GenioLibre
+    """,
+
+    'website': "GenioLibre.com",
+    'application': True,
+    'license': 'AGPL-3',
+    # Categories can be used to filter modules in modules listing
+    # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
+    # for the full list
+    'category': 'Customizations',
+
+    # any module necessary for this one to work correctly
+    'depends': ['base', 'mail', 'portal', 'base_setup','web','website','sale','sale_management','project','account',],
+
+    'external_dependencies': {'python': ['boto3', 'google-ads']},
+
+    # always loaded
+    'data': [
+        'security/security.xml',
+        'security/subscription_contracts_security.xml',
+        'security/ir.access.csv',
+        'views/res_users_access.xml',
+
+        'views/gl_res_config_settings_views.xml',
+        'views/gl_res_partner.xml',
+        'views/gl_project_task.xml',
+        'views/project_marketing_views.xml',
+        'views/gl_tiktok_publish_confirm_wizard.xml',
+        'views/gl_project_web_type.xml',
+        'views/gl_web_roadmap_wizard.xml',
+        'views/gl_project_project.xml',
+        'views/gl_project_portal.xml',
+        'views/gl_project_portal_calendar.xml',
+        'views/gl_social_monthly_metrics.xml',
+        'views/gl_contenido_flujo.xml',
+        'views/gl_marketing_intelligence.xml',
+        'views/sale_order_line_tax_view.xml',
+
+        'report/gl_print_task.xml',
+        'report/gl_print_marketing_report.xml',
+        'report/gl_print_recibo_venta.xml',
+        'report/sale_order_report_tax.xml',
+
+        'cron/ir_cron_data.xml',
+        'report/subscription_contract_reports.xml',
+        'views/subscription_contracts_views.xml',
+        'views/account_move_views.xml',
+        'views/subscription_contracts_templates.xml',
+        'report/subscription_contract_templates.xml',
+        'cron/gl_cron_jobs.xml',
+        'cron/gl_marketing_discovery_cron.xml',
+    ],
+    "assets": {
+        "web.assets_backend": [
+            'gl_geniolibre/static/src/js/gl_many2many_attachment_preview.js',
+            'gl_geniolibre/static/src/js/clipboard.js',
+            'gl_geniolibre/static/src/js/project_marketing_dashboard_list_open.js',
+            'gl_geniolibre/static/src/xml/gl_many2many_attachment_preview_template.xml',
+        ],
+        "project.webclient": [
+            'gl_geniolibre/static/src/js/project_sharing_calendar.js',
+            'gl_geniolibre/static/src/xml/project_sharing_calendar.xml',
+        ],
+        "web.report_assets_common": [
+            'gl_geniolibre/static/src/scss/custom_font.css',
+            'gl_geniolibre/static/src/scss/custom_css.css',
+        ],
+        'web.assets_frontend': [
+            'gl_geniolibre/static/src/lib/fullcalendar/fallback.css',
+            'gl_geniolibre/static/src/lib/fullcalendar/index.global.min.js',
+            'gl_geniolibre/static/src/js/calendar_init.js',
+        ],
+
+
+    },
+    # only loaded in demonstration mode
+    'demo': [
+
+    ],
+}

@@ -1,0 +1,1975 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_a4_no_vertical_margins" model="report.paperformat">
+        <field name="name">A4 sin márgenes verticales</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <!-- márgenes -->
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+
+        <field name="dpi">96</field>
+    </record>
+    <record id="gl_print_marketing_report" model="ir.actions.report">
+        <field name="name">Reporte de Marketing</field>
+        <field name="model">ir.ui.view</field> <!-- Modelo genérico -->
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gl_geniolibre.gl_print_marketing_report_template</field>
+        <field name="paperformat_id" ref="paperformat_a4_no_vertical_margins"/>
+        <field name="binding_model_id" eval="False"/> <!-- Eliminar vinculación a modelo -->
+        <field name="binding_type">report</field>
+    </record>
+    <template id="gl_print_marketing_report_template">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <style type="text/css">
+                    /* Estilos base */
+                    .detalles {
+                    font-size:14px;
+                    }
+                    .detalles p{
+                    margin:0px;
+                    padding:0px
+                    margin-top:2px;
+                    }
+                    .page-break {
+                    page-break-before: always;
+                    }
+                    .report-header {
+                    display: table;
+                    width: 100%;
+                    margin-bottom: 20px;
+                    margin-top: -10mm;
+                    table-layout: fixed;
+                    }
+
+                    .report-header-logo,
+                    .report-header-text {
+                    display: table-cell;
+                    vertical-align: middle;
+                    }
+
+                    .report-header-logo {
+                    width: 34%;
+                    text-align: left;
+                    }
+
+                    .report-header-text {
+                    width: 66%;
+                    text-align: center;
+                    }
+
+                    .report-header img {
+                    max-height: 42mm;
+                    width: auto;
+                    object-fit: contain;
+                    margin: 0;
+                    }
+
+                    .report-header h1 {
+                    font-size: 32px;
+                    font-weight: bold;
+                    margin: 0 0 6px;
+                    color: #2c3e50;
+                    }
+
+                    .report-header p {
+                    font-size: 14px;
+                    color: #555;
+                    margin: 0;
+                    }
+                    body {
+                    font-family: 'Lato', 'Noto', 'Noto_Color', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+                    -webkit-print-color-adjust: exact !important;
+                    color: #333;
+                    line-height: 1.5;
+                    }
+
+                    .emoji-text {
+                    font-family: 'Lato', 'Noto', 'Noto_Color', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+                    }
+
+                    .report-icon {
+                    width: 12px;
+                    height: 12px;
+                    object-fit: contain;
+                    vertical-align: middle;
+                    margin-right: 4px;
+                    }
+
+                    .report-icon-label {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    justify-content: center;
+                    }
+
+                    .header {
+                    padding: 16px;
+                    margin-bottom: 24px;
+                    background-color: #3f51b5;
+                    color: white;
+                    }
+
+                    .header h1 {
+                    margin: 0;
+                    font-weight: 400;
+                    font-size: 30px;
+                    }
+
+                    .header p {
+                    margin: 8px 0 0;
+                    }
+
+                    h2 {
+                    <!--                    color: #3f51b5;-->
+                    font-weight: 400;
+                    font-size: 25px;
+                    margin: 24px 0 16px;
+                    padding-bottom: 8px;
+                    border-bottom: 1px solid #e0e0e0;
+                    }
+
+                    h3 {
+                    <!--                    color: #5c6bc0;-->
+                    font-weight: 500;
+                    font-size: 23px;
+                    margin: 25px 0 12px;
+                    }
+
+                    /* Tablas */
+                    table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 16px 0;
+                    }
+
+                    th {
+                    <!--                    background-color: #3f51b5;-->
+                    color: white;
+                    font-weight: 500;
+                    text-align: left;
+                    padding: 12px 16px;
+                    }
+
+                    td {
+                    padding: 12px 16px;
+                    border-bottom: 1px solid #e0e0e0;
+                    }
+
+                    tr:nth-child(even) {
+                    }
+
+                    .metric-container {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr); /* 4 columnas de igual ancho */
+                    gap: 16px;
+                    margin: 16px 0;
+                    }
+
+                    .metric-card {
+                    background: white;
+                    padding: 16px;
+                    text-align: center;
+                    border-radius: 4px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+                    min-width: 0; /* ¡Importante! Evita que el contenido rompa el layout */
+                    }
+
+                    .metric-card .metric-value {
+                    font-size: 20px;
+                    font-weight: 500;
+                    <!--                    color: #3f51b5;-->
+                    margin: 8px 0;
+                    }
+
+                    .metric-card .metric-label {
+                    font-size: 12px;
+                    color: #666;
+                    text-transform: uppercase;
+                    }
+
+                    /* Top Posts */
+                    .top-posts-container {
+                    margin: 20px 0;
+                    }
+
+                    .top-posts-container h3 {
+                    <!--                    color: #3f51b5;-->
+                    border-bottom: 1px solid #e0e0f0;
+                    padding-bottom: 8px;
+                    }
+
+                    .top-posts-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 16px;
+                    }
+
+                    .top-posts-table thead tr {
+                    <!--                    background-color: #3f51b5;-->
+                    color: white;
+                    }
+
+                    .top-posts-table th {
+                    padding: 12px;
+                    text-align: center;
+                    font-weight: 500;
+                    }
+
+                    .top-posts-table .content-header {
+                    text-align: left;
+                    width: 15%;
+                    }
+
+                    .top-posts-table .type-header {
+                    width: 10%;
+                    }
+
+                    .top-posts-table .metric-header {
+                    width: 12%;
+                    }
+
+                    .top-posts-table .interactions-header {
+                    width: 20%;
+                    }
+
+                    .top-posts-table tbody tr {
+                    border-bottom: 1px solid #f0f0f0;
+                    background-color: white;
+                    }
+
+                    .top-posts-table td {
+                    padding: 12px;
+                    vertical-align: middle;
+                    }
+
+                    .post-content {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    }
+
+                    .post-image {
+                    width: 60px;
+                    height: auto;
+                    object-fit: cover;
+                    border-radius: 4px;
+                    }
+
+                    .post-message {
+                    font-size: 12px;
+                    line-height: 1.3;
+                    }
+
+                    .post-type {
+                    text-align: center;
+                    font-weight: 500;
+                    }
+
+                    .metric-value {
+                    text-align: center;
+                    font-weight: 600;
+                    color: #333;
+                    }
+
+                    <!--                    .organic-value {-->
+                    <!--                    color: #4CAF50;-->
+                    <!--                    }-->
+
+                    <!--                    .paid-value {-->
+                    <!--                    color: #FF5722;-->
+                    <!--                    }-->
+
+                    .interactions-container {
+                    display: flex;
+                    justify-content: center;
+                    gap: 12px;
+                    }
+
+                    .interaction-metric {
+                    text-align: center;
+                    margin-bottom:10px;
+                    }
+
+                    .reactions-count {
+                    color: #E91E63;
+                    font-weight: 600;
+                    }
+
+                    .comments-count {
+                    color: #2196F3;
+                    font-weight: 600;
+                    }
+
+                    .shares-count {
+                    color: #8BC34A;
+                    font-weight: 600;
+                    }
+
+                    .metric-label {
+                    font-size: 12px;
+                    color: #666;
+                    }
+
+                    /* Footer */
+                    .footer {
+                    margin-top: 24px;
+                    padding: 16px;
+                    color: #666;
+                    font-size: 12px;
+                    text-align: center;
+                    }
+
+                    .footer hr {
+                    border: 0;
+                    height: 1px;
+                    background-color: #e0e0e0;
+                    margin-bottom: 8px;
+                    }
+
+                    /*Headers Adicionales
+                    */
+
+                    .header-instagram , .header-instagram th {
+                    background-color: #ff1973!important; /* Instagram: rosa intenso */
+                    }
+
+                    .header-facebook , .header-facebook th {
+                    background-color: #1977f3; /* Facebook: azul oficial */
+                    }
+
+                    .header-meta-ads, .header-meta-ads th {
+                    background-color: #266dc4; /* Meta Ads: azul Meta */
+                    }
+
+                    .header-google-ads , .header-google-ads th{
+                    background-color: #febd01;
+                    }
+
+                    .header-search-console {
+                    background-color: #34A853; /* Search Console: verde Google */
+                    }
+                    .header-tiktok {
+                    background-color: black; /* Search Console: verde Google */
+                    }
+                    .header-linkedin {
+                    background-color: #007fbe; /* Search Console: verde Google */
+                    }
+                </style>
+                <div class="report-header">
+                    <div class="report-header-logo">
+                        <img t-if="data['partner_id']"
+                             t-att-src="'/web/image/res.partner/' + str(data['partner_id']) + '/image_1024'"
+                             alt="Partner Logo"/>
+                    </div>
+                    <div class="report-header-text">
+                        <h1>Reporte de Marketing:</h1>
+                        <p>
+                            <span t-out="(datetime.datetime.strptime(data['report_period']['since'], '%Y-%m-%d').strftime('%d de %B del %Y')).capitalize()"/>
+                            al
+                            <span t-out="(datetime.datetime.strptime(data['report_period']['until'], '%Y-%m-%d').strftime('%d de %B del %Y')).capitalize()"/>
+                        </p>
+                    </div>
+                </div>
+                <!-- ############################################################# Sección de Facebook -->
+                <t t-if="data['facebook_data']">
+                    <div class="page">
+
+                        <img src="/gl_geniolibre/static/src/img/banner_facebook.jpg"
+                             alt="Facebook"
+                             style="max-width: 100%; height: auto;"/>
+
+                        <!-- Totales -->
+                        <div>
+                            <h3>Totales</h3>
+                            <table style="width: 100%; border-spacing: 16px; table-layout: fixed;">
+                                <tr>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['facebook_data']['totals']['page_media_view']"/>
+                                        </div>
+                                        <div class="metric-label">Vistas de contenido</div>
+                                    </td>
+
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['facebook_data']['totals']['page_views_total']"/>
+                                        </div>
+                                        <div class="metric-label">Visitas a la página</div>
+                                    </td>
+
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['facebook_data']['totals']['page_follows']"/>
+                                        </div>
+                                        <div class="metric-label">Seguidores</div>
+                                    </td>
+
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['facebook_data']['totals'].get('followers_diff', 0)"/>
+                                        </div>
+                                        <div class="metric-label">Variación de seguidores</div>
+                                    </td>
+
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['facebook_data']['totals']['page_post_engagements']"/>
+                                        </div>
+                                        <div class="metric-label">Interacciones totales</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['facebook_data']['totals']['engagement_rate']"/>%
+                                        </div>
+                                        <div class="metric-label">Engagement Rate</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div>
+                            <h3>Resumen por Tipo de Publicación</h3>
+                            <table>
+                                <thead>
+                                    <tr class="text-center header-facebook">
+                                        <th>Tipo</th>
+                                        <th>Posts</th>
+                                        <th>Vistas</th>
+                                        <th>Reacciones</th>
+                                        <th>Comentarios</th>
+                                        <th>Compartidos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['facebook_data']['post_type_summary'].items()" t-as="item">
+                                        <t t-set="tipo_publicacion" t-value="{
+                            'video_inline': 'Video',
+                            'video_direct_response': 'Video con CTA',
+                            'video': 'Video',
+                            'photo': 'Foto',
+                            'album': 'Album',
+                            'status': 'Estado',
+                            'link': 'Enlace',
+                            'event': 'Evento',
+                            'offer': 'Oferta'
+                        }.get(item[0], item[0].replace('_', ' ').capitalize())"/>
+                                        <t t-set="tipo_publicacion_icon" t-value="{
+                            'video_inline': '/gl_geniolibre/static/src/img/iconos/icon_video.png',
+                            'video_direct_response': '/gl_geniolibre/static/src/img/iconos/icon_video_cta.png',
+                            'video': '/gl_geniolibre/static/src/img/iconos/icon_video.png',
+                            'photo': '/gl_geniolibre/static/src/img/iconos/icon_photo.png',
+                            'album': '/gl_geniolibre/static/src/img/iconos/icon_album.png',
+                            'status': '/gl_geniolibre/static/src/img/iconos/icon_status.png',
+                            'link': '/gl_geniolibre/static/src/img/iconos/icon_link.png',
+                            'event': '/gl_geniolibre/static/src/img/iconos/icon_event.png',
+                            'offer': '/gl_geniolibre/static/src/img/iconos/icon_offer.png'
+                        }.get(item[0])"/>
+
+                                        <tr class="text-center">
+                                            <td>
+                                                <span class="report-icon-label">
+                                                    <img t-if="tipo_publicacion_icon" t-att-src="tipo_publicacion_icon"
+                                                         t-att-alt="tipo_publicacion" class="report-icon"/>
+                                                    <span t-out="tipo_publicacion"/>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1]['posts']"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1]['views']"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1]['reactions']"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1]['comments']"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1]['shares']"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="top-posts-container">
+                            <h3>Top Posts</h3>
+                            <table class="top-posts-table" style="table-layout: fixed; width: 100%;">
+
+                                <thead>
+                                    <tr class="text-center header-facebook">
+                                        <th class="text-center content-header">Contenido</th>
+                                        <th class="text-center ">Copy</th>
+                                        <th style="width: 90px;">Tipo</th>
+                                        <th style="width: 90px;">Vistas</th>
+                                        <th class="interactions-header">Interacciones</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <t t-foreach="data['facebook_data']['top_posts']" t-as="post">
+                                        <t t-set="tipo_post" t-value="{
+                            'video': 'Video',
+                            'video_direct_response': 'Video con CTA',
+                            'video_inline': 'Video',
+                            'photo': 'Foto',
+                            'status': 'Estado',
+                            'link': 'Enlace',
+                            'event': 'Evento',
+                            'album': 'Album',
+                            'offer': 'Oferta'
+                        }.get(post['type'], post['type'].replace('_', ' ').capitalize())"/>
+                                        <t t-set="tipo_post_icon" t-value="{
+                            'video': '/gl_geniolibre/static/src/img/iconos/icon_video.png',
+                            'video_direct_response': '/gl_geniolibre/static/src/img/iconos/icon_video_cta.png',
+                            'video_inline': '/gl_geniolibre/static/src/img/iconos/icon_video.png',
+                            'photo': '/gl_geniolibre/static/src/img/iconos/icon_photo.png',
+                            'status': '/gl_geniolibre/static/src/img/iconos/icon_status.png',
+                            'link': '/gl_geniolibre/static/src/img/iconos/icon_link.png',
+                            'event': '/gl_geniolibre/static/src/img/iconos/icon_event.png',
+                            'album': '/gl_geniolibre/static/src/img/iconos/icon_album.png',
+                            'offer': '/gl_geniolibre/static/src/img/iconos/icon_offer.png'
+                        }.get(post['type'])"/>
+
+                                        <tr>
+                                            <td style="width: 20%;">
+                                                <div class="text-center post-content">
+                                                    <img t-att-src="post['picture_url']"
+                                                         class="post-image"
+                                                         style="width:90%;max-width:90%;height:auto;"/>
+                                                </div>
+                                            </td>
+
+                                            <td class="post-type">
+                                                <t t-out="post.get('message', 'Sin descripción')"/>
+                                            </td>
+                                            <td class="post-type">
+                                                <span class="report-icon-label">
+                                                    <img t-if="tipo_post_icon" t-att-src="tipo_post_icon"
+                                                         t-att-alt="tipo_post" class="report-icon"/>
+                                                    <span t-out="tipo_post"/>
+                                                </span>
+                                            </td>
+
+                                            <td class="metric-value">
+                                                <t t-out="post['views']"/>
+                                            </td>
+
+                                            <td style="text-align: center; vertical-align: middle;">
+                                                <div class="interactions-container">
+                                                    <div class="metric-label">
+                                                        <img src="/gl_geniolibre/static/src/img/iconos/icon_reaction.png"
+                                                             alt="Reacciones" class="report-icon"/>
+                                                        <t t-out="post['reactions']"/>
+                                                        Reacciones
+                                                    </div>
+                                                    <div class="metric-label">
+                                                        <img src="/gl_geniolibre/static/src/img/iconos/icon_comment.png"
+                                                             alt="Comentarios" class="report-icon"/>
+                                                        <t t-out="post['comments']"/>
+                                                        Comentarios
+                                                    </div>
+                                                    <div class="metric-label">
+                                                        <img src="/gl_geniolibre/static/src/img/iconos/icon_share.png"
+                                                             alt="Compartidos" class="report-icon"/>
+                                                        <t t-out="post['shares']"/>
+                                                        Compartidos
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="page-break"/>
+                </t>
+                <!-- ############################################################# Sección de Instagram -->
+                <t t-if="data['instagram_data'] ">
+                    <div class="page">
+
+                        <img src="/gl_geniolibre/static/src/img/banner_instagram.jpg" alt="Instagram"
+                             style="max-width: 100%; height: auto;"/>
+                        <div>
+                            <h3>Totales</h3>
+                            <table style="width: 100%; border-spacing: 16px;">
+                                <!-- Primera fila -->
+                                <tr>
+                                    <!-- Seguidores -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['instagram_data']['account_metrics']['followers_count']"/>
+                                        </div>
+                                        <div class="metric-label">Seguidores</div>
+                                    </td>
+
+                                    <!-- Alcance -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['instagram_data']['totals']['reach']"/>
+                                        </div>
+                                        <div class="metric-label">Alcance</div>
+                                    </td>
+
+                                    <!-- Vistas de perfil -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['instagram_data']['totals']['profile_views']"/>
+                                        </div>
+                                        <div class="metric-label">Vistas de perfil</div>
+                                    </td>
+
+                                    <!-- Cuentas comprometidas -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['instagram_data']['totals']['accounts_engaged']"/>
+                                        </div>
+                                        <div class="metric-label">Cuentas Alcanzadas</div>
+                                    </td>
+
+
+                                </tr>
+
+                                <!-- Segunda fila -->
+                                <tr>
+                                    <!-- Interacciones -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['instagram_data']['totals']['total_interactions']"/>
+                                        </div>
+                                        <div class="metric-label">Interacciones</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['instagram_data']['totals']['comments']"/>
+                                        </div>
+                                        <div class="metric-label">Comentarios</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['instagram_data']['totals']['follows_and_unfollows']"/>
+                                        </div>
+                                        <div class="metric-label">Seguidores nuevos</div>
+                                    </td>
+
+                                    <!-- Reproducciones -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['instagram_data']['totals']['views']"/>
+                                        </div>
+                                        <div class="metric-label">Vistas Totales</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- Resumen por Tipo de Media -->
+                        <div>
+                            <h3>Resumen por Tipo de Media</h3>
+                            <table>
+                                <thead>
+                                    <tr class="text-center header-instagram">
+                                        <th class="text-center">Tipo</th>
+                                        <th class="text-center">Impresiones</th>
+                                        <th class="text-center">Alcance</th>
+                                        <th class="text-center">Interacciones</th>
+                                        <th class="text-center">Reproducciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['instagram_data']['summary_by_type'].items()" t-as="item">
+                                        <t t-set="tipo_media" t-value="{
+                                        'IMAGE': 'Imagen',
+                                        'VIDEO': 'Video',
+                                        'CAROUSEL_ALBUM': 'Carrusel',
+                                        'CAROUSEL': 'Carrusel',
+                                        'REEL': 'Reel',
+                                        'STORY': 'Historia'
+                                    }.get(item[0], item[0].replace('_', ' ').capitalize())"/>
+                                        <t t-set="tipo_media_icon" t-value="{
+                                        'IMAGE': '/gl_geniolibre/static/src/img/iconos/icon_image.png',
+                                        'VIDEO': '/gl_geniolibre/static/src/img/iconos/icon_video.png',
+                                        'CAROUSEL_ALBUM': '/gl_geniolibre/static/src/img/iconos/icon_carousel.png',
+                                        'CAROUSEL': '/gl_geniolibre/static/src/img/iconos/icon_carousel.png',
+                                        'REEL': '/gl_geniolibre/static/src/img/iconos/icon_reel.png',
+                                        'STORY': '/gl_geniolibre/static/src/img/iconos/icon_story.png'
+                                    }.get(item[0])"/>
+                                        <tr>
+                                            <td class="text-center">
+                                                <span class="report-icon-label">
+                                                    <img t-if="tipo_media_icon" t-att-src="tipo_media_icon"
+                                                         t-att-alt="tipo_media" class="report-icon"/>
+                                                    <span t-out="tipo_media"/>
+                                                </span>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="item[1]['views']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="item[1]['reach']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="item[1]['total_interactions']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="item[1]['video_views']"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Top Posts Instagram -->
+                        <div class="top-posts-container">
+                            <h3>Top Posts</h3>
+                            <table class="top-posts-table" style="table-layout: fixed; width: 100%;">
+                                <!-- Encabezados -->
+                                <thead>
+                                    <tr class="text-center header-instagram">
+                                        <th class="text-center content-header">Contenido</th>
+                                        <th class="text-center content-header">Copy</th>
+                                        <th class="text-center type-header">Tipo</th>
+                                        <th class="text-center metric-header">Vistas</th>
+                                        <th class="text-center metric-header">Alcance</th>
+                                        <th class="text-center metric-header">Interacciones</th>
+                                        <!--                                    <th class="interactions-header">Enlace</th>-->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['instagram_data']['top_posts']" t-as="post">
+                                        <!-- Solo mostrar si tiene algún valor distinto de 0 -->
+                                        <t t-if="post.get('views', 0) or post.get('reach', 0) or post.get('likes', 0) or post.get('comments', 0) or post.get('shares', 0) or post.get('saved', 0) or post.get('video_views', 0) or post.get('plays', 0)">
+                                            <t t-set="tipo_post" t-value="{
+                                            'IMAGE': 'Imagen',
+                                            'VIDEO': 'Video',
+                                            'CAROUSEL_ALBUM': 'Carrusel',
+                                            'REEL': 'Reel',
+                                            'STORY': 'Historia'
+                                        }.get(post.get('media_type', ''), post.get('media_type', '').replace('_', ' ').capitalize())"/>
+                                            <t t-set="tipo_post_icon" t-value="{
+                                            'IMAGE': '/gl_geniolibre/static/src/img/iconos/icon_image.png',
+                                            'VIDEO': '/gl_geniolibre/static/src/img/iconos/icon_video.png',
+                                            'CAROUSEL_ALBUM': '/gl_geniolibre/static/src/img/iconos/icon_carousel.png',
+                                            'REEL': '/gl_geniolibre/static/src/img/iconos/icon_reel.png',
+                                            'STORY': '/gl_geniolibre/static/src/img/iconos/icon_story.png'
+                                        }.get(post.get('media_type', ''))"/>
+                                            <tr>
+                                                <!-- Columna 1: Imagen + ID -->
+                                                <td>
+                                                    <div class="post-content text-center">
+                                                        <t t-if="post.get('media_url') or post.get('thumbnail_url')">
+                                                            <img t-att-src="post.get('media_url')"
+                                                                 class="post-image text-center"
+                                                                 style="width:90%;max-width:90%;height:auto;"
+                                                                 t-if="post.get('media_url') and post.get('media_type') in ['IMAGE', 'CAROUSEL_ALBUM']"
+                                                                 t-att-alt="post.get('caption', 'Post de Instagram')"/>
+                                                            <img t-att-src="post.get('thumbnail_url')"
+                                                                 class="post-image"
+                                                                 style="width:90%;max-width:90%;height:auto;"
+                                                                 t-if="post.get('thumbnail_url') and post.get('media_type') in ['VIDEO', 'REEL']"
+                                                                 t-att-alt="post.get('caption', 'Miniatura de video')"/>
+                                                        </t>
+                                                    </div>
+                                                </td>
+                                                <td class="post-type">
+                                                    <t t-out="post.get('caption', 'Sin descripción')"/>
+                                                </td>
+                                                <!-- Columna 2: Tipo -->
+                                                <td class="post-type">
+                                                    <span class="report-icon-label">
+                                                        <img t-if="tipo_post_icon" t-att-src="tipo_post_icon"
+                                                             t-att-alt="tipo_post" class="report-icon"/>
+                                                        <span t-out="tipo_post"/>
+                                                    </span>
+                                                </td>
+
+                                                <!-- Columna 3: Impresiones -->
+                                                <td class="metric-value">
+                                                    <t t-out="post.get('views', 0)"/>
+                                                </td>
+
+                                                <!-- Columna 3: Alcance -->
+                                                <td class="metric-value">
+                                                    <t t-out="post.get('reach', 0)"/>
+                                                </td>
+
+                                                <!-- Columna 4: Interacciones -->
+                                                <td>
+                                                    <div class="interactions-container">
+                                                        <div class="interaction-metric"
+                                                             style="margin-bottom: 0px!important;">
+                                                            <div class="metric-label">
+                                                                <img src="/gl_geniolibre/static/src/img/iconos/icon_like.png"
+                                                                     alt="Me gusta" class="report-icon"/>
+                                                                <t t-out="post.get('likes', 0)"/>
+                                                                Me gusta
+                                                            </div>
+                                                        </div>
+                                                        <div class="interaction-metric"
+                                                             style="margin-bottom: 0px!important;">
+                                                            <div class="metric-label">
+                                                                <img src="/gl_geniolibre/static/src/img/iconos/icon_comment.png"
+                                                                     alt="Comentarios" class="report-icon"/>
+                                                                <t t-out="post.get('comments', 0)"/>
+                                                                Comentarios
+                                                            </div>
+                                                        </div>
+                                                        <div class="interaction-metric"
+                                                             style="margin-bottom: 0px!important;">
+                                                            <div class="metric-label">
+                                                                <img src="/gl_geniolibre/static/src/img/iconos/icon_share.png"
+                                                                     alt="Compartidos" class="report-icon"/>
+                                                                <t t-out="post.get('shares', 0)"/>
+                                                                Compartidos
+                                                            </div>
+                                                        </div>
+                                                        <div class="interaction-metric"
+                                                             style="margin-bottom: 0px!important;">
+                                                            <div class="metric-label">
+                                                                <img src="/gl_geniolibre/static/src/img/iconos/icon_save.png"
+                                                                     alt="Guardados" class="report-icon"/>
+                                                                <t t-out="post.get('saved', 0)"/>
+                                                                Guardados
+                                                            </div>
+                                                        </div>
+
+                                                        <t t-if="post.get('media_type') in ['VIDEO','REEL']">
+                                                            <div class="interaction-metric"
+                                                                 style="margin-bottom: 0px!important;">
+                                                                <div class="metric-label">
+                                                                    <img src="/gl_geniolibre/static/src/img/iconos/icon_play.png"
+                                                                         alt="Reproducciones" class="report-icon"/>
+                                                                    <t t-out="post.get('video_views', post.get('plays', 0))"/>
+                                                                    Reproducciones
+                                                                </div>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </tbody>
+
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="page-break"/>
+                </t>
+                <!-- #############################################################  Sección de Meta Ads -->
+                <t t-if="data['meta_ads_data'] ">
+                    <div class="page">
+
+                        <!-- Sección de Meta Ads -->
+                        <img src="/gl_geniolibre/static/src/img/banner_meta_ads.jpg" alt="Meta Ads"
+                             style="max-width: 100%; height: auto;"/>
+                        <!-- Sección de Meta Ads - Totales -->
+                        <div>
+                            <h3>Resumen</h3>
+                            <table style="width: 100%; border-spacing: 16px;">
+                                <tr>
+                                    <!-- Total campañas -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['total_campaigns']"/>
+                                        </div>
+                                        <div class="metric-label">Total campañas</div>
+                                    </td>
+
+                                    <!-- Moneda -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['account_currency']"/>
+                                        </div>
+                                        <div class="metric-label">Moneda</div>
+                                    </td>
+
+                                    <!-- Impresiones -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['impressions']"/>
+                                        </div>
+                                        <div class="metric-label">Impresiones</div>
+                                    </td>
+
+                                    <!-- Clicks -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['clicks']"/>
+                                        </div>
+                                        <div class="metric-label">Clicks</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- Alcance -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['reach']"/>
+                                        </div>
+                                        <div class="metric-label">Alcance</div>
+                                    </td>
+
+                                    <!-- Gasto total -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['spend']"/>
+                                        </div>
+                                        <div class="metric-label">Gasto total</div>
+                                    </td>
+
+                                    <!-- CTR -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['ctr']"/>%
+                                        </div>
+                                        <div class="metric-label">CTR</div>
+                                    </td>
+
+                                    <!-- CPC -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['cpc']"/>
+                                        </div>
+                                        <div class="metric-label">CPC</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <!-- CPM -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['cpm']"/>
+                                        </div>
+                                        <div class="metric-label">CPM</div>
+                                    </td>
+
+                                    <!-- CPP -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['cpp']"/>
+                                        </div>
+                                        <div class="metric-label">CPP</div>
+                                    </td>
+
+                                    <!-- Frecuencia -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['frequency']"/>
+                                        </div>
+                                        <div class="metric-label">Frecuencia</div>
+                                    </td>
+
+                                    <!-- Costo por conversión -->
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['meta_ads_data']['summary']['total_conversaciones']"/>
+                                        </div>
+                                        <div class="metric-label">Conversaciones Iniciadas</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- Resumen por Campaña -->
+                        <div class="top-posts-container">
+                            <h3>Detalle de Campañas</h3>
+
+                            <table class="top-posts-table">
+                                <thead>
+                                    <tr class="text-center header-meta-ads">
+                                        <th class="text-center  content-header">Campaña</th>
+                                        <th class="text-center metric-header">Métricas</th>
+                                        <th class="text-center metric-header">Rendimiento</th>
+                                        <th class="text-center interactions-header">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['meta_ads_data']['campaigns']" t-as="camp">
+                                        <tr>
+                                            <!-- Columna 1: Nombre Campaña -->
+                                            <td>
+
+                                                <div class="post-content text-center">
+                                                    <div class="post-message">
+                                                        <t t-out="camp['name']"/>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="metric-value">
+                                                <div class="interactions-container">
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count">
+                                                            <t t-out="camp['impressions']"/>
+                                                        </div>
+                                                        <div class="metric-label">Impresiones</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count">
+                                                            <t t-out="camp['reach']"/>
+                                                        </div>
+                                                        <div class="metric-label">Alcance</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="comments-count">
+                                                            <t t-out="camp['clicks']"/>
+                                                        </div>
+                                                        <div class="metric-label">Clicks</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="shares-count">
+                                                            <t t-out="camp['spend']"/>
+                                                        </div>
+                                                        <div class="metric-label">Gasto</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <!-- Columna 4: Rendimiento -->
+                                            <td class="metric-value">
+                                                <div class="interactions-container">
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count"><t t-out="camp['ctr']"/>%
+                                                        </div>
+                                                        <div class="metric-label">CTR</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="comments-count">
+                                                            <t t-out="camp['cpc']"/>
+                                                        </div>
+                                                        <div class="metric-label">CPC</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="shares-count">
+                                                            <t t-out="camp['cpm']"/>
+                                                        </div>
+                                                        <div class="metric-label">CPM</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="saves-count">
+                                                            <t t-out="camp['cpp']"/>
+                                                        </div>
+                                                        <div class="metric-label">CPP</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <!-- Columna 5: Acciones -->
+                                            <td>
+                                                <div class="interactions-container"
+                                                     style="flex-wrap: wrap; display: flex;">
+                                                    <t t-foreach="camp['actions'].items()" t-as="action">
+                                                        <t t-if="action[0] in [
+                                                            'link_click',
+                                                            'landing_page_view',
+                                                            'onsite_conversion.messaging_conversation_started_7d',
+                                                            'onsite_conversion.total_messaging_connection',
+                                                            'post_engagement',
+                                                            'post_reaction',
+                                                            'video_view',
+                                                            'like'
+                                                        ]">
+                                                        <t t-set="action_name" t-value="{
+                                                  'like': 'Me gusta', 'link_click': 'Clics', 'view_content': 'Vistas', 'purchase': 'Compras',
+                                                  'add_to_cart': 'Agregar al Carrito', 'initiate_checkout': 'Checkout', 'lead': 'Leads', 'comment': 'Comentarios',
+                                                  'post_engagement': 'Interacciones', 'video_view': 'Vistas de Video', 'post_reaction': 'Reacciones',
+                                                  'page_engagement': 'Engagements de Pagina', 'landing_page_view': 'Visitas a Landing', 'onsite_conversion.messaging_first_reply': 'Respuesta Inicial',
+                                                  'onsite_conversion.messaging_user_depth_2_message_send': 'Msg de Nivel 2', 'onsite_conversion.messaging_user_depth_3_message_send': 'Msg de Nivel 3',
+                                                  'onsite_conversion.messaging_user_depth_5_message_send': 'Msg de Nivel 5', 'onsite_conversion.messaging_conversation_started_7d': 'Conversaciones Iniciadas (7d)',
+                                                  'onsite_conversion.messaging_conversation_replied_7d': 'Conversaciones Respondidas (7d)', 'onsite_conversion.total_messaging_connection': 'Conexiones Totales',
+                                                  'onsite_conversion.messaging_business_calling_opt_in_sent': 'Opt-In Llamadas', 'onsite_conversion.messaging_welcome_message_view': 'Vieron Mensaje Bienvenida',
+                                                  'omni_landing_page_view': 'Omni Landing'
+                                                }.get(action[0], action[0].replace('_', ' ').replace('.', ' ').capitalize())"/>
+                                                        <t t-set="action_icon" t-value="{
+                                                  'like': '/gl_geniolibre/static/src/img/iconos/icon_like.png',
+                                                  'link_click': '/gl_geniolibre/static/src/img/iconos/icon_click.png',
+                                                  'view_content': '/gl_geniolibre/static/src/img/iconos/icon_view.png',
+                                                  'purchase': '/gl_geniolibre/static/src/img/iconos/icon_purchase.png',
+                                                  'add_to_cart': '/gl_geniolibre/static/src/img/iconos/icon_cart.png',
+                                                  'initiate_checkout': '/gl_geniolibre/static/src/img/iconos/icon_checkout.png',
+                                                  'lead': '/gl_geniolibre/static/src/img/iconos/icon_lead.png',
+                                                  'comment': '/gl_geniolibre/static/src/img/iconos/icon_comment.png',
+                                                  'post_engagement': '/gl_geniolibre/static/src/img/iconos/icon_interaction.png',
+                                                  'video_view': '/gl_geniolibre/static/src/img/iconos/icon_play.png',
+                                                  'post_reaction': '/gl_geniolibre/static/src/img/iconos/icon_reaction.png',
+                                                  'page_engagement': '/gl_geniolibre/static/src/img/iconos/icon_interaction.png',
+                                                  'landing_page_view': '/gl_geniolibre/static/src/img/iconos/icon_landing.png',
+                                                  'onsite_conversion.messaging_first_reply': '/gl_geniolibre/static/src/img/iconos/icon_message_reply.png',
+                                                  'onsite_conversion.messaging_user_depth_2_message_send': '/gl_geniolibre/static/src/img/iconos/icon_message_level.png',
+                                                  'onsite_conversion.messaging_user_depth_3_message_send': '/gl_geniolibre/static/src/img/iconos/icon_message_level.png',
+                                                  'onsite_conversion.messaging_user_depth_5_message_send': '/gl_geniolibre/static/src/img/iconos/icon_message_level.png',
+                                                  'onsite_conversion.messaging_conversation_started_7d': '/gl_geniolibre/static/src/img/iconos/icon_conversation_started.png',
+                                                  'onsite_conversion.messaging_conversation_replied_7d': '/gl_geniolibre/static/src/img/iconos/icon_conversation_replied.png',
+                                                  'onsite_conversion.total_messaging_connection': '/gl_geniolibre/static/src/img/iconos/icon_connection.png',
+                                                  'onsite_conversion.messaging_business_calling_opt_in_sent': '/gl_geniolibre/static/src/img/iconos/icon_call.png',
+                                                  'onsite_conversion.messaging_welcome_message_view': '/gl_geniolibre/static/src/img/iconos/icon_welcome_message.png',
+                                                  'omni_landing_page_view': '/gl_geniolibre/static/src/img/iconos/icon_landing.png'
+                                                }.get(action[0])"/>
+                                                        <div class="interaction-metric"
+                                                             style="min-width: 150px; margin-right: 10px; margin-bottom: 0px!important;">
+                                                            <div class="metric-label">
+                                                                <img t-if="action_icon" t-att-src="action_icon"
+                                                                     t-att-alt="action_name" class="report-icon"/>
+                                                                <t t-out="action[1]"/>
+                                                                <t t-out="action_name"/>
+                                                            </div>
+                                                        </div>
+                                                        </t>
+                                                    </t>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="top-posts-container" t-if="data['meta_ads_data'].get('adsets')">
+                            <h3>Detalles de Conjuntos de Anuncios</h3>
+
+                            <table class="top-posts-table">
+                                <thead>
+                                    <tr class="text-center header-meta-ads">
+                                        <th class="text-center content-header">Vista Previa</th>
+                                        <th class="text-center content-header">Conjunto</th>
+                                        <th class="text-center metric-header">Métricas</th>
+                                        <th class="text-center metric-header">Rendimiento</th>
+                                        <th class="text-center interactions-header">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['meta_ads_data']['adsets']" t-as="adset">
+                                        <tr>
+                                            <td style="vertical-align: top; text-align: center;">
+                                                <div t-if="adset.get('thumbnail_url')">
+                                                    <img t-att-src="adset['thumbnail_url']"
+                                                         class="post-image"
+                                                         style="width:85px;max-width:100%;height:auto;display:block;margin:0 auto;"/>
+                                                </div>
+                                            </td>
+                                            <td style="vertical-align: top;">
+                                                <div class="text-center">
+                                                    <div class="post-message" style="text-align: center;">
+                                                        <div><strong><t t-out="adset['name']"/></strong></div>
+                                                        <div style="font-size: 11px; color: #666;">
+                                                            <t t-out="adset.get('campaign_name', '')"/>
+                                                        </div>
+                                                        <div t-if="adset.get('ad_names')" style="font-size: 10px; color: #444; margin-top: 6px; line-height: 1.35;">
+                                                            <div style="font-weight: 600; margin-bottom: 2px;">Anuncios</div>
+                                                            <t t-foreach="adset.get('ad_names', [])" t-as="ad_name">
+                                                                <div>
+                                                                    <t t-out="ad_name"/>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="metric-value">
+                                                <div class="interactions-container">
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count">
+                                                            <t t-out="adset['impressions']"/>
+                                                        </div>
+                                                        <div class="metric-label">Impresiones</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count">
+                                                            <t t-out="adset['reach']"/>
+                                                        </div>
+                                                        <div class="metric-label">Alcance</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="comments-count">
+                                                            <t t-out="adset['clicks']"/>
+                                                        </div>
+                                                        <div class="metric-label">Clicks</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="shares-count">
+                                                            <t t-out="adset['spend']"/>
+                                                        </div>
+                                                        <div class="metric-label">Gasto</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="metric-value">
+                                                <div class="interactions-container">
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count"><t t-out="adset['ctr']"/>%</div>
+                                                        <div class="metric-label">CTR</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="comments-count">
+                                                            <t t-out="adset['cpc']"/>
+                                                        </div>
+                                                        <div class="metric-label">CPC</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="shares-count">
+                                                            <t t-out="adset['cpm']"/>
+                                                        </div>
+                                                        <div class="metric-label">CPM</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="saves-count">
+                                                            <t t-out="adset['cpp']"/>
+                                                        </div>
+                                                        <div class="metric-label">CPP</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="interactions-container"
+                                                     style="flex-wrap: wrap; display: flex;">
+                                                    <t t-foreach="adset['actions'].items()" t-as="action">
+                                                        <t t-if="action[0] in [
+                                                            'link_click',
+                                                            'landing_page_view',
+                                                            'onsite_conversion.messaging_conversation_started_7d',
+                                                            'onsite_conversion.total_messaging_connection',
+                                                            'post_engagement',
+                                                            'post_reaction',
+                                                            'video_view',
+                                                            'like'
+                                                        ]">
+                                                        <t t-set="action_name" t-value="{
+                                                  'like': 'Me gusta', 'link_click': 'Clics', 'view_content': 'Vistas', 'purchase': 'Compras',
+                                                  'add_to_cart': 'Agregar al Carrito', 'initiate_checkout': 'Checkout', 'lead': 'Leads', 'comment': 'Comentarios',
+                                                  'post_engagement': 'Interacciones', 'video_view': 'Vistas de Video', 'post_reaction': 'Reacciones',
+                                                  'page_engagement': 'Engagements de Pagina', 'landing_page_view': 'Visitas a Landing', 'onsite_conversion.messaging_first_reply': 'Respuesta Inicial',
+                                                  'onsite_conversion.messaging_user_depth_2_message_send': 'Msg de Nivel 2', 'onsite_conversion.messaging_user_depth_3_message_send': 'Msg de Nivel 3',
+                                                  'onsite_conversion.messaging_user_depth_5_message_send': 'Msg de Nivel 5', 'onsite_conversion.messaging_conversation_started_7d': 'Conversaciones Iniciadas (7d)',
+                                                  'onsite_conversion.messaging_conversation_replied_7d': 'Conversaciones Respondidas (7d)', 'onsite_conversion.total_messaging_connection': 'Conexiones Totales',
+                                                  'onsite_conversion.messaging_business_calling_opt_in_sent': 'Opt-In Llamadas', 'onsite_conversion.messaging_welcome_message_view': 'Vieron Mensaje Bienvenida',
+                                                  'omni_landing_page_view': 'Omni Landing'
+                                                }.get(action[0], action[0].replace('_', ' ').replace('.', ' ').capitalize())"/>
+                                                        <t t-set="action_icon" t-value="{
+                                                  'like': '/gl_geniolibre/static/src/img/iconos/icon_like.png',
+                                                  'link_click': '/gl_geniolibre/static/src/img/iconos/icon_click.png',
+                                                  'view_content': '/gl_geniolibre/static/src/img/iconos/icon_view.png',
+                                                  'purchase': '/gl_geniolibre/static/src/img/iconos/icon_purchase.png',
+                                                  'add_to_cart': '/gl_geniolibre/static/src/img/iconos/icon_cart.png',
+                                                  'initiate_checkout': '/gl_geniolibre/static/src/img/iconos/icon_checkout.png',
+                                                  'lead': '/gl_geniolibre/static/src/img/iconos/icon_lead.png',
+                                                  'comment': '/gl_geniolibre/static/src/img/iconos/icon_comment.png',
+                                                  'post_engagement': '/gl_geniolibre/static/src/img/iconos/icon_interaction.png',
+                                                  'video_view': '/gl_geniolibre/static/src/img/iconos/icon_play.png',
+                                                  'post_reaction': '/gl_geniolibre/static/src/img/iconos/icon_reaction.png',
+                                                  'page_engagement': '/gl_geniolibre/static/src/img/iconos/icon_interaction.png',
+                                                  'landing_page_view': '/gl_geniolibre/static/src/img/iconos/icon_landing.png',
+                                                  'onsite_conversion.messaging_first_reply': '/gl_geniolibre/static/src/img/iconos/icon_message_reply.png',
+                                                  'onsite_conversion.messaging_user_depth_2_message_send': '/gl_geniolibre/static/src/img/iconos/icon_message_level.png',
+                                                  'onsite_conversion.messaging_user_depth_3_message_send': '/gl_geniolibre/static/src/img/iconos/icon_message_level.png',
+                                                  'onsite_conversion.messaging_user_depth_5_message_send': '/gl_geniolibre/static/src/img/iconos/icon_message_level.png',
+                                                  'onsite_conversion.messaging_conversation_started_7d': '/gl_geniolibre/static/src/img/iconos/icon_conversation_started.png',
+                                                  'onsite_conversion.messaging_conversation_replied_7d': '/gl_geniolibre/static/src/img/iconos/icon_conversation_replied.png',
+                                                  'onsite_conversion.total_messaging_connection': '/gl_geniolibre/static/src/img/iconos/icon_connection.png',
+                                                  'onsite_conversion.messaging_business_calling_opt_in_sent': '/gl_geniolibre/static/src/img/iconos/icon_call.png',
+                                                  'onsite_conversion.messaging_welcome_message_view': '/gl_geniolibre/static/src/img/iconos/icon_welcome_message.png',
+                                                  'omni_landing_page_view': '/gl_geniolibre/static/src/img/iconos/icon_landing.png'
+                                                }.get(action[0])"/>
+                                                        <div class="interaction-metric"
+                                                             style="min-width: 150px; margin-right: 10px; margin-bottom: 0px!important;">
+                                                            <div class="metric-label">
+                                                                <img t-if="action_icon" t-att-src="action_icon"
+                                                                     t-att-alt="action_name" class="report-icon"/>
+                                                                <t t-out="action[1]"/>
+                                                                <t t-out="action_name"/>
+                                                            </div>
+                                                        </div>
+                                                        </t>
+                                                    </t>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="page-break"/>
+                </t>
+                <!-- #############################################################  Sección de Google Ads -->
+                <t t-if="data['tiktok_data']">
+                    <div class="page">
+                        <img src="/gl_geniolibre/static/src/img/banner_tiktok.jpg" alt="TikTok"
+                             style="max-width: 100%; height: auto;"/>
+
+                        <!-- Datos del Usuario -->
+                        <!--                        <div>-->
+                        <!--                            <h3>Perfil</h3>-->
+                        <!--                            <table style="width: 100%; border-spacing: 16px;">-->
+                        <!--                                <tr>-->
+                        <!--                                    <td>-->
+                        <!--                                        <img t-att-src="data['tiktok_data']['user']['avatar_url']"-->
+                        <!--                                             alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%;"/>-->
+                        <!--                                    </td>-->
+                        <!--                                    <td>-->
+                        <!--                                        <a style="color:black;" t-att-href="data['tiktok_data']['user']['profile_deep_link']"-->
+                        <!--                                           target="_blank">-->
+                        <!--                                        <strong>-->
+                        <!--                                            <t t-out="data['tiktok_data']['user']['display_name']"/>-->
+                        <!--                                            (@<t t-out="data['tiktok_data']['user']['username']"/>)-->
+                        <!--                                        </strong>-->
+                        <!--                                        </a>-->
+                        <!--                                    </td>-->
+                        <!--                                </tr>-->
+                        <!--                            </table>-->
+                        <!--                        </div>-->
+
+                        <!-- Resumen General -->
+                        <div>
+                            <h3>Totales</h3>
+                            <table style="width: 100%; border-spacing: 16px;">
+                                <tr class="text-center header-tiktok">
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['tiktok_data']['user']['follower_count']"/>
+                                        </div>
+                                        <div class="metric-label">Seguidores</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['tiktok_data']['user']['following_count']"/>
+                                        </div>
+                                        <div class="metric-label">Siguiendo</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['tiktok_data']['user']['likes_count']"/>
+                                        </div>
+                                        <div class="metric-label">Likes Totales</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['tiktok_data']['user']['video_count']"/>
+                                        </div>
+                                        <div class="metric-label">Videos</div>
+                                    </td>
+                                </tr>
+                                <tr class="text-center header-tiktok">
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['tiktok_data']['resumen']['total_views']"/>
+                                        </div>
+                                        <div class="metric-label">Vistas Totales</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['tiktok_data']['resumen']['total_likes']"/>
+                                        </div>
+                                        <div class="metric-label">Likes en Videos</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['tiktok_data']['resumen']['total_comments']"/>
+                                        </div>
+                                        <div class="metric-label">Comentarios</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['tiktok_data']['resumen']['total_shares']"/>
+                                        </div>
+                                        <div class="metric-label">Compartidos</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Top Posts -->
+                        <div class="top-posts-container">
+                            <h3>Top Posts</h3>
+                            <table class="top-posts-table">
+                                <thead>
+                                    <tr class="text-center header-tiktok">
+                                        <th class="text-center content-header">Contenido</th>
+                                        <th class="text-center copy-header">Copy</th>
+                                        <th class="metric-header">Tipo</th>
+                                        <th class="metric-header">Vistas</th>
+                                        <th class="interactions-header">Interacciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="data['tiktok_data'].get('top_posts')">
+                                        <t t-foreach="data['tiktok_data']['top_posts']" t-as="post">
+                                            <tr>
+                                                <td>
+                                                    <div class="text-center post-content">
+                                                        <t t-if="post.get('picture_url')">
+                                                            <a style="color:black;" t-att-href="post.get('post_url') or '#'"
+                                                               target="_blank">
+                                                                <img t-att-src="post['picture_url']" class="post-image"/>
+                                                            </a>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="post-image-placeholder">Sin imagen</div>
+                                                        </t>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="post-message text-center">
+                                                        <a style="color:black;" t-att-href="post.get('post_url') or '#'"
+                                                           target="_blank">
+                                                            <t t-out="(post.get('message') or 'Sin descripción')[:160]"/>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                                <td class="metric-value">
+                                                    <span class="report-icon-label">
+                                                        <img src="/gl_geniolibre/static/src/img/iconos/icon_video.png"
+                                                             alt="Video"
+                                                             class="report-icon"/>
+                                                        <t t-out="post.get('post_type') or 'Video'"/>
+                                                    </span>
+                                                </td>
+                                                <td class="metric-value">
+                                                    <t t-out="post.get('views', 0)"/>
+                                                </td>
+                                                <td class="metric-value">
+                                                    <div class="interactions-container">
+                                                        <div class="interaction-metric">
+                                                            <img src="/gl_geniolibre/static/src/img/iconos/icon_like.png"
+                                                                 alt="Likes"
+                                                                 class="report-icon"/>
+                                                            <span class="likes-count">
+                                                                <t t-out="post.get('likes', 0)"/> Likes
+                                                            </span>
+                                                        </div>
+                                                        <div class="interaction-metric">
+                                                            <img src="/gl_geniolibre/static/src/img/iconos/icon_comment.png"
+                                                                 alt="Comentarios"
+                                                                 class="report-icon"/>
+                                                            <span class="comments-count">
+                                                                <t t-out="post.get('comments', 0)"/> Comentarios
+                                                            </span>
+                                                        </div>
+                                                        <div class="interaction-metric">
+                                                            <img src="/gl_geniolibre/static/src/img/iconos/icon_share.png"
+                                                                 alt="Compartidos"
+                                                                 class="report-icon"/>
+                                                            <span class="shares-count">
+                                                                <t t-out="post.get('shares', 0)"/> Compartidos
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <tr>
+                                            <td colspan="5" class="text-center" style="padding: 16px;">
+                                                No se encontraron posts de TikTok para el período seleccionado.
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="page-break"/>
+                </t>
+                <!-- #############################################################  Sección de Google Ads -->
+                <t t-if="data.get('google_ads_data')">
+                    <div class="page">
+
+                        <!-- Banner de Google Ads -->
+                        <img src="/gl_geniolibre/static/src/img/banners_google_ads.jpg" alt="Google Ads"
+                             style="max-width: 100%; height: auto;"/>
+
+                        <!-- Resumen de Google Ads -->
+                        <div>
+                            <h3>Resumen</h3>
+                            <table style="width: 100%; border-spacing: 16px;">
+                                <tr>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['google_ads_data']['summary']['total_campaigns']"/>
+                                        </div>
+                                        <div class="metric-label">Total campañas</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['google_ads_data']['summary']['account_currency']"/>
+                                        </div>
+                                        <div class="metric-label">Moneda</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['google_ads_data']['summary']['impressions']"/>
+                                        </div>
+                                        <div class="metric-label">Impresiones</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['google_ads_data']['summary']['clicks']"/>
+                                        </div>
+                                        <div class="metric-label">Clicks</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['google_ads_data']['summary']['spend']"/>
+                                        </div>
+                                        <div class="metric-label">Gasto total</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['google_ads_data']['summary']['ctr']"/>%
+                                        </div>
+                                        <div class="metric-label">CTR</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['google_ads_data']['summary']['cpc']"/>
+                                        </div>
+                                        <div class="metric-label">CPC</div>
+                                    </td>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['google_ads_data']['summary']['cost_per_conversion']"/>
+                                        </div>
+                                        <div class="metric-label">Costo por conversión</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- Detalle de Campañas de Google Ads -->
+                        <div class="top-posts-container">
+                            <h3>Detalle de Campañas</h3>
+                            <table class="top-posts-table">
+                                <thead>
+                                    <tr class="text-center header-google-ads">
+                                        <th class="text-center content-header">Campaña</th>
+                                        <th class="text-center metric-header">Métricas</th>
+                                        <th class="text-center metric-header">Rendimiento</th>
+                                        <th class="text-center interactions-header">Conversiones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['google_ads_data']['campaigns']" t-as="camp">
+                                        <tr>
+                                            <td>
+                                                <div class="post-content text-center">
+                                                    <div class="post-message">
+                                                        <t t-out="camp['name']"/>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="metric-value">
+                                                <div class="interactions-container">
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count">
+                                                            <t t-out="camp['impressions']"/>
+                                                        </div>
+                                                        <div class="metric-label">Impresiones</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="comments-count">
+                                                            <t t-out="camp['clicks']"/>
+                                                        </div>
+                                                        <div class="metric-label">Clicks</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="shares-count">
+                                                            <t t-out="camp['cost']"/>
+                                                        </div>
+                                                        <div class="metric-label">Gasto</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="metric-value">
+                                                <div class="interactions-container">
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count">
+                                                            <t t-out="camp['ctr'] * 100"/>%
+                                                        </div>
+                                                        <div class="metric-label">CTR</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="comments-count">
+                                                            <t t-out="camp['average_cpc']"/>
+                                                        </div>
+                                                        <div class="metric-label">CPC Promedio</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="metric-value">
+                                                <div class="interactions-container">
+                                                    <div class="interaction-metric">
+                                                        <div class="shares-count">
+                                                            <t t-out="camp['all_conversions']"/>
+                                                        </div>
+                                                        <div class="metric-label">Conversiones</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="comments-count">
+                                                            <t t-out="camp['cost_per_all_conversions']"/>
+                                                        </div>
+                                                        <div class="metric-label">Costo por Conversión</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="likes-count">
+                                                            <t t-out="camp['conversion_rate']"/>%
+                                                        </div>
+                                                        <div class="metric-label">Tasa de conversión</div>
+                                                    </div>
+                                                    <div class="interaction-metric">
+                                                        <div class="comments-count">
+                                                            <t t-out="camp['interaction_rate'] * 100"/>%
+                                                        </div>
+                                                        <div class="metric-label">Tasa de Interacción</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Palabras clave -->
+                        <div class="top-posts-container">
+                            <h3>Resumen por Palabras Clave</h3>
+                            <table class="top-posts-table">
+                                <thead>
+                                    <tr class="text-center header-google-ads">
+                                        <th>Palabra Clave</th>
+                                        <th>Impresiones</th>
+                                        <th>Clicks</th>
+                                        <th>Gasto</th>
+                                        <th>Conversión</th>
+                                        <th>Costo por Conversión</th>
+                                        <th>CPC Promedio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['google_ads_data']['keywords_summary']" t-as="kw">
+                                        <tr>
+                                            <td>
+                                                <t t-out="kw['keyword']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="kw['impressions']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="kw['clicks']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="kw['cost']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="kw['conversions']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="kw['cost_per_conversion']"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-out="kw['average_cpc']"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                    <div class="page-break"/>
+                </t>
+                <!-- ############################################################# Sección de LinkedIn -->
+                <t t-if="data['linkedin_data']">
+                    <div class="page">
+
+                        <img src="/gl_geniolibre/static/src/img/banner_linkedin.jpg"
+                             alt="LinkedIn"
+                             style="max-width: 100%; height: auto;"/>
+
+                        <!-- Totales -->
+                        <div>
+                            <h3>Totales</h3>
+                            <table style="width: 100%; border-spacing: 16px; table-layout: fixed;">
+                                <tr>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['linkedin_data']['totals'].get('page_impressions', 0)"/>
+                                        </div>
+                                        <div class="metric-label">Vistas de contenido</div>
+                                    </td>
+
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['linkedin_data']['totals'].get('page_views_total', 0)"/>
+                                        </div>
+                                        <div class="metric-label">Visitas a la página</div>
+                                    </td>
+
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['linkedin_data']['totals'].get('page_followers', 0)"/>
+                                        </div>
+                                        <div class="metric-label">Seguidores</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['linkedin_data']['totals'].get('page_new_followers', 0)"/>
+                                        </div>
+                                        <div class="metric-label">Variación de seguidores</div>
+                                    </td>
+
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="data['linkedin_data']['totals'].get('page_clicks_total_from_shares', 0)"/>
+                                        </div>
+                                        <div class="metric-label">Interacciones totales</div>
+                                    </td>
+
+                                    <td class="metric-card">
+                                        <div class="metric-value">
+                                            <t t-out="round(data['linkedin_data']['totals'].get('page_post_engagements', 0), 2)"/>
+                                        </div>
+                                        <div class="metric-label">Engagement Rate</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Resumen por Tipo de Publicación -->
+                        <div>
+                            <h3>Resumen por Tipo de Publicación</h3>
+                            <table>
+                                <thead>
+                                    <tr class="text-center header-linkedin">
+                                        <th>Tipo</th>
+                                        <th>Posts</th>
+                                        <th>Vistas</th>
+                                        <th>Reacciones</th>
+                                        <th>Comentarios</th>
+                                        <th>Compartidos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="data['linkedin_data']['post_type_summary'].items()" t-as="item">
+                                        <t t-set="tipo_publicacion" t-value="{'Post': 'Post'}.get(item[0], item[0])"/>
+                                        <t t-set="tipo_publicacion_icon" t-value="{
+                                            'Video': '/gl_geniolibre/static/src/img/iconos/icon_video.png',
+                                            'Imagen': '/gl_geniolibre/static/src/img/iconos/icon_image.png',
+                                            'Carrusel': '/gl_geniolibre/static/src/img/iconos/icon_carousel.png',
+                                            'Documento': '/gl_geniolibre/static/src/img/iconos/icon_album.png',
+                                            'Enlace': '/gl_geniolibre/static/src/img/iconos/icon_link.png',
+                                            'Post': '/gl_geniolibre/static/src/img/iconos/icon_status.png'
+                                        }.get(item[0])"/>
+
+                                        <tr class="text-center">
+                                            <td>
+                                                <span class="report-icon-label">
+                                                    <img t-if="tipo_publicacion_icon" t-att-src="tipo_publicacion_icon"
+                                                         t-att-alt="tipo_publicacion" class="report-icon"/>
+                                                    <span t-out="tipo_publicacion"/>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1].get('posts', 0)"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1].get('reach', 0)"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1].get('reactions', 0)"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1].get('comments', 0)"/>
+                                            </td>
+                                            <td>
+                                                <t t-out="item[1].get('shares', 0)"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Top Posts -->
+                        <div class="top-posts-container">
+                            <h3>Top Posts</h3>
+                            <table class="top-posts-table" style="table-layout: fixed; width: 100%;">
+                                <thead>
+                                    <tr class="text-center header-linkedin">
+                                        <th class="text-center content-header">Contenido</th>
+                                        <th class="text-center">Copy</th>
+                                        <th style="width: 90px;">Tipo</th>
+                                        <th style="width: 90px;">Vistas</th>
+                                        <th class="interactions-header">Interacciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="data['linkedin_data'].get('top_posts')">
+                                        <t t-foreach="data['linkedin_data']['top_posts']" t-as="post">
+                                            <t t-set="tipo_post_icon" t-value="{
+                                                'Video': '/gl_geniolibre/static/src/img/iconos/icon_video.png',
+                                                'Imagen': '/gl_geniolibre/static/src/img/iconos/icon_image.png',
+                                                'Carrusel': '/gl_geniolibre/static/src/img/iconos/icon_carousel.png',
+                                                'Documento': '/gl_geniolibre/static/src/img/iconos/icon_album.png',
+                                                'Enlace': '/gl_geniolibre/static/src/img/iconos/icon_link.png',
+                                                'Post': '/gl_geniolibre/static/src/img/iconos/icon_status.png'
+                                            }.get(post.get('type'))"/>
+                                            <tr>
+                                                <td style="width: 20%;">
+                                                    <div class="text-center post-content">
+                                                        <t t-if="post.get('picture_url')">
+                                                            <img t-att-src="post.get('picture_url')"
+                                                                 class="post-image"
+                                                                 style="width:90%;max-width:90%;height:auto;"
+                                                                 t-att-alt="post.get('message', 'Post de LinkedIn')"/>
+                                                        </t>
+                                                        <t t-if="not post.get('picture_url')">
+                                                            <div class="metric-label">Sin imagen</div>
+                                                        </t>
+                                                    </div>
+                                                </td>
+                                                <td class="post-type">
+                                                    <t t-out="post.get('message', 'Sin descripción')"/>
+                                                </td>
+                                                <td class="post-type">
+                                                    <span class="report-icon-label">
+                                                        <img t-if="tipo_post_icon" t-att-src="tipo_post_icon"
+                                                             t-att-alt="post.get('type', 'Post')" class="report-icon"/>
+                                                        <span t-out="post.get('type', 'Post')"/>
+                                                    </span>
+                                                </td>
+                                                <td class="metric-value">
+                                                    <t t-if="post.get('views', 0)">
+                                                        <t t-out="post.get('views', 0)"/>
+                                                    </t>
+                                                    <t t-if="not post.get('views', 0)">N/A</t>
+                                                </td>
+                                                <td style="text-align: center; vertical-align: middle;">
+                                                    <div class="interactions-container">
+                                                        <div class="metric-label">
+                                                            <img src="/gl_geniolibre/static/src/img/iconos/icon_reaction.png"
+                                                                 alt="Reacciones" class="report-icon"/>
+                                                            <t t-if="post.get('reactions', 0)">
+                                                                <t t-out="post.get('reactions', 0)"/>
+                                                            </t>
+                                                            <t t-if="not post.get('reactions', 0)">N/A</t>
+                                                            Reacciones
+                                                        </div>
+                                                        <div class="metric-label">
+                                                            <img src="/gl_geniolibre/static/src/img/iconos/icon_comment.png"
+                                                                 alt="Comentarios" class="report-icon"/>
+                                                            <t t-if="post.get('comments', 0)">
+                                                                <t t-out="post.get('comments', 0)"/>
+                                                            </t>
+                                                            <t t-if="not post.get('comments', 0)">N/A</t>
+                                                            Comentarios
+                                                        </div>
+                                                        <div class="metric-label">
+                                                            <img src="/gl_geniolibre/static/src/img/iconos/icon_share.png"
+                                                                 alt="Compartidos" class="report-icon"/>
+                                                            <t t-if="post.get('shares', 0)">
+                                                                <t t-out="post.get('shares', 0)"/>
+                                                            </t>
+                                                            <t t-if="not post.get('shares', 0)">N/A</t>
+                                                            Compartidos
+                                                        </div>
+                                                        <div class="metric-label">
+                                                            <img src="/gl_geniolibre/static/src/img/iconos/icon_click.png"
+                                                                 alt="Clics" class="report-icon"/>
+                                                            <t t-if="post.get('clicks', 0)">
+                                                                <t t-out="post.get('clicks', 0)"/>
+                                                            </t>
+                                                            <t t-if="not post.get('clicks', 0)">N/A</t>
+                                                            Clics
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="not data['linkedin_data'].get('top_posts')">
+                                        <tr class="text-center">
+                                            <td colspan="5">
+                                                No hay posts destacados disponibles para este período.
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="page-break"/>
+                </t>
+
+                <!-- #############################################################  Footer -->
+                <t t-if="data.get('google_ads_data') or data.get('meta_ads_data')">
+                    <h3>Leyenda</h3>
+                    <div class="detalles" style="display: flex; gap: 40px;">
+                        <ul style="flex: 1; padding-left: 20px;">
+                            <li>
+                                <strong>Total Campañas:</strong>
+                                Número de campañas publicitarias activas en el periodo analizado
+                            </li>
+                            <li>
+                                <strong>Moneda:</strong>
+                                Tipo de moneda utilizada para los gastos
+                            </li>
+                            <li>
+                                <strong>Impresiones:</strong>
+                                Veces que los anuncios fueron mostrados a usuarios
+                            </li>
+                            <li>
+                                <strong>Clicks:</strong>
+                                Veces que los usuarios hicieron clic en los anuncios
+                            </li>
+                            <li>
+                                <strong>Alcance:</strong>
+                                Usuarios únicos que vieron los anuncios
+                            </li>
+                            <li>
+                                <strong>Gasto Total:</strong>
+                                Inversión total en publicidad
+                            </li>
+                            <li>
+                                <strong>CTR:</strong>
+                                Tasa de clics (Clicks/Impresiones) - Indica efectividad del creativo
+                            </li>
+                            <li>
+                                <strong>CPC:</strong>
+                                Costo por clic (Gasto/Clicks)
+                            </li>
+                            <li>
+                                <strong>CPM:</strong>
+                                Costo por mil impresiones
+                            </li>
+                            <li>
+                                <strong>CPP:</strong>
+                                Costo por persona alcanzada
+                            </li>
+                            <li>
+                                <strong>Frecuencia:</strong>
+                                Promedio de veces que cada usuario vio los anuncios (Impresiones/Alcance)
+                            </li>
+                            <li>
+                                <strong>Conversaciones Iniciadas:</strong>
+                                Interacciones que generaron diálogos con la empresa (mensajes, comentarios, etc.)
+                            </li>
+                        </ul>
+                    </div>
+                </t>
+                <div class="footer" align="center">
+                    <hr/>
+                    <p style="font-size:smaller;">Desarrollado por GenioLibre</p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

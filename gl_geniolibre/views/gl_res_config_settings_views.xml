@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="res_config_settings_view_inherit_geniolibre" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form..inherit.geniolibre</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="GenioLibre" string="GenioLibre" name="GenioLibre"
+                     logo="/gl_geniolibre/static/description/icon.png">
+                    <block title="Facebook">
+                        <div class="col-xs-12  row o_settings_container">
+                            <label class="col-lg-3" string="Facebook App Secret" for="facebook_app_secret"/>
+                            <field name="facebook_app_secret" title="APP Key"/>
+                            <label class="col-lg-3 mt-3" string="Facebook Client ID" for="facebook_app_id"/>
+                            <field name="facebook_app_id" title="APP Key"/>
+                            <label class="col-lg-3 mt-3" string="Facebook Redirect URI" for="facebook_redirect_uri"/>
+                            <field name="facebook_redirect_uri" title="APP Key"/>
+                            <label class="col-lg-3 mt-3" string="Facebook Page Access Tokens" for="user_access_token"/>
+                            <field name="user_access_token" title="APP Key"/>
+                            <label class="col-lg-3 mt-3" string="Meta System User Token" for="meta_system_user_access_token"/>
+                            <field name="meta_system_user_access_token" password="True" title="Meta System User Token"/>
+                            <label class="col-lg-3 mt-3" string="Meta Business ID" for="meta_business_id"/>
+                            <field name="meta_business_id" title="Meta Business ID"/>
+                            <label class="col-lg-3 mt-3" string="Meta System User ID" for="meta_system_user_id"/>
+                            <field name="meta_system_user_id" title="Meta System User ID"/>
+                            <label class="col-lg-3 mt-3" string="Token fuente para renovar" for="meta_system_user_source_token"/>
+                            <field name="meta_system_user_source_token" password="True" title="Token fuente para renovar"/>
+                            <label class="col-lg-3 mt-3" string="Permisos System User" for="meta_system_user_scopes"/>
+                            <field name="meta_system_user_scopes" title="Permisos System User"/>
+                            <label class="col-lg-3 mt-3" string="Meta Token Expira" for="meta_system_user_token_expires_at"/>
+                            <field name="meta_system_user_token_expires_at" title="Meta Token Expira"/>
+                            <label class="col-lg-3 mt-3" string="Meta Token Estado" for="meta_system_user_token_status"/>
+                            <field name="meta_system_user_token_status" readonly="1"/>
+                            <label class="col-lg-3 mt-3" string="Ultima revision token Meta" for="meta_system_user_token_last_check"/>
+                            <field name="meta_system_user_token_last_check" readonly="1"/>
+                            <label class="col-lg-3 mt-3" string="Estado tecnico token Meta" for="meta_system_user_token_state"/>
+                            <field name="meta_system_user_token_state" readonly="1"/>
+                            <label class="col-lg-3 mt-3" string="Ultimo error token Meta" for="meta_system_user_token_last_error"/>
+                            <field name="meta_system_user_token_last_error" readonly="1"/>
+                            <label class="col-lg-3 mt-3" string="API Version" for="facebook_api_version"/>
+                            <field name="facebook_api_version"/>
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <button string="Generar/Renovar Token System User" icon="fa-refresh" type="object"
+                                            name="action_generate_meta_system_user_token"
+                                            class="btn-primary"/>
+                                </div>
+                                <div class="mt8">
+                                    <button string="Connectar con Facebook" icon="fa-facebook" type="object"
+                                            name="conectar_facebook"
+                                            class="btn-primary"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </block>
+                    <block title="Amazon Web services">
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="Clave de acceso" for="aws_access_key"/>
+                            <field name="aws_access_key" title="API Key"/>
+                            <label class="col-lg-3 mt-3" string="Clave de acceso secreta" for="aws_secret"/>
+                            <field name="aws_secret" title="API Key"/>
+                            <label class="col-lg-3 mt-3" string="Bucket" for="aws_bucket"/>
+                            <field name="aws_bucket" title="AWS Bucket"/>
+                            <label class="col-lg-3 mt-3" string="Dominio público" for="aws_public_domain"/>
+                            <field name="aws_public_domain" title="AWS Dominio publico"/>
+                            <div class="content-group">
+                                <div class="mt8">
+                                    <button name="action_test_aws_connection"
+                                            string="Probar Conexión"
+                                            type="object"
+                                            class="btn btn-primary mt8"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </block>
+                    <block title="TikTok">
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="Client KEY" for="tiktok_client"/>
+                            <field name="tiktok_client" title="Client KEY"/>
+                            <label class="col-lg-3 mt-3" string="Client SECRET" for="tiktok_secret"/>
+                            <field name="tiktok_secret" title="Client SECRET"/>
+                            <label class="col-lg-3 mt-3" string="Redirect URI" for="tiktok_redirect_uri"/>
+                            <field name="tiktok_redirect_uri" title="Client SECRET"/>
+
+                        </div>
+                    </block>
+                    <block title="Google Authentication">
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="Ads Manager Account" for="google_client_id"/>
+                            <field name="google_login_customer_id" title="Ads Manager Account"/>
+
+                            <label class="col-lg-3" string="Developer Token" for="google_client_id"/>
+                            <field name="google_developer_token" title="Developer Token"/>
+
+                            <label class="col-lg-3" string="Client ID" for="google_client_id"/>
+                            <field name="google_client_id" title="Google Client ID"/>
+
+                            <label class="col-lg-3 mt-3" string="Client Secret" for="google_client_secret"/>
+                            <field name="google_client_secret" title="Google Client Secret"/>
+
+                            <label class="col-lg-3 mt-3" string="Redirect URI" for="google_redirect_uri"/>
+                            <field name="google_redirect_uri" title="Redirect URI"/>
+
+                            <label class="col-lg-3 mt-3" string="Access Token" for="google_redirect_uri"/>
+                            <field name="google_access_token" title="Access Token"/>
+
+                            <label class="col-lg-3 mt-3" string="Google Refresh Token" for="google_redirect_uri"/>
+                            <field name="google_refresh_token" title="Refresh Token"/>
+
+                            <div class="content-group mt-3">
+                                <div class="mt8">
+                                    <button string="Conectar con Google"
+                                            icon="fa-google"
+                                            type="object"
+                                            name="conectar_google"
+                                            class="btn-primary"/>
+                                </div>
+                            </div>
+                        </div>
+                    </block>
+                    <block title="LinkedIn Autentication">
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="Cliend ID" for="linkedin_client_id"/>
+                            <field name="linkedin_client_id" title="Client ID"/>
+                            <label class="col-lg-3" string="Secret ID" for="linkedin_client_secret"/>
+                            <field name="linkedin_client_secret" title="Secret ID"/>
+                            <label class="col-lg-3" string="Redirect URI" for="linkedin_redirect_uri"/>
+                            <field name="linkedin_redirect_uri" title="Redirect URI"/>
+                            <label class="col-lg-3" string="API Version" for="linkedin_api_version"/>
+                            <field name="linkedin_api_version" title="LinkedIn API Version"/>
+
+                            <label class="col-lg-3" string="Access Token" for="linkedin_access_token"/>
+                            <field name="linkedin_access_token" title="Access Token"/>
+                            <label class="col-lg-3" string="Token Expiry" for="linkedin_token_expiry"/>
+                            <field name="linkedin_token_expiry" title="Token Expiry"/>
+                            <div class="content-group mt-3">
+                                <div class="mt8">
+                                    <button string="Conectar con Linkedin"
+                                            icon="fa-linkedin"
+                                            type="object"
+                                            name="conectar_linkedin"
+                                            class="btn-primary"/>
+                                </div>
+                            </div>
+                        </div>
+                    </block>
+                    <block title="Inteligencia de Marketing">
+                        <setting string="YouTube Data API v3"
+                                 help="Habilita la búsqueda de videos cortos con métricas públicas. Google Trends RSS no requiere clave.">
+                            <label for="youtube_data_api_key" string="API Key"/>
+                            <field name="youtube_data_api_key" password="True" placeholder="Clave de Google Cloud"/>
+                        </setting>
+                    </block>
+                    <block title="ChatGPT / OpenAI">
+                        <setting string="Conexión directa con IA"
+                                 help="Activar llamadas automáticas a OpenAI. Desactivado: copiar y pegar prompts y respuestas.">
+                            <field name="chatgpt_conexion_directa"/>
+                        </setting>
+                        <div class="col-xs-12 row o_settings_container">
+                            <label class="col-lg-3" string="API Key" for="chatgpt_api_key"/>
+                            <field name="chatgpt_api_key" password="True" placeholder="sk-..." title="API Key"/>
+
+                            <label class="col-lg-3 mt-3" string="Base URL" for="chatgpt_base_url"/>
+                            <field name="chatgpt_base_url" placeholder="https://api.openai.com/v1" title="Base URL"/>
+
+                            <label class="col-lg-3 mt-3" string="Modelo" for="chatgpt_model"/>
+                            <field name="chatgpt_model" placeholder="gpt-4.1-mini" title="Modelo"/>
+                        </div>
+
+
+                    </block>
+                    <block title="Permisos de tareas"><div class="col-xs-12 row o_settings_container"><label class="col-lg-3" string="Usuarios" for="project_task_users"/><field name="project_task_users" widget="many2many_tags"/><label class="col-lg-3" string="Puede eliminar tareas" for="project_task_delete_users"/><field name="project_task_delete_users" widget="many2many_tags"/></div></block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+                                                                    

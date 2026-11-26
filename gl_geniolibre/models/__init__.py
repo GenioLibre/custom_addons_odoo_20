@@ -1,0 +1,23 @@
+# -*- coding: utf-8 -*-
+
+from . import gl_credentials
+from . import res_partner
+from . import res_config_settings
+from . import project_task
+from . import project_marketing
+from . import project_project
+from . import project_web_roadmap
+from . import sale_order_line
+from . import gl_social_reports
+from . import gl_contenido_flujo
+from . import gl_marketing_intelligence
+from . import gl_marketing_discovery
+from . import gl_marketing_video_analysis
+from . import gl_marketing_social
+from . import tiktok_publish_confirm_wizard
+
+from . import user_access
+
+from . import account_move
+from . import subscription_contract_line
+from . import subscription_contracts

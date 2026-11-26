@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="gl_project_sharing_task_list" model="ir.ui.view">
+            <field name="name">project.sharing.task.publication.list</field>
+            <field name="model">project.task</field>
+            <field name="inherit_id" ref="project.project_sharing_project_task_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="fecha_publicacion" string="Fecha de Publicación" readonly="1"/>
+                    <field name="post_estado" string="Estado de Publicación" readonly="1"/>
+                </field>
+            </field>
+        </record>
+        <!-- Un solo template que hace todas las modificaciones -->
+        <template id="portal_project_tasks_list_inherit"
+                  inherit_id="project.portal_tasks_list"
+                  name="Portal Project Tasks List Inherit">
+
+            <!-- Agregar botón del calendario -->
+            <xpath expr="//thead" position="before">
+                <div class="d-flex justify-content-end mb-2" t-if="project">
+                    <a t-attf-href="/my/projects/#{project.id}/calendar"
+                       class="btn btn-primary">
+                        📅 Ver Calendario
+                    </a>
+                </div>
+            </xpath>
+
+            <xpath expr="//thead//t[@t-set='grouped_tasks_colspan']" position="attributes">
+                <attribute name="t-value">4 if multiple_projects and groupby != 'project_id' else 3</attribute>
+            </xpath>
+            <xpath expr="//thead/tr/th[hasclass('ps-5')]" position="replace">
+                <th>Fecha de Publicación</th>
+                <th>Estado de Publicación</th>
+            </xpath>
+            <!-- Quitar columna Assignees -->
+            <xpath expr="//td[div[@t-if='assignees']]" position="replace"/>
+
+            <!-- Agregar columnas nuevas después del nombre -->
+            <xpath expr="//tr/td[a/span[@t-field='task.name']]" position="after">
+                <td>
+                    <span t-field="task.fecha_publicacion"/>
+                </td>
+                <td>
+                    <span t-field="task.post_estado"/>
+                </td>
+            </xpath>
+        </template>
+        <!-- Herencia de la vista de detalle de tarea en el portal -->
+        <template id="portal_my_task_inherit"
+                  inherit_id="project.portal_my_task"
+                  name="Portal Task Detail Inherit">
+
+            <!-- Agregar hashtags y texto_en_diseno debajo de la descripción -->
+            <xpath expr="//div[@id='card_body']//div[hasclass('row') and @t-if='task.description or task.attachment_ids']"
+                   position="after">
+                <div class="row" t-if="task.hashtags or task.texto_en_diseno">
+                    <!-- Campo hashtags -->
+                    <div t-if="task.hashtags" class="mb-4">
+                        <h5 class="mb-1">Hashtags</h5>
+                        <hr class="mt-1 mb-2"/>
+                        <div class="py-1 px-2 bg-100 small overflow-auto table-responsive mb-4">
+                            <span t-field="task.hashtags"/>
+                        </div>
+                    </div>
+
+                    <!-- Campo texto_en_diseno -->
+                    <div t-if="task.texto_en_diseno" class="mb-4">
+                        <h5 class="mb-1">Texto en Diseño</h5>
+                        <hr class="mt-1 mb-2"/>
+                        <div class="py-1 px-2 bg-100 small overflow-auto table-responsive mb-4">
+                            <span t-field="task.texto_en_diseno"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- ❌ Quitar el chatter (Communication history) -->
+            <xpath expr="//div[@id='task_chat']" position="replace"/>
+
+            <!-- 🔄 Reemplazar bloque de attachments para preview de imágenes y videos -->
+            <xpath expr="//div[hasclass('o_project_portal_attachments')]" position="replace">
+                <div t-if="task.attachment_ids" class="o_project_portal_attachments">
+                    <h5 class="mb-1">Adjuntos</h5>
+                    <hr class="mt-1 mb-2"/>
+                    <div class="row">
+                        <t t-foreach="task.attachment_ids" t-as="attachment">
+                            <div class="col-12 col-md-4 mb-3">
+                                <!-- Mostrar imágenes -->
+                                <t t-if="'image' in (attachment.mimetype or '')">
+                                    <img class="img-fluid rounded border"
+                                         t-att-alt="attachment.name"
+                                         t-att-src="'/web/content/%s?access_token=%s' % (attachment.id, attachment.access_token)"/>
+                                </t>
+
+                                <!-- Mostrar videos -->
+                                <t t-elif="'video' in (attachment.mimetype or '')">
+                                    <video class="w-100 rounded border" controls="controls">
+                                        <source t-att-src="'/web/content/%s?access_token=%s' % (attachment.id, attachment.access_token)"
+                                                t-att-type="attachment.mimetype"/>
+                                        Tu navegador no soporta video.
+                                    </video>
+                                </t>
+
+                                <!-- Otros archivos: dejar enlace -->
+                                <t t-else="">
+                                    <a t-att-href="'/web/content/%s?access_token=%s' % (attachment.id, attachment.access_token)"
+                                       target="_blank">
+                                        <i class="fa fa-paperclip me-2"/>
+                                        <t t-out="attachment.name"/>
+                                    </a>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="project.ProjectSharingControlPanelNavigationButton" t-inherit-mode="extension">
+        <xpath expr="//a[@href='/my/projects']" position="after">
+            <a t-if="this.glPublicationCalendarUrl" class="btn btn-link"
+               t-att-href="this.glPublicationCalendarUrl">Ver Calendario</a>
+        </xpath>
+    </t>
+</templates>
